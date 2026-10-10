@@ -81,7 +81,12 @@ function poissonOver(lambda, threshold) {
   return Math.max(0, Math.min(1, 1 - cumulative));
 }
 function safeError(error) {
-  return String(error?.message || error).replace(/https?:\/\/\S+/g, '[API URL]').slice(0, 220);
+  let message = String(error?.message || error).replace(/https?:\/\/\S+/g, '[API URL]');
+  for (const name of ['BSD_TOKEN', 'SSTATS_TOKEN', 'EURO365_API_KEY', 'FD_DATA_TOKEN']) {
+    const secret = process.env[name];
+    if (secret) message = message.split(secret).join('[REDACTED]');
+  }
+  return message.slice(0, 220);
 }
 function moscowDateKey(value) {
   if (value === undefined || value === null || value === '') return null;
