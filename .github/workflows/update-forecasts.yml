@@ -67,5 +67,6 @@ jobs:
             echo "No data changes to commit"
           else
             git commit -m "chore: update football forecasts"
+            git pull --rebase origin main
             git push
           fi
