@@ -58,28 +58,44 @@ function normalizeDictionary(payload) {
     full: obj(data.markets_full)
   };
 }
-async function requestJson(path, timeoutMs = 4000) {
+async function requestJson(path, timeoutMs = 10000) {
   const key = process.env.EURO365_API_KEY || '';
   if (!key) throw new Error('Не задан EURO365_API_KEY в GitHub Actions Secrets');
-  const response = await fetch(BASE + path, {
-    headers: { 'X-API-Key': key, Accept: 'application/json' },
-    signal: AbortSignal.timeout(timeoutMs)
-  });
-  const body = await response.text();
-  if (!response.ok) {
-    let detail = body.slice(0, 160);
-    try { detail = JSON.parse(body).error || detail; } catch {}
-    if (response.status === 429) throw new Error('Euro365: достигнут лимит запросов (429); повторите позже');
-    throw new Error('Euro365 HTTP ' + response.status + ': ' + detail);
+  let lastError;
+  // Euro365 can respond slowly during busy match windows; retry one timeout once.
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const response = await fetch(BASE + path, {
+        headers: { 'X-API-Key': key, Accept: 'application/json' },
+        signal: AbortSignal.timeout(timeoutMs)
+      });
+      const body = await response.text();
+      if (!response.ok) {
+        let detail = body.slice(0, 160);
+        try { detail = JSON.parse(body).error || detail; } catch {}
+        if (response.status === 429) throw new Error('Euro365: достигнут лимит запросов (429); повторите позже');
+        throw new Error('Euro365 HTTP ' + response.status + ': ' + detail);
+      }
+      let payload;
+      try { payload = JSON.parse(body); } catch { throw new Error('Euro365: API вернул не JSON'); }
+      if (payload && payload.success === false) throw new Error('Euro365: ' + (payload.error || 'API вернул success=false'));
+      return payload;
+    } catch (error) {
+      lastError = error;
+      const message = String(error?.message || error);
+      const timedOut = error?.name === 'TimeoutError' || error?.name === 'AbortError' || /timed out|timeout|operation was aborted/i.test(message);
+      if (!timedOut || attempt === 1) {
+        if (timedOut) throw new Error('Euro365: timeout запроса ' + path + ' после ' + timeoutMs + ' мс (повтор выполнен)');
+        throw error;
+      }
+      await new Promise(resolve => setTimeout(resolve, 700));
+    }
   }
-  let payload;
-  try { payload = JSON.parse(body); } catch { throw new Error('Euro365: API вернул не JSON'); }
-  if (payload && payload.success === false) throw new Error('Euro365: ' + (payload.error || 'API вернул success=false'));
-  return payload;
+  throw lastError;
 }
 async function getDictionary() {
   if (dictionaryCache && Date.now() - dictionaryAt < DICTIONARY_TTL_MS) return dictionaryCache;
-  const payload = await requestJson('/v1/markets?sport=1&nested=1&lang=en', 3500);
+  const payload = await requestJson('/v1/markets?sport=1&nested=1&lang=en', 10000);
   dictionaryCache = normalizeDictionary(payload);
   dictionaryAt = Date.now();
   return dictionaryCache;
@@ -195,9 +211,9 @@ async function fetchEuro365(targetDate) {
   const key = process.env.EURO365_API_KEY || '';
   if (!key) throw new Error('Не задан EURO365_API_KEY в GitHub Actions Secrets');
   const [liveResult, prematchResult, scoresResult] = await Promise.allSettled([
-    requestJson('/v1/live?sport=1', 4000),
-    requestJson('/v1/prematch?sport=1', 4000),
-    requestJson('/v1/scores', 3000)
+    requestJson('/v1/live?sport=1', 10000),
+    requestJson('/v1/prematch?sport=1', 10000),
+    requestJson('/v1/scores', 7000)
   ]);
   const eventMap = new Map();
   for (const [name, result] of [['live', liveResult], ['prematch', prematchResult]]) {
@@ -249,11 +265,11 @@ async function fetchEuro365(targetDate) {
   // Fetch odds in manageable batches so every event for the day is included,
   // rather than silently dropping all events after the first 100.
   const oddsData = {};
-  const oddsBatchSize = 150;
+  const oddsBatchSize = 100;
   for (let start = 0; start < targetEvents.length; start += oddsBatchSize) {
     const batch = targetEvents.slice(start, start + oddsBatchSize);
     const ids = batch.map(([id]) => id);
-    const oddsPayload = await requestJson('/v1/odds?ids=' + encodeURIComponent(ids.join(',')), 4500);
+    const oddsPayload = await requestJson('/v1/odds?ids=' + encodeURIComponent(ids.join(',')), 12000);
     Object.assign(oddsData, obj(unwrapData(oddsPayload)));
   }
   diagnostics.oddsEvents = Object.keys(oddsData).length;
