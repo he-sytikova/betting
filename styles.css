@@ -294,3 +294,17 @@ tbody tr.high-probability-row:hover {
     .source-filter-bar { gap: 6px; }
     .source-filter-btn { padding: 7px 10px; font-size: 11px; }
 }
+
+
+/* Make all text in the forecast table black for readability. */
+table,
+table th,
+table td,
+table th:hover,
+table .prediction-cell,
+table .source-cell,
+tbody tr.high-probability-row td,
+tbody tr.high-probability-row .prediction-cell,
+tbody tr.high-probability-row .source-cell {
+    color: #000 !important;
+}
