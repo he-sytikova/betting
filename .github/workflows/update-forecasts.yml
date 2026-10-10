@@ -1,0 +1,41 @@
+name: Update football forecasts
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '7 */3 * * *'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/update_data.py'
+      - '.github/workflows/update-forecasts.yml'
+permissions:
+  contents: write
+concurrency:
+  group: update-forecasts
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch forecasts
+        env:
+          BSD_TOKEN: ${{ secrets.BSD_TOKEN }}
+          SSTATS_TOKEN: ${{ secrets.SSTATS_TOKEN }}
+        run: python scripts/update_data.py
+      - name: Commit data snapshot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/forecasts.json
+          if git diff --cached --quiet; then
+            echo "No data changes to commit"
+          else
+            git commit -m "chore: update daily football forecasts"
+            git push
+          fi
