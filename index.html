@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101827">
+  <meta name="description" content="Футбольные прогнозы на сегодня: исходы, тоталы голов и угловых.">
+  <title>Betting — футбольные прогнозы</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./"><span class="brand-mark">B</span><span>BETTING<span class="brand-sub">FOOTBALL FORECASTS</span></span></a>
+    <div class="top-meta"><span class="live-dot"></span><span id="updatedAt">Ожидание данных</span><button id="refreshBtn" class="refresh-btn" type="button" title="Обновить данные">↻ <span>Обновить</span></button></div>
+  </header>
+  <main class="container">
+    <section class="hero">
+      <div><p class="eyebrow">MATCHDAY DASHBOARD</p><h1>Прогнозы на <span id="todayLabel">сегодня</span></h1><p class="subhead">Матчи, вероятности и доступные рынки — в одном месте.</p></div>
+      <div class="date-card"><span class="date-label">ТЕКУЩАЯ ДАТА</span><strong id="dateValue">—</strong><span id="matchCount">Загрузка матчей…</span></div>
+    </section>
+    <section class="controls" aria-label="Фильтры">
+      <label class="searchbox"><span>⌕</span><input id="searchInput" type="search" placeholder="Команда или лига…" aria-label="Поиск команды или лиги"></label>
+      <select id="sourceFilter" aria-label="Источник"><option value="all">Все источники</option><option value="BSD">BSD</option><option value="SStats">SStats</option></select>
+      <select id="marketFilter" aria-label="Рынок"><option value="all">Все рынки</option><option value="result">Исходы матча</option><option value="goals">Тоталы голов</option><option value="corners">Угловые</option></select>
+      <select id="statusFilter" aria-label="Статус матча"><option value="all">Все матчи</option><option value="upcoming">Предстоящие</option><option value="live">В игре</option></select>
+    </section>
+    <section class="summary-grid">
+      <article class="summary-card"><span class="summary-icon">⚽</span><div><span class="summary-label">Матчи сегодня</span><strong id="statMatches">—</strong></div></article>
+      <article class="summary-card"><span class="summary-icon">◈</span><div><span class="summary-label">Прогнозы на исход</span><strong id="statResults">—</strong></div></article>
+      <article class="summary-card"><span class="summary-icon">↗</span><div><span class="summary-label">Рынки тоталов</span><strong id="statTotals">—</strong></div></article>
+    </section>
+    <section class="table-panel">
+      <div class="panel-heading"><div><h2>Матчи и прогнозы</h2><p>Отсортировано по времени начала матча</p></div><span class="table-count" id="visibleCount">0 матчей</span></div>
+      <div class="table-wrap"><table><thead><tr><th>Время</th><th>Матч / турнир</th><th>П1</th><th>П2</th><th>1Х</th><th>2Х</th><th>Тотал голов</th><th>Угловые</th><th>Источник</th></tr></thead><tbody id="matchesBody"><tr><td colspan="9" class="empty-state">Загружаем прогнозы…</td></tr></tbody></table></div>
+      <div id="notice" class="notice" role="status">Данные загружаются из опубликованного набора GitHub Actions.</div>
+    </section>
+    <section class="legend"><span><i class="legend-dot green"></i> Есть прогноз</span><span><i class="legend-dot gray"></i> Нет данных по рынку</span><span>Вероятности отображаются только если источник их предоставляет.</span></section>
+  </main>
+  <footer><span>BETTING · FOOTBALL FORECASTS</span><span>Данные предоставляются BSD и SStats.net. Прогнозы не гарантируют результат.</span></footer>
+  <script src="app.js" defer></script>
+</body>
+</html>
