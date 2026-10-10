@@ -120,10 +120,11 @@ function renderTable() {
   $('empty-state').classList.toggle('hidden', rows.length > 0);
   for (const item of rows) {
     const tr = document.createElement('tr');
-    const isHighProbability = item.maxProbability >= MIN_DISPLAY_PROBABILITY;
-    if (isHighProbability) tr.classList.add('high-probability-row');
-    tr.style.backgroundColor = isHighProbability ? heatmapColor(item.maxProbability) : '';
-    tr.style.color = isHighProbability && item.maxProbability >= 93 ? '#f8fafc' : '';
+    // Apply the same probability heatmap to every source, including low-probability
+    // rows that are intentionally visible for SStats and Euro365.
+    tr.classList.add('high-probability-row');
+    tr.style.backgroundColor = heatmapColor(item.maxProbability);
+    tr.style.color = '#000';
     tr.title = `Максимальная вероятность: ${item.maxProbability.toFixed(1)}%`;
     addCell(tr, formatTime(item.time));
     addCell(tr, item.league);
