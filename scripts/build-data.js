@@ -446,7 +446,9 @@ async function fetchFootballData() {
   const today = new Date().toISOString().slice(0, 10);
   const historyFrom = new Date(Date.now() - 120 * 86400000).toISOString().slice(0, 10);
   const headers = { 'X-Auth-Token': token, Accept: 'application/json' };
-  const todayPayload = await getJson(`https://api.football-data.org/v4/matches?dateFrom=${today}&dateTo=${today}`, headers, 6000);
+  // football-data.org treats dateTo as exclusive, so use tomorrow to include today's fixtures.
+  const tomorrow = new Date(Date.parse(`${today}T00:00:00Z`) + 86400000).toISOString().slice(0, 10);
+  const todayPayload = await getJson(`https://api.football-data.org/v4/matches?dateFrom=${today}&dateTo=${tomorrow}`, headers, 6000);
   const history = [];
   const historyErrors = [];
   // Football-data.org rejects match queries spanning more than 10 days.
@@ -457,9 +459,10 @@ async function fetchFootballData() {
   const finalDay = asDate(today);
   let requestsMade = 0;
   while (cursor <= finalDay) {
-    const windowEnd = new Date(Math.min(finalDay.getTime(), cursor.getTime() + 9 * 86400000));
+    // dateTo is exclusive: query up to (but not including) the next day.
+    const windowEndExclusive = new Date(Math.min(finalDay.getTime() + 86400000, cursor.getTime() + 10 * 86400000));
     const from = dayKey(cursor);
-    const to = dayKey(windowEnd);
+    const to = dayKey(windowEndExclusive);
     let loaded = false;
     let lastError = null;
     // Retry one slow/transient window once; the API occasionally times out on busy date ranges.
@@ -479,7 +482,7 @@ async function fetchFootballData() {
       }
     }
     if (!loaded) historyErrors.push(`${from}—${to}: ${safeError(lastError)} (после повторного запроса)`);
-    cursor = new Date(windowEnd.getTime() + 86400000);
+    cursor = windowEndExclusive;
   }
   const matches = arr(todayPayload);
   const todayMatches = matches.filter(match => match.utcDate && dateKey(match.utcDate) === today);
