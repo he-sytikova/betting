@@ -236,8 +236,7 @@ async function fetchEuro365(targetDate) {
       const aLive = /live|progress|inplay/i.test(String(a[1].status || '')) ? 0 : 1;
       const bLive = /live|progress|inplay/i.test(String(b[1].status || '')) ? 0 : 1;
       return aLive - bLive || dateFromEvent(a[1]) - dateFromEvent(b[1]);
-    })
-    .slice(0, 100);
+    });
   diagnostics.targetDateEvents = targetEvents.length;
   if (!targetEvents.length) {
     lastDiagnostics = `Euro365: live=${diagnostics.live}, prematch=${diagnostics.prematch}, уникальных=${diagnostics.unique}, за ${targetDate}=0${diagnostics.errors.length ? '; ошибки: ' + diagnostics.errors.join(' | ') : ''}`;
@@ -247,9 +246,16 @@ async function fetchEuro365(targetDate) {
     return cachedRows;
   }
   const dictionary = await getDictionary();
-  const ids = targetEvents.map(([id]) => id);
-  const oddsPayload = await requestJson('/v1/odds?ids=' + encodeURIComponent(ids.join(',')), 4500);
-  const oddsData = obj(unwrapData(oddsPayload));
+  // Fetch odds in manageable batches so every event for the day is included,
+  // rather than silently dropping all events after the first 100.
+  const oddsData = {};
+  const oddsBatchSize = 150;
+  for (let start = 0; start < targetEvents.length; start += oddsBatchSize) {
+    const batch = targetEvents.slice(start, start + oddsBatchSize);
+    const ids = batch.map(([id]) => id);
+    const oddsPayload = await requestJson('/v1/odds?ids=' + encodeURIComponent(ids.join(',')), 4500);
+    Object.assign(oddsData, obj(unwrapData(oddsPayload)));
+  }
   diagnostics.oddsEvents = Object.keys(oddsData).length;
   const rows = targetEvents.map(([id, event]) => normalizeEuro365(id, event, oddsData[id], dictionary, targetDate)).filter(Boolean);
   diagnostics.rows = rows.length;
