@@ -1,4 +1,5 @@
-name: Update football forecasts
+name: Build and deploy football forecasts
+
 on:
   workflow_dispatch:
   schedule:
@@ -6,36 +7,58 @@ on:
   push:
     branches: [main]
     paths:
-      - 'scripts/update_data.py'
+      - 'index.html'
+      - 'app.js'
+      - 'styles.css'
+      - 'scripts/**'
       - '.github/workflows/update-forecasts.yml'
+
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
 concurrency:
-  group: update-forecasts
+  group: github-pages
   cancel-in-progress: false
+
 jobs:
-  update:
+  build-and-deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          python-version: '3.12'
-      - name: Fetch forecasts
+          node-version: '22'
+
+      - name: Check JavaScript syntax
+        run: |
+          node --check app.js
+          node --check scripts/build-data.js
+          node --check scripts/euro365.js
+
+      - name: Build today's forecasts
         env:
           BSD_TOKEN: ${{ secrets.BSD_TOKEN }}
           SSTATS_TOKEN: ${{ secrets.SSTATS_TOKEN }}
-        run: python scripts/update_data.py
-      - name: Commit data snapshot
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/forecasts.json
-          if git diff --cached --quiet; then
-            echo "No data changes to commit"
-          else
-            git commit -m "chore: update daily football forecasts"
-            git push
-          fi
+          EURO365_API_KEY: ${{ secrets.EURO365_API_KEY }}
+          FD_DATA_TOKEN: ${{ secrets.FD_DATA_TOKEN }}
+        run: node scripts/build-data.js
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload static site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
