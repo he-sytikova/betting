@@ -38,6 +38,7 @@ jobs:
           node --check scripts/build-data.js
           node --check scripts/euro365.js
 
+      # Rebuild the published snapshot whenever the workflow is updated.
       - name: Check API secrets
         env:
           BSD_TOKEN: ${{ secrets.BSD_TOKEN }}
