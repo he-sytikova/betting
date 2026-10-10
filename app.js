@@ -1,7 +1,7 @@
 /* Static football dashboard. GitHub Actions publishes data.json to GitHub Pages. */
 const $ = (id) => document.getElementById(id);
 let allPredictions = [];
-let activeSource = 'all';
+let activeSource = 'summary';
 let sortKey = 'maxProbability';
 let sortAscending = false;
 const MIN_DISPLAY_PROBABILITY = 80;
