@@ -1,21 +1,40 @@
 # Betting — футбольные прогнозы
 
-Статический сайт (HTML/CSS/JS) для GitHub Pages. GitHub Actions раз в 3 часа получает данные BSD и SStats.net и обновляет `data/forecasts.json`. Токены не попадают в клиентский код.
+Статический сайт с автоматическим сбором данных. Публикация выполняется через **GitHub Actions + GitHub Pages**, Vercel не используется.
 
-## Подключение
+## Как работает
 
-1. Добавьте в **Settings → Secrets and variables → Actions → New repository secret** два секрета: `BSD_TOKEN` и `SSTATS_TOKEN`.
-2. В **Settings → Actions → General → Workflow permissions** разрешите **Read and write permissions**.
-3. Откройте **Settings → Pages**, выберите **Deploy from a branch**, ветку `main`, папку `/(root)`, сохраните.
-4. Откройте **Actions → Update football forecasts → Run workflow** и запустите обновление вручную.
+1. По расписанию (раз в 3 часа), при изменении кода или вручную запускается GitHub Actions.
+2. Node.js-скрипт запрашивает данные у BSD, SStats, Euro365 и football-data.org.
+3. Скрипт формирует `data.json` во время сборки. Ключи API передаются только процессу Actions и не попадают в JavaScript сайта или опубликованный JSON.
+4. GitHub Pages публикует `index.html`, `app.js`, `styles.css` и `data.json`.
+5. Кнопка «Обновить» перечитывает последнюю опубликованную копию данных. Она не запускает API-запросы из браузера.
 
-Сайт: https://he-sytikova.github.io/betting/ (после включения Pages и завершения первого workflow).
+Сайт: https://he-sytikova.github.io/betting/
 
-## Важно про рынки
+## Настройка репозитория
 
-Наличие каждого конкретного рынка зависит от ответа API. SStats Glicko — это модельная оценка, а не гарантированно готовые рынки П1/П2/1Х/2Х или угловых. Интерфейс показывает только значения, которые удаётся найти в данных; тире означает, что значение не получено. Формат ответов SStats может отличаться по аккаунту/версии API — проверьте первый запуск Actions и при необходимости скорректируйте `scripts/update_data.py` по фактическому JSON.
+### 1. Добавьте секреты
 
-## API
+Откройте **Settings → Secrets and variables → Actions → New repository secret** и добавьте те ключи, к которым у вас есть доступ:
 
-- BSD Football API: `https://sports.bzzoiro.com/api/v2/events/`, `https://sports.bzzoiro.com/api/v2/predictions/`; авторизация `Authorization: Token ...`.
-- SStats: `https://api.sstats.net/Games/list`, `https://api.sstats.net/Games/glicko/{id}`; ключ `apikey`.
+- `BSD_TOKEN` — Bzzoiro Sports Data.
+- `SSTATS_TOKEN` — SStats.net.
+- `EURO365_API_KEY` — Euro365 (необязательно).
+- `FD_DATA_TOKEN` — football-data.org (необязательно).
+
+Без настроенного секрета соответствующий источник будет отмечен как недоступный; секреты нельзя прописывать в HTML или JS.
+
+### 2. Включите GitHub Pages
+
+Откройте **Settings → Pages** и в разделе **Build and deployment** выберите **Source: GitHub Actions**.
+
+### 3. Запустите сборку
+
+Откройте **Actions → Build and deploy football forecasts → Run workflow**. Дождитесь завершения всех шагов со статусом зелёной галочки, затем откройте сайт.
+
+## Данные и вероятности
+
+На странице показываются прогнозы и доступные рынки: исход матча, тоталы голов, xG, угловые и жёлтые карточки — в пределах полей, которые возвращают API. Если источник не предоставляет рынок или вероятность, отображается тире, а не выдуманное значение. Для football-data.org часть вероятностей оценивается моделью Пуассона по недавним результатам и помечается как модельная оценка.
+
+Данные API и названия полей могут различаться в зависимости от доступа и версии поставщика. Если матчей нет, откройте журнал последнего запуска в **Actions** и проверьте сообщения источников в статусной строке сайта.
