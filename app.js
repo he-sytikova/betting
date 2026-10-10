@@ -112,7 +112,7 @@ function renderTable() {
   tbody.replaceChildren();
   const qualified = allPredictions
     .map(preparePrediction)
-    .filter((item) => item.maxProbability >= MIN_DISPLAY_PROBABILITY || item.source === 'SStats' || item.source === 'Euro365')
+    .filter((item) => item.source === 'SStats' ? item.maxProbability > 75 : item.maxProbability >= MIN_DISPLAY_PROBABILITY || item.source === 'Euro365')
     .filter((item) => activeSource === 'all' || item.source === activeSource);
   const rows = sortPredictions(qualified);
   const sourceLabel = activeSource === 'BSD' ? 'BSD' : activeSource === 'SStats' ? 'S-Stats' : activeSource === 'Euro365' ? 'Euro365' : activeSource === 'FB_DATA' ? 'FB_DATA' : '';
