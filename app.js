@@ -1,43 +1,222 @@
-const DATA_URLS = ['./data/forecasts.json'];
+/* Static football dashboard. GitHub Actions publishes data.json to GitHub Pages. */
 const $ = (id) => document.getElementById(id);
-let allMatches = [];
-const fmtDate = (date) => new Intl.DateTimeFormat('ru-RU',{day:'2-digit',month:'long',year:'numeric'}).format(date);
-const fmtTime = (value) => { if(!value) return '—'; const d=new Date(value); return Number.isNaN(d.getTime())?'—':new Intl.DateTimeFormat('ru-RU',{hour:'2-digit',minute:'2-digit',timeZone:undefined}).format(d); };
-const safe = (v) => String(v ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function pick(obj, keys){for(const k of keys){if(obj && obj[k]!==undefined && obj[k]!==null && obj[k]!=='') return obj[k];}return null;}
-function prob(value){if(value===null||value===undefined||value==='')return null;let n=Number(value);if(!Number.isFinite(n))return null;if(n<=1)n*=100;return `${Math.round(n)}%`;}
-function normalizePayload(payload){
- const rows=[]; const sources=payload?.sources||{};
- const events = Array.isArray(sources.BSD?.events)?sources.BSD.events:[];
- const predictions = Array.isArray(sources.BSD?.predictions)?sources.BSD.predictions:[];
- const games = Array.isArray(sources.SStats?.games)?sources.SStats.games:[];
- const glickos = Array.isArray(sources.SStats?.glicko)?sources.SStats.glicko:[];
- const predById=new Map(); for(const p of predictions){const id=String(p.event_id??p.match_id??p.event??p.id??'');if(id)predById.set(id,p);}
- const sstatsById=new Map(); for(const g of games){const id=String(g.id??g.gameId??g.game_id??'');if(id)sstatsById.set(id,g);}
- const glickoById=new Map();for(const g of glickos){const id=String(g.gameId??g.game_id??g.id??'');if(id)glickoById.set(id,g);}
- for(const e of events){const id=String(e.id??e.event_id??'');const p=predById.get(id)||e.prediction||{};const home=pick(e,['home_team_name','home_team','home_name','home']);const away=pick(e,['away_team_name','away_team','away_name','away']);rows.push(makeRow({id,home,away,league:pick(e,['league_name','competition_name','league']),kickoff:pick(e,['kickoff','start_time','date','datetime','utc_date']),status:pick(e,['status']),prediction:p,odds:e.odds||{},source:'BSD',markets:e}));}
- for(const g of games){const id=String(g.id??g.gameId??g.game_id??'');const gd=glickoById.get(id)||{};const home=pick(g,['homeTeam','home_team','home','team1','homeName']);const away=pick(g,['awayTeam','away_team','away','team2','awayName']);rows.push(makeRow({id,home,away,league:pick(g,['leagueName','league','competition']),kickoff:pick(g,['date','dateTime','kickoff','startTime','start_date']),status:pick(g,['status']),prediction:gd,odds:g.odds||{},source:'SStats',markets:g}));}
- const map=new Map();for(const r of rows){const key=r.id?`${r.source}:${r.id}`:`${r.kickoff}:${r.home}:${r.away}`;const prev=map.get(key);if(!prev||Object.values(r.markets).length>Object.values(prev.markets).length)map.set(key,r);}return [...map.values()].filter(r=>r.kickoff).sort((a,b)=>new Date(a.kickoff)-new Date(b.kickoff));
+let allPredictions = [];
+let activeSource = 'all';
+let sortKey = 'maxProbability';
+let sortAscending = false;
+const MIN_DISPLAY_PROBABILITY = 80;
+
+function text(value, fallback = '—') {
+  if (value === null || value === undefined || value === '') return fallback;
+  return String(value);
 }
-function makeRow({id,home,away,league,kickoff,status,prediction,odds,source,markets}){
- const p=prediction||{};const o=odds||{};
- const homeProb=pick(p,['home_win_prob','homeWinProb','home_win','p1','homeProbability']);const awayProb=pick(p,['away_win_prob','awayWinProb','away_win','p2','awayProbability']);
- const drawProb=pick(p,['draw_prob','drawProb','draw_probability']);
- const doubleHome=pick(p,['home_or_draw_prob','home_draw_prob','double_chance_1x','1x']);const doubleAway=pick(p,['away_or_draw_prob','away_draw_prob','double_chance_x2','2x']);
- const oddsHome=pick(o,['home_win','1','home']);const oddsAway=pick(o,['away_win','2','away']);
- const result={p1:prob(homeProb)|| (oddsHome?`КФ ${oddsHome}`:null),p2:prob(awayProb)||(oddsAway?`КФ ${oddsAway}`:null),x1:prob(doubleHome)||(homeProb!=null&&drawProb!=null?prob(Number(homeProb)+Number(drawProb)):null),x2:prob(doubleAway)||(awayProb!=null&&drawProb!=null?prob(Number(awayProb)+Number(drawProb)):null)};
- const goals=pick(p,['total_goals','goals_total','over_under_goals','goal_total','predicted_total_goals'])??pick(markets,['total_goals','goals_total','over_under_goals']);
- const corners=pick(p,['corners_total','total_corners','corner_total','predicted_corners'])??pick(markets,['corners_total','total_corners','corner_total']);
- const goalsText=marketText(goals,p,['over_goals','under_goals','over_under_line']);const cornersText=marketText(corners,p,['over_corners','under_corners','corner_line']);
- return {id,home:teamName(home),away:teamName(away),league:league&&typeof league==='object'?(league.name||league.title||league.short_name||''):league||'',kickoff,status:String(status||'upcoming').toLowerCase(),source,result,goals:goalsText,corners:cornersText,markets};
+function formatTime(value) {
+  if (!value) return '—';
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? '—' : date.toLocaleString('ru-RU', { timeZone: 'Europe/Moscow', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
-function teamName(v){if(v&&typeof v==='object')return v.name||v.title||v.short_name||'';return v||'Команда не указана';}
-function marketText(value,obj,keys){if(value!==null&&value!==undefined&&typeof value==='object'){const side=pick(value,['pick','selection','prediction','side','label','outcome']);const line=pick(value,['line','total','threshold','value','points']);const confidence=prob(pick(value,['probability','confidence','prob']));return [side,line!==null?String(line):null,confidence].filter(Boolean).join(' ' )||null;}if(value!==null&&value!==undefined&&typeof value!=='object')return String(value);const found=pick(obj,keys);return found===null?null:String(found);}
-function todayKey(date){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;}
-function render(){const query=$('searchInput').value.trim().toLowerCase(),source=$('sourceFilter').value,market=$('marketFilter').value,status=$('statusFilter').value;const today=todayKey(new Date());const todayRows=allMatches.filter(m=>{const d=new Date(m.kickoff);return !Number.isNaN(d.getTime())&&todayKey(d)===today;});const rows=todayRows.filter(m=>(!query||`${m.home} ${m.away} ${m.league}`.toLowerCase().includes(query))&&(source==='all'||m.source===source)&&(status==='all'||(status==='live'?m.status==='live':!['live','finished','ended','complete'].includes(m.status)))&&(market==='all'||(market==='result'&&[m.result.p1,m.result.p2,m.result.x1,m.result.x2].some(Boolean))||(market==='goals'&&m.goals)||(market==='corners'&&m.corners)));
- $('todayLabel').textContent='сегодня';$('dateValue').textContent=fmtDate(new Date());$('matchCount').textContent=`${todayRows.length} матчей найдено`;$('statMatches').textContent=todayRows.length;$('statResults').textContent=todayRows.filter(m=>m.result.p1||m.result.p2||m.result.x1||m.result.x2).length;$('statTotals').textContent=todayRows.filter(m=>m.goals||m.corners).length;$('visibleCount').textContent=`${rows.length} матчей`;
- $('matchesBody').innerHTML=rows.length?rows.map(m=>`<tr><td class="time-cell">${safe(fmtTime(m.kickoff))}${m.status==='live'?'<div class="status-tag">LIVE</div>':''}</td><td><div class="match-name">${safe(m.home)} — ${safe(m.away)}</div><div class="league-name">${safe(m.league||'Футбол')}</div></td><td>${valueCell(m.result.p1)}</td><td>${valueCell(m.result.p2)}</td><td>${valueCell(m.result.x1)}</td><td>${valueCell(m.result.x2)}</td><td>${valueCell(m.goals)}</td><td>${valueCell(m.corners)}</td><td><span class="source-tag ${m.source==='BSD'?'':'multi'}">${safe(m.source)}</span></td></tr>`).join(''):`<tr><td colspan="9" class="empty-state">${allMatches.length?'На выбранную дату или по заданным фильтрам матчей нет.':'Пока нет опубликованных данных. Проверьте GitHub Actions и секреты API.'}</td></tr>`;
+function probabilityParts(value) {
+  if (value === null || value === undefined || value === '') return [];
+  return String(value).split(/\s*\/\s*/).map((part) => {
+    const match = part.match(/(\d+(?:[.,]\d+)?)\s*%/);
+    return { part: part.trim(), probability: match ? Number.parseFloat(match[1].replace(',', '.')) : null };
+  });
 }
-function valueCell(v){return v?`<span class="market-value ${String(v).includes('%')?'prob':''}">${safe(v)}</span>`:'<span class="market-value muted">—</span>';}
-async function loadData(){const btn=$('refreshBtn');btn.disabled=true;$('notice').classList.remove('error');$('notice').textContent='Загружаем опубликованные данные…';try{const response=await fetch(`${DATA_URLS[0]}?v=${Date.now()}`,{cache:'no-store'});if(!response.ok)throw new Error(`HTTP ${response.status}`);const payload=await response.json();allMatches=normalizePayload(payload);const stamp=payload.generated_at?new Date(payload.generated_at):null;$('updatedAt').textContent=stamp&&!Number.isNaN(stamp.getTime())?`Обновлено ${fmtTime(stamp)} · ${new Intl.DateTimeFormat('ru-RU',{day:'2-digit',month:'2-digit'}).format(stamp)}`:'Данные загружены';$('notice').textContent=payload.note||'Источник данных: BSD и SStats.net. Пустые рынки обозначены тире; вероятности не вычисляются из коэффициентов.';render();}catch(err){allMatches=[];render();$('notice').classList.add('error');$('notice').textContent=`Не удалось загрузить data/forecasts.json (${err.message}). Убедитесь, что workflow обновления данных успешно завершился.`;$('updatedAt').textContent='Нет данных';}finally{btn.disabled=false;}}
-for(const id of ['searchInput','sourceFilter','marketFilter','statusFilter'])$(id).addEventListener(id==='searchInput'?'input':'change',render);$('refreshBtn').addEventListener('click',loadData);loadData();
+function maxProbability(item) {
+  const doubleChance = doubleChanceProbabilities(item.probabilityOutcome);
+  const fields = [
+    item.probabilityOutcome,
+    doubleChance.oneX,
+    doubleChance.twelve,
+    doubleChance.xTwo,
+    item.totalGoals,
+    item.underGoals,
+    item.individualTotals,
+    item.corners
+  ];
+  return fields.flatMap(probabilityParts)
+    .reduce((max, entry) => entry.probability === null ? max : Math.max(max, entry.probability), 0);
+}
+function filterProbabilityText(value) {
+  if (value === null || value === undefined || value === '') return value;
+  const parts = probabilityParts(value);
+  if (!parts.some((part) => part.probability !== null)) return value;
+  const kept = parts.filter((part) => part.probability === null || part.probability >= MIN_DISPLAY_PROBABILITY);
+  return kept.map((part) => part.part).join(' / ') || '—';
+}
+function doubleChanceProbabilities(value) {
+  const matches = [...String(value || '').matchAll(/(?:П1|X|П2)\s+(\d+(?:[.,]\d+)?)\s*%/g)];
+  const values = matches.map((match) => Number.parseFloat(match[1].replace(',', '.')));
+  if (values.length !== 3 || values.some((number) => !Number.isFinite(number))) {
+    return { oneX: '—', twelve: '—', xTwo: '—' };
+  }
+  const [home, draw, away] = values;
+  return {
+    oneX: `${(home + draw).toFixed(1)}%`,
+    twelve: `${(home + away).toFixed(1)}%`,
+    xTwo: `${(draw + away).toFixed(1)}%`
+  };
+}
+function preparePrediction(item) {
+  const peak = maxProbability(item);
+  const doubleChance = doubleChanceProbabilities(item.probabilityOutcome);
+  // Euro365 is a full match feed, not a list of pre-qualified picks:
+  // keep all its events and market probabilities visible.
+  const keepAllMarkets = item.source === 'Euro365';
+  return {
+    ...item,
+    ...doubleChance,
+    maxProbability: peak,
+    probabilityOutcome: item.probabilityOutcome || '—',
+    totalGoals: keepAllMarkets ? (item.totalGoals || '—') : filterProbabilityText(item.totalGoals),
+    underGoals: keepAllMarkets ? (item.underGoals || '—') : filterProbabilityText(item.underGoals),
+    individualTotals: keepAllMarkets ? (item.individualTotals || '—') : filterProbabilityText(item.individualTotals),
+    corners: keepAllMarkets ? (item.corners || '—') : filterProbabilityText(item.corners)
+  };
+}
+function sortPredictions(rows) {
+  return [...rows].sort((a, b) => {
+    if (sortKey === 'maxProbability') {
+      const result = (a.maxProbability || 0) - (b.maxProbability || 0);
+      return sortAscending ? result : -result;
+    }
+    let left = a[sortKey] ?? '';
+    let right = b[sortKey] ?? '';
+    if (sortKey === 'time') {
+      left = Date.parse(left) || 0;
+      right = Date.parse(right) || 0;
+    } else {
+      left = String(left).toLocaleLowerCase('ru');
+      right = String(right).toLocaleLowerCase('ru');
+    }
+    const result = left < right ? -1 : left > right ? 1 : 0;
+    return sortAscending ? result : -result;
+  });
+}
+function addCell(row, value, className) {
+  const cell = document.createElement('td');
+  cell.textContent = text(value);
+  if (className) cell.className = className;
+  row.appendChild(cell);
+}
+function heatmapColor(probability) {
+  // 80% is pale green; increasingly strong probabilities move toward dark green.
+  const ratio = Math.max(0, Math.min(1, (probability - MIN_DISPLAY_PROBABILITY) / 20));
+  const pale = [220, 252, 231];
+  const dark = [20, 83, 45];
+  const rgb = pale.map((start, index) => Math.round(start + (dark[index] - start) * ratio));
+  return `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+}
+function renderTable() {
+  const tbody = $('table-body');
+  tbody.replaceChildren();
+  const qualified = allPredictions
+    .map(preparePrediction)
+    .filter((item) => item.maxProbability >= MIN_DISPLAY_PROBABILITY || item.source === 'Euro365')
+    .filter((item) => activeSource === 'all' || item.source === activeSource);
+  const rows = sortPredictions(qualified);
+  const sourceLabel = activeSource === 'BSD' ? 'BSD' : activeSource === 'SStats' ? 'S-Stats' : activeSource === 'Euro365' ? 'Euro365' : activeSource === 'FB_DATA' ? 'FB_DATA' : '';
+  $('empty-state').textContent = `Нет матчей${sourceLabel ? ` из источника ${sourceLabel}` : ''} для отображения.`;
+  $('empty-state').classList.toggle('hidden', rows.length > 0);
+  for (const item of rows) {
+    const tr = document.createElement('tr');
+    const isHighProbability = item.maxProbability >= MIN_DISPLAY_PROBABILITY;
+    if (isHighProbability) tr.classList.add('high-probability-row');
+    tr.style.backgroundColor = isHighProbability ? heatmapColor(item.maxProbability) : '';
+    tr.style.color = isHighProbability && item.maxProbability >= 93 ? '#f8fafc' : '';
+    tr.title = `Максимальная вероятность: ${item.maxProbability.toFixed(1)}%`;
+    addCell(tr, formatTime(item.time));
+    addCell(tr, item.league);
+    addCell(tr, item.home);
+    addCell(tr, item.away);
+    addCell(tr, item.probabilityOutcome, 'prediction-cell');
+    addCell(tr, item.oneX, 'prediction-cell');
+    addCell(tr, item.twelve, 'prediction-cell');
+    addCell(tr, item.xTwo, 'prediction-cell');
+    addCell(tr, item.totalGoals, 'prediction-cell');
+    addCell(tr, item.underGoals, 'prediction-cell');
+    addCell(tr, item.actualResult, 'result-cell');
+    tbody.appendChild(tr);
+  }
+}
+function setSourceStatus(id, name, status) {
+  const el = $(id);
+  const count = Number(status?.count || 0);
+  el.title = status?.message || status?.diagnostic || '';
+  if (status?.ok) {
+    el.textContent = `${name}: ${count} матчей`;
+    el.className = 'status-badge ok';
+  } else {
+    el.textContent = `${name}: нет данных`;
+    el.className = 'status-badge error';
+    el.title = status?.message || status?.diagnostic || 'Подробности отсутствуют в ответе API';
+  }
+}
+async function loadAll(requestRefresh = false) {
+  const button = $('refresh-btn');
+  const loading = $('loading');
+  const errorBox = $('error-container');
+  button.disabled = true;
+  loading.classList.remove('hidden');
+  errorBox.classList.add('hidden');
+  $('status-bsd').textContent = 'BSD: загрузка…';
+  $('status-sstats').textContent = 'SStats: загрузка…';
+  $('status-euro365').textContent = 'Euro365: загрузка…';
+  $('status-fbdata').textContent = 'FB_DATA: загрузка…';
+  try {
+    if (requestRefresh) {
+      // GitHub Pages is static: refresh means re-read the latest published snapshot.
+    }
+    const response = await fetch(`./data.json?t=${Date.now()}`, { cache: 'no-store' });
+    if (!response.ok) throw new Error(`Не удалось загрузить data.json (HTTP ${response.status})`);
+    const data = await response.json();
+    allPredictions = Array.isArray(data.predictions) ? data.predictions : [];
+    setSourceStatus('status-bsd', 'BSD', data.sources?.bsd);
+    setSourceStatus('status-sstats', 'SStats', data.sources?.sstats);
+    setSourceStatus('status-euro365', 'Euro365', data.sources?.euro365);
+    setSourceStatus('status-fbdata', 'FB_DATA', data.sources?.fbdata);
+    const generatedAt = data.generatedAt ? new Date(data.generatedAt) : null;
+    $('current-date').textContent = generatedAt && !Number.isNaN(generatedAt.getTime())
+      ? `Матчи на ${data.date || 'сегодня'} · обновлено ${generatedAt.toLocaleString('ru-RU')}`
+      : `Матчи на ${data.date || 'сегодня'}`;
+    if (data.errors?.length) {
+      $('error-message').textContent = data.errors.join(' · ');
+      errorBox.classList.remove('hidden');
+    }
+    renderTable();
+  } catch (error) {
+    $('error-message').textContent = error.message || 'Не удалось загрузить данные.';
+    errorBox.classList.remove('hidden');
+    allPredictions = [];
+    renderTable();
+  } finally {
+    loading.classList.add('hidden');
+    button.disabled = false;
+  }
+}
+document.addEventListener('DOMContentLoaded', () => {
+  $('refresh-btn').addEventListener('click', () => loadAll(true));
+  document.querySelectorAll('.source-filter-btn').forEach((button) => {
+    button.addEventListener('click', () => {
+      activeSource = button.dataset.source || 'all';
+      document.querySelectorAll('.source-filter-btn').forEach((item) => {
+        const active = item === button;
+        item.classList.toggle('active', active);
+        item.setAttribute('aria-pressed', String(active));
+      });
+      renderTable();
+    });
+  });
+  document.querySelectorAll('th[data-sort]').forEach((th) => {
+    th.addEventListener('click', () => {
+      const key = th.dataset.sort;
+      if (sortKey === key) sortAscending = !sortAscending;
+      else { sortKey = key; sortAscending = true; }
+      document.querySelectorAll('th[data-sort]').forEach((item) => {
+        item.setAttribute('aria-sort', item === th ? (sortAscending ? 'ascending' : 'descending') : 'none');
+      });
+      renderTable();
+    });
+  });
+  loadAll();
+});
