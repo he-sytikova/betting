@@ -460,17 +460,25 @@ async function fetchFootballData() {
     const windowEnd = new Date(Math.min(finalDay.getTime(), cursor.getTime() + 9 * 86400000));
     const from = dayKey(cursor);
     const to = dayKey(windowEnd);
-    if (requestsMade > 0) {
-      // Stay under the common Football-data.org free-tier request rate.
-      await new Promise(resolve => setTimeout(resolve, 6500));
+    let loaded = false;
+    let lastError = null;
+    // Retry one slow/transient window once; the API occasionally times out on busy date ranges.
+    for (let attempt = 0; attempt < 2 && !loaded; attempt += 1) {
+      if (requestsMade > 0) {
+        // Keep every request, including retries, under the common free-tier rate limit.
+        await new Promise(resolve => setTimeout(resolve, 6500));
+      }
+      requestsMade += 1;
+      try {
+        const timeoutMs = attempt === 0 ? 9000 : 15000;
+        const payload = await getJson(`https://api.football-data.org/v4/matches?dateFrom=${from}&dateTo=${to}&status=FINISHED&limit=500`, headers, timeoutMs);
+        history.push(...arr(payload));
+        loaded = true;
+      } catch (error) {
+        lastError = error;
+      }
     }
-    requestsMade += 1;
-    try {
-      const payload = await getJson(`https://api.football-data.org/v4/matches?dateFrom=${from}&dateTo=${to}&status=FINISHED&limit=500`, headers, 7000);
-      history.push(...arr(payload));
-    } catch (error) {
-      historyErrors.push(`${from}—${to}: ${safeError(error)}`);
-    }
+    if (!loaded) historyErrors.push(`${from}—${to}: ${safeError(lastError)} (после повторного запроса)`);
     cursor = new Date(windowEnd.getTime() + 86400000);
   }
   const matches = arr(todayPayload);
