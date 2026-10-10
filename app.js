@@ -60,9 +60,9 @@ function doubleChanceProbabilities(value) {
 function preparePrediction(item) {
   const peak = maxProbability(item);
   const doubleChance = doubleChanceProbabilities(item.probabilityOutcome);
-  // Euro365 is a full match feed, not a list of pre-qualified picks:
-  // keep all its events and market probabilities visible.
-  const keepAllMarkets = item.source === 'Euro365';
+  // SStats and Euro365 provide full match feeds, not only pre-qualified picks:
+  // keep all their events and market probabilities visible.
+  const keepAllMarkets = item.source === 'SStats' || item.source === 'Euro365';
   return {
     ...item,
     ...doubleChance,
@@ -112,7 +112,7 @@ function renderTable() {
   tbody.replaceChildren();
   const qualified = allPredictions
     .map(preparePrediction)
-    .filter((item) => item.maxProbability >= MIN_DISPLAY_PROBABILITY || item.source === 'Euro365')
+    .filter((item) => item.maxProbability >= MIN_DISPLAY_PROBABILITY || item.source === 'SStats' || item.source === 'Euro365')
     .filter((item) => activeSource === 'all' || item.source === activeSource);
   const rows = sortPredictions(qualified);
   const sourceLabel = activeSource === 'BSD' ? 'BSD' : activeSource === 'SStats' ? 'S-Stats' : activeSource === 'Euro365' ? 'Euro365' : activeSource === 'FB_DATA' ? 'FB_DATA' : '';
