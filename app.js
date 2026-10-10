@@ -107,9 +107,103 @@ function heatmapColor(probability) {
   const rgb = pale.map((start, index) => Math.round(start + (dark[index] - start) * ratio));
   return `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
 }
+function normalizeTeam(value) {
+  return String(value || '')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase('ru')
+    .replace(/&/g, ' and ')
+    .replace(/\b(fc|afc|cf|sc|sv|fk|sk|club|the)\b/g, ' ')
+    .replace(/[^a-zа-яё0-9]/gi, '');
+}
+function matchKey(item) {
+  return `${normalizeTeam(item.home)}|${normalizeTeam(item.away)}`;
+}
+function bestMarket(item) {
+  const candidates = [];
+  const addParts = (value) => {
+    for (const part of probabilityParts(value)) {
+      if (part.probability === null) continue;
+      const label = part.part.replace(/\s*:?\s*\d+(?:[.,]\d+)?\s*%.*$/, '').replace(/:$/, '').trim();
+      candidates.push({ label: label || 'Вероятность', probability: part.probability });
+    }
+  };
+  addParts(item.probabilityOutcome);
+  addParts(item.totalGoals);
+  addParts(item.underGoals);
+  addParts(item.corners);
+  const dc = doubleChanceProbabilities(item.probabilityOutcome);
+  for (const [label, value] of [['1X', dc.oneX], ['12', dc.twelve], ['X2', dc.xTwo]]) {
+    const parsed = probabilityParts(value)[0];
+    if (parsed?.probability !== null && parsed?.probability !== undefined) candidates.push({ label, probability: parsed.probability });
+  }
+  return candidates.sort((a, b) => b.probability - a.probability)[0] || null;
+}
+function setSummaryHeaders(isSummary) {
+  const headers = [...$('predictions-table').querySelectorAll('thead th')];
+  const normalLabels = ['Дата и время', 'Лига', 'Хозяева', 'Гости', 'Вер. исхода (П1/X/П2)', '1X (П1 или X)', '12 (П1 или П2)', 'X2 (X или П2)', 'ТБ (голы)', 'ТМ (голы)', 'Результат матча'];
+  const summaryLabels = ['Дата и время', 'Лига', 'Хозяева', 'Гости', 'BSD', 'SStats', 'Euro365', 'FB_DATA', '', '', ''];
+  headers.forEach((header, index) => {
+    header.textContent = isSummary ? summaryLabels[index] : normalLabels[index];
+    header.style.display = isSummary && index >= 8 ? 'none' : '';
+    header.removeAttribute('aria-sort');
+  });
+}
+function renderSummaryTable(tbody) {
+  setSummaryHeaders(true);
+  const sourceOrder = ['BSD', 'SStats', 'Euro365', 'FB_DATA'];
+  const bySource = Object.fromEntries(sourceOrder.map((source) => [source, new Map()]));
+  for (const item of allPredictions) {
+    if (!bySource[item.source]) continue;
+    const key = matchKey(item);
+    if (!key || key === '|') continue;
+    const best = bestMarket(item);
+    if (!best || best.probability <= 85) continue;
+    const existing = bySource[item.source].get(key);
+    if (!existing || best.probability > existing.best.probability) bySource[item.source].set(key, { item, best });
+  }
+  const commonKeys = [...bySource.BSD.keys()].filter((key) => sourceOrder.every((source) => bySource[source].has(key)));
+  const rows = commonKeys.map((key) => {
+    const entries = Object.fromEntries(sourceOrder.map((source) => [source, bySource[source].get(key)]));
+    return { key, entries, item: entries.BSD.item };
+  });
+  rows.sort((a, b) => (Date.parse(a.item.time) || 0) - (Date.parse(b.item.time) || 0));
+  if (sortKey === 'maxProbability') rows.sort((a, b) => {
+    const aMin = Math.min(...sourceOrder.map((source) => a.entries[source].best.probability));
+    const bMin = Math.min(...sourceOrder.map((source) => b.entries[source].best.probability));
+    return sortAscending ? aMin - bMin : bMin - aMin;
+  });
+  $('empty-state').textContent = 'Нет матчей, которые есть во всех четырёх источниках с вероятностью выше 85%.';
+  $('empty-state').classList.toggle('hidden', rows.length > 0);
+  for (const match of rows) {
+    const tr = document.createElement('tr');
+    const minProbability = Math.min(...sourceOrder.map((source) => match.entries[source].best.probability));
+    tr.classList.add('high-probability-row');
+    tr.style.backgroundColor = heatmapColor(minProbability);
+    tr.style.color = '#000';
+    tr.title = `Минимальная вероятность среди источников: ${minProbability.toFixed(1)}%`;
+    addCell(tr, formatTime(match.item.time));
+    addCell(tr, match.item.league);
+    addCell(tr, match.item.home);
+    addCell(tr, match.item.away);
+    for (const source of sourceOrder) {
+      const best = match.entries[source].best;
+      addCell(tr, `${best.label}: ${best.probability.toFixed(1)}%`, 'prediction-cell');
+    }
+    addCell(tr, '');
+    addCell(tr, '');
+    addCell(tr, '');
+    [...tr.children].forEach((cell, index) => { if (index >= 8) cell.style.display = 'none'; });
+    tbody.appendChild(tr);
+  }
+}
 function renderTable() {
   const tbody = $('table-body');
   tbody.replaceChildren();
+  if (activeSource === 'summary') {
+    renderSummaryTable(tbody);
+    return;
+  }
+  setSummaryHeaders(false);
   const qualified = allPredictions
     .map(preparePrediction)
     .filter((item) => item.source === 'SStats' ? item.maxProbability > 75 : item.maxProbability >= MIN_DISPLAY_PROBABILITY || item.source === 'Euro365')
