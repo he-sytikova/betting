@@ -1,4 +1,4 @@
-name: Build and deploy football forecasts
+name: Update and publish football forecasts
 
 on:
   workflow_dispatch:
@@ -14,20 +14,15 @@ on:
       - '.github/workflows/update-forecasts.yml'
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
-  group: github-pages
+  group: update-forecasts
   cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
+  update:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -43,6 +38,18 @@ jobs:
           node --check scripts/build-data.js
           node --check scripts/euro365.js
 
+      - name: Check API secrets
+        env:
+          BSD_TOKEN: ${{ secrets.BSD_TOKEN }}
+          SSTATS_TOKEN: ${{ secrets.SSTATS_TOKEN }}
+          EURO365_API_KEY: ${{ secrets.EURO365_API_KEY }}
+          FD_DATA_TOKEN: ${{ secrets.FD_DATA_TOKEN }}
+        run: |
+          if [ -z "$BSD_TOKEN" ] && [ -z "$SSTATS_TOKEN" ] && [ -z "$EURO365_API_KEY" ] && [ -z "$FD_DATA_TOKEN" ]; then
+            echo "Add at least one API key in Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+
       - name: Build today's forecasts
         env:
           BSD_TOKEN: ${{ secrets.BSD_TOKEN }}
@@ -51,14 +58,14 @@ jobs:
           FD_DATA_TOKEN: ${{ secrets.FD_DATA_TOKEN }}
         run: node scripts/build-data.js
 
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload static site
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: '.'
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Commit data snapshot for GitHub Pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data.json
+          if git diff --cached --quiet; then
+            echo "No data changes to commit"
+          else
+            git commit -m "chore: update football forecasts"
+            git push
+          fi
