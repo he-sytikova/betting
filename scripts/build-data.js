@@ -447,17 +447,36 @@ async function fetchFootballData() {
   const historyFrom = new Date(Date.now() - 120 * 86400000).toISOString().slice(0, 10);
   const headers = { 'X-Auth-Token': token, Accept: 'application/json' };
   const todayPayload = await getJson(`https://api.football-data.org/v4/matches?dateFrom=${today}&dateTo=${today}`, headers, 6000);
-  let historyPayload = null;
-  let historyError = '';
-  try {
-    historyPayload = await getJson(`https://api.football-data.org/v4/matches?dateFrom=${historyFrom}&dateTo=${today}&status=FINISHED&limit=500`, headers, 7000);
-  } catch (error) {
-    historyError = safeError(error);
+  const history = [];
+  const historyErrors = [];
+  // Football-data.org rejects match queries spanning more than 10 days.
+  // Split the 120-day lookback into non-overlapping 10-calendar-day windows.
+  const asDate = value => new Date(`${value}T00:00:00Z`);
+  const dayKey = value => value.toISOString().slice(0, 10);
+  let cursor = asDate(historyFrom);
+  const finalDay = asDate(today);
+  let requestsMade = 0;
+  while (cursor <= finalDay) {
+    const windowEnd = new Date(Math.min(finalDay.getTime(), cursor.getTime() + 9 * 86400000));
+    const from = dayKey(cursor);
+    const to = dayKey(windowEnd);
+    if (requestsMade > 0) {
+      // Stay under the common Football-data.org free-tier request rate.
+      await new Promise(resolve => setTimeout(resolve, 6500));
+    }
+    requestsMade += 1;
+    try {
+      const payload = await getJson(`https://api.football-data.org/v4/matches?dateFrom=${from}&dateTo=${to}&status=FINISHED&limit=500`, headers, 7000);
+      history.push(...arr(payload));
+    } catch (error) {
+      historyErrors.push(`${from}—${to}: ${safeError(error)}`);
+    }
+    cursor = new Date(windowEnd.getTime() + 86400000);
   }
   const matches = arr(todayPayload);
-  const history = arr(historyPayload);
   const todayMatches = matches.filter(match => match.utcDate && dateKey(match.utcDate) === today);
-  sourceStatus.fbdata.diagnostic = `Football-data.org: расписание ${todayMatches.length}, исторических матчей получено ${history.length}; вероятности рассчитаны по Пуассону на основе результатов за 120 дней${historyError ? `; история недоступна: ${historyError}; применены базовые средние` : ''}`;
+  const historyError = historyErrors.length ? historyErrors.slice(0, 3).join('; ') : '';
+  sourceStatus.fbdata.diagnostic = `Football-data.org: расписание ${todayMatches.length}, исторических матчей получено ${history.length} за ${requestsMade} периодов; вероятности рассчитаны по Пуассону на основе результатов за 120 дней${historyError ? `; ошибки истории: ${historyError}; использованы доступные результаты и базовые средние при необходимости` : ''}`;
   return todayMatches.map(match => normalizeFootballData(match, history));
 }
 
