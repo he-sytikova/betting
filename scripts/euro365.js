@@ -62,18 +62,31 @@ async function requestJson(path, timeoutMs = 10000) {
   const key = process.env.EURO365_API_KEY || '';
   if (!key) throw new Error('Не задан EURO365_API_KEY в GitHub Actions Secrets');
   let lastError;
-  // Euro365 can respond slowly during busy match windows; retry one timeout once.
-  for (let attempt = 0; attempt < 2; attempt++) {
+  let timeoutRetries = 0;
+  // Respect Euro365 rate limits; retry 429 with Retry-After or bounded backoff.
+  for (let attempt = 0; attempt < 4; attempt++) {
     try {
       const response = await fetch(BASE + path, {
         headers: { 'X-API-Key': key, Accept: 'application/json' },
         signal: AbortSignal.timeout(timeoutMs)
       });
       const body = await response.text();
+      if (response.status === 429) {
+        if (attempt === 3) throw new Error('Euro365: достигнут лимит запросов (429) после 3 повторов; повторите позже');
+        const retryAfter = response.headers.get('Retry-After');
+        let waitMs = retryAfter && Number.isFinite(Number(retryAfter))
+          ? Math.max(0, Number(retryAfter) * 1000)
+          : retryAfter
+            ? Math.max(0, Date.parse(retryAfter) - Date.now())
+            : Math.min(2000 * (2 ** attempt), 15000);
+        // Avoid an unbounded wait if the upstream sends an unreasonable value.
+        waitMs = Math.min(waitMs, 60000);
+        await new Promise(resolve => setTimeout(resolve, waitMs));
+        continue;
+      }
       if (!response.ok) {
         let detail = body.slice(0, 160);
         try { detail = JSON.parse(body).error || detail; } catch {}
-        if (response.status === 429) throw new Error('Euro365: достигнут лимит запросов (429); повторите позже');
         throw new Error('Euro365 HTTP ' + response.status + ': ' + detail);
       }
       let payload;
@@ -84,10 +97,11 @@ async function requestJson(path, timeoutMs = 10000) {
       lastError = error;
       const message = String(error?.message || error);
       const timedOut = error?.name === 'TimeoutError' || error?.name === 'AbortError' || /timed out|timeout|operation was aborted/i.test(message);
-      if (!timedOut || attempt === 1) {
+      if (!timedOut || timeoutRetries >= 1) {
         if (timedOut) throw new Error('Euro365: timeout запроса ' + path + ' после ' + timeoutMs + ' мс (повтор выполнен)');
         throw error;
       }
+      timeoutRetries++;
       await new Promise(resolve => setTimeout(resolve, 700));
     }
   }
