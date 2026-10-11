@@ -224,11 +224,14 @@ async function fetchEuro365(targetDate) {
   const diagnostics = { targetDate, live: 0, prematch: 0, unique: 0, targetDateEvents: 0, oddsEvents: 0, rows: 0, errors: [] };
   const key = process.env.EURO365_API_KEY || '';
   if (!key) throw new Error('Не задан EURO365_API_KEY в GitHub Actions Secrets');
-  const [liveResult, prematchResult, scoresResult] = await Promise.allSettled([
-    requestJson('/v1/live?sport=1', 10000),
-    requestJson('/v1/prematch?sport=1', 10000),
-    requestJson('/v1/scores', 7000)
-  ]);
+  // Keep requests sequential to avoid a burst against the provider's rate limit.
+  const settle = async promise => {
+    try { return { status: 'fulfilled', value: await promise }; }
+    catch (reason) { return { status: 'rejected', reason }; }
+  };
+  const liveResult = await settle(requestJson('/v1/live?sport=1', 10000));
+  const prematchResult = await settle(requestJson('/v1/prematch?sport=1', 10000));
+  const scoresResult = await settle(requestJson('/v1/scores', 7000));
   const eventMap = new Map();
   for (const [name, result] of [['live', liveResult], ['prematch', prematchResult]]) {
     if (result.status !== 'fulfilled') {
