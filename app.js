@@ -109,13 +109,16 @@ function heatmapColor(probability) {
 }
 function highlightProbabilityCells(row, threshold = MIN_DISPLAY_PROBABILITY) {
   for (const cell of row.cells) {
+    // Keep every cell white by default; only qualifying probability cells get heatmap color.
+    cell.style.backgroundColor = '#fff';
+    cell.style.color = '#000';
+    cell.removeAttribute('title');
     const probabilities = probabilityParts(cell.textContent)
       .map((part) => part.probability)
       .filter((value) => value !== null && Number.isFinite(value));
     const highest = probabilities.length ? Math.max(...probabilities) : null;
     if (highest !== null && highest > threshold) {
       cell.style.backgroundColor = heatmapColor(highest);
-      cell.style.color = highest >= 90 ? '#fff' : '#000';
       cell.title = `Вероятность: ${highest.toFixed(1)}%`;
     }
   }
