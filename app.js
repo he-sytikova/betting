@@ -157,7 +157,7 @@ function renderSummaryTable(tbody) {
     const key = matchKey(item);
     if (!key || key === '|') continue;
     const best = bestMarket(item);
-    if (!best || best.probability <= 85) continue;
+    if (!best || best.probability <= 75) continue;
     const existing = bySource[item.source].get(key);
     if (!existing || best.probability > existing.best.probability) bySource[item.source].set(key, { item, best });
   }
@@ -172,7 +172,7 @@ function renderSummaryTable(tbody) {
     const bMin = Math.min(...sourceOrder.map((source) => b.entries[source].best.probability));
     return sortAscending ? aMin - bMin : bMin - aMin;
   });
-  $('empty-state').textContent = 'Нет матчей, которые есть во всех четырёх источниках с вероятностью выше 85%.';
+  $('empty-state').textContent = 'Нет матчей, которые есть во всех четырёх источниках с вероятностью выше 75%.';
   $('empty-state').classList.toggle('hidden', rows.length > 0);
   for (const match of rows) {
     const tr = document.createElement('tr');
