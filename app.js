@@ -173,22 +173,27 @@ function renderSummaryTable(tbody) {
     const key = matchKey(item);
     if (!key || key === '|') continue;
     const best = bestMarket(item);
-    if (!best || best.probability <= 75) continue;
     const existing = bySource[item.source].get(key);
-    if (!existing || best.probability > existing.best.probability) bySource[item.source].set(key, { item, best });
+    if (!existing || (best && (!existing.best || best.probability > existing.best.probability))) {
+      bySource[item.source].set(key, { item, best });
+    }
   }
-  const commonKeys = [...bySource.BSD.keys()].filter((key) => sourceOrder.every((source) => bySource[source].has(key)));
-  const rows = commonKeys.map((key) => {
-    const entries = Object.fromEntries(sourceOrder.map((source) => [source, bySource[source].get(key)]));
-    return { key, entries, item: entries.BSD.item };
+  const allKeys = new Set(sourceOrder.flatMap((source) => [...bySource[source].keys()]));
+  const qualifyingKeys = [...allKeys].filter((key) =>
+    sourceOrder.filter((source) => bySource[source].has(key)).length >= 3
+  );
+  const rows = qualifyingKeys.map((key) => {
+    const entries = Object.fromEntries(sourceOrder.map((source) => [source, bySource[source].get(key) || null]));
+    const firstEntry = sourceOrder.map((source) => entries[source]).find(Boolean);
+    return { key, entries, item: firstEntry.item };
   });
   rows.sort((a, b) => (Date.parse(a.item.time) || 0) - (Date.parse(b.item.time) || 0));
   if (sortKey === 'maxProbability') rows.sort((a, b) => {
-    const aMin = Math.min(...sourceOrder.map((source) => a.entries[source].best.probability));
-    const bMin = Math.min(...sourceOrder.map((source) => b.entries[source].best.probability));
+    const aMin = Math.min(...sourceOrder.map((source) => a.entries[source]?.best?.probability ?? 0));
+    const bMin = Math.min(...sourceOrder.map((source) => b.entries[source]?.best?.probability ?? 0));
     return sortAscending ? aMin - bMin : bMin - aMin;
   });
-  $('empty-state').textContent = 'Нет матчей, которые есть во всех четырёх источниках с вероятностью выше 75%.';
+  $('empty-state').textContent = 'Нет матчей, которые присутствуют минимум в трёх из четырёх источников.';
   $('empty-state').classList.toggle('hidden', rows.length > 0);
   for (const match of rows) {
     const tr = document.createElement('tr');
@@ -197,8 +202,8 @@ function renderSummaryTable(tbody) {
     addCell(tr, match.item.home);
     addCell(tr, match.item.away);
     for (const source of sourceOrder) {
-      const best = match.entries[source].best;
-      addCell(tr, `${best.label}: ${best.probability.toFixed(1)}%`, 'prediction-cell');
+      const best = match.entries[source]?.best;
+      addCell(tr, best ? `${best.label}: ${best.probability.toFixed(1)}%` : '—', 'prediction-cell');
     }
     addCell(tr, '');
     addCell(tr, '');
