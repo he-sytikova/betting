@@ -107,6 +107,19 @@ function heatmapColor(probability) {
   const rgb = pale.map((start, index) => Math.round(start + (dark[index] - start) * ratio));
   return `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
 }
+function highlightProbabilityCells(row, threshold = MIN_DISPLAY_PROBABILITY) {
+  for (const cell of row.cells) {
+    const probabilities = probabilityParts(cell.textContent)
+      .map((part) => part.probability)
+      .filter((value) => value !== null && Number.isFinite(value));
+    const highest = probabilities.length ? Math.max(...probabilities) : null;
+    if (highest !== null && highest > threshold) {
+      cell.style.backgroundColor = heatmapColor(highest);
+      cell.style.color = highest >= 90 ? '#fff' : '#000';
+      cell.title = `Вероятность: ${highest.toFixed(1)}%`;
+    }
+  }
+}
 function normalizeTeam(value) {
   return String(value || '')
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -176,11 +189,6 @@ function renderSummaryTable(tbody) {
   $('empty-state').classList.toggle('hidden', rows.length > 0);
   for (const match of rows) {
     const tr = document.createElement('tr');
-    const minProbability = Math.min(...sourceOrder.map((source) => match.entries[source].best.probability));
-    tr.classList.add('high-probability-row');
-    tr.style.backgroundColor = heatmapColor(minProbability);
-    tr.style.color = '#000';
-    tr.title = `Минимальная вероятность среди источников: ${minProbability.toFixed(1)}%`;
     addCell(tr, formatTime(match.item.time));
     addCell(tr, match.item.league);
     addCell(tr, match.item.home);
@@ -193,6 +201,7 @@ function renderSummaryTable(tbody) {
     addCell(tr, '');
     addCell(tr, '');
     [...tr.children].forEach((cell, index) => { if (index >= 8) cell.style.display = 'none'; });
+    highlightProbabilityCells(tr);
     tbody.appendChild(tr);
   }
 }
@@ -214,12 +223,6 @@ function renderTable() {
   $('empty-state').classList.toggle('hidden', rows.length > 0);
   for (const item of rows) {
     const tr = document.createElement('tr');
-    // Apply the same probability heatmap to every source, including low-probability
-    // rows that are intentionally visible for SStats and Euro365.
-    tr.classList.add('high-probability-row');
-    tr.style.backgroundColor = heatmapColor(item.maxProbability);
-    tr.style.color = '#000';
-    tr.title = `Максимальная вероятность: ${item.maxProbability.toFixed(1)}%`;
     addCell(tr, formatTime(item.time));
     addCell(tr, item.league);
     addCell(tr, item.home);
@@ -231,6 +234,7 @@ function renderTable() {
     addCell(tr, item.totalGoals, 'prediction-cell');
     addCell(tr, item.underGoals, 'prediction-cell');
     addCell(tr, item.actualResult, 'result-cell');
+    highlightProbabilityCells(tr);
     tbody.appendChild(tr);
   }
 }
