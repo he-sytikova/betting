@@ -180,7 +180,7 @@ function renderSummaryTable(tbody) {
   }
   const allKeys = new Set(sourceOrder.flatMap((source) => [...bySource[source].keys()]));
   const qualifyingKeys = [...allKeys].filter((key) =>
-    sourceOrder.filter((source) => bySource[source].has(key)).length >= 3
+    sourceOrder.filter((source) => bySource[source].has(key)).length >= 2
   );
   const rows = qualifyingKeys.map((key) => {
     const entries = Object.fromEntries(sourceOrder.map((source) => [source, bySource[source].get(key) || null]));
@@ -193,7 +193,7 @@ function renderSummaryTable(tbody) {
     const bMin = Math.min(...sourceOrder.map((source) => b.entries[source]?.best?.probability ?? 0));
     return sortAscending ? aMin - bMin : bMin - aMin;
   });
-  $('empty-state').textContent = 'Нет матчей, которые присутствуют минимум в трёх из четырёх источников.';
+  $('empty-state').textContent = 'Нет матчей, которые присутствуют минимум в двух из четырёх источников.';
   $('empty-state').classList.toggle('hidden', rows.length > 0);
   for (const match of rows) {
     const tr = document.createElement('tr');
