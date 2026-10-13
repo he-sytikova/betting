@@ -179,8 +179,12 @@ function renderSummaryTable(tbody) {
     }
   }
   const allKeys = new Set(sourceOrder.flatMap((source) => [...bySource[source].keys()]));
+  // A match qualifies only when at least two independent sources offer a best market at or above the high-probability threshold.
   const qualifyingKeys = [...allKeys].filter((key) =>
-    sourceOrder.filter((source) => bySource[source].has(key)).length >= 2
+    sourceOrder.filter((source) => {
+      const best = bySource[source].get(key)?.best;
+      return best && best.probability >= MIN_DISPLAY_PROBABILITY;
+    }).length >= 2
   );
   const rows = qualifyingKeys.map((key) => {
     const entries = Object.fromEntries(sourceOrder.map((source) => [source, bySource[source].get(key) || null]));
@@ -189,11 +193,14 @@ function renderSummaryTable(tbody) {
   });
   rows.sort((a, b) => (Date.parse(a.item.time) || 0) - (Date.parse(b.item.time) || 0));
   if (sortKey === 'maxProbability') rows.sort((a, b) => {
-    const aMin = Math.min(...sourceOrder.map((source) => a.entries[source]?.best?.probability ?? 0));
-    const bMin = Math.min(...sourceOrder.map((source) => b.entries[source]?.best?.probability ?? 0));
-    return sortAscending ? aMin - bMin : bMin - aMin;
+    const secondBest = (match) => sourceOrder
+      .map((source) => match.entries[source]?.best?.probability ?? 0)
+      .sort((left, right) => right - left)[1] ?? 0;
+    const aSecond = secondBest(a);
+    const bSecond = secondBest(b);
+    return sortAscending ? aSecond - bSecond : bSecond - aSecond;
   });
-  $('empty-state').textContent = 'Нет матчей, которые присутствуют минимум в двух из четырёх источников.';
+  $('empty-state').textContent = `Нет матчей, у которых минимум в двух источниках лучший рынок имеет вероятность не ниже ${MIN_DISPLAY_PROBABILITY}%.`;
   $('empty-state').classList.toggle('hidden', rows.length > 0);
   for (const match of rows) {
     const tr = document.createElement('tr');
