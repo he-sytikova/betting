@@ -449,9 +449,9 @@ function normalizeApiFootball(item) {
   const league = item.league || {};
   const prediction = item.predictions || {};
   const percentValues = prediction.percent || {};
-  const homeProb = percent(percentValues.home);
-  const drawProb = percent(percentValues.draw);
-  const awayProb = percent(percentValues.away);
+  const homeProb = percent(String(percentValues.home ?? '').replace('%', ''));
+  const drawProb = percent(String(percentValues.draw ?? '').replace('%', ''));
+  const awayProb = percent(String(percentValues.away ?? '').replace('%', ''));
   const hasProb = [percentValues.home, percentValues.draw, percentValues.away].some(value => value !== undefined && value !== null && Number.isFinite(Number(String(value).replace('%', ''))));
   const outcomeValues = [['П1', Number(String(percentValues.home ?? '').replace('%', '')) || 0], ['X', Number(String(percentValues.draw ?? '').replace('%', '')) || 0], ['П2', Number(String(percentValues.away ?? '').replace('%', '')) || 0]];
   const winner = prediction.winner?.name || prediction.advice || (hasProb ? outcomeValues.sort((a, b) => b[1] - a[1])[0][0] : '—');
@@ -484,7 +484,7 @@ async function fetchApiFootball() {
   }
   const base = 'https://v3.football.api-sports.io';
   const headers = { 'x-apisports-key': token, Accept: 'application/json' };
-  const payload = await getJson(base + '/fixtures?date=' + encodeURIComponent(date) + '&timezone=Europe%2FMoscow', headers, 10000);
+  const payload = await getJson(base + '/fixtures?date=' + encodeURIComponent(date), headers, 10000);
   if (payload.errors && Object.keys(payload.errors).length) throw new Error('Api-Football: ' + JSON.stringify(payload.errors).slice(0, 180));
   const fixtures = arr(payload).filter(item => item.fixture?.id && ['NS', 'TBD'].includes(String(item.fixture?.status?.short || 'NS').toUpperCase()));
   const maxPredictions = 20;
