@@ -741,6 +741,9 @@ async function fetchSStats() {
   sourceStatus.sstats.diagnostic = `${sourceStatus.sstats.diagnostic ? sourceStatus.sstats.diagnostic + '; ' : ''}SStats: получено ${todayGames.length} матчей, Glicko/xG доступны для ${enriched}`;
   return rows;
 }
+function sourceLabel(name) {
+  return ({ bsd: 'BSD', sstats: 'SStats', euro365: 'Euro365', fbdata: 'FB_DATA', sportmonks: 'Sportmonks' })[name] || name;
+}
 async function runSource(name, fn) {
   try {
     const rows = await fn();
@@ -752,13 +755,13 @@ async function runSource(name, fn) {
       message: priorMessage || (rows.length ? '' : [`API ответил, но матчи за ${date} не найдены или формат ответа не распознан`, diagnostic].filter(Boolean).join(' — ')),
       diagnostic
     };
-    if (!rows.length) errors.push(`${name === 'bsd' ? 'BSD' : name === 'sstats' ? 'SStats' : name === 'fbdata' ? 'FB_DATA' : 'Euro365'}: ${sourceStatus[name].message}`);
-    else if (priorMessage) errors.push(`${name === 'bsd' ? 'BSD' : name === 'sstats' ? 'SStats' : name === 'fbdata' ? 'FB_DATA' : 'Euro365'}: ${priorMessage}`);
+    if (!rows.length) errors.push(`${sourceLabel(name)}: ${sourceStatus[name].message}`);
+    else if (priorMessage) errors.push(`${sourceLabel(name)}: ${priorMessage}`);
     return rows;
   } catch (error) {
     const message = safeError(error);
     sourceStatus[name] = { ok: false, count: 0, message };
-    errors.push(`${name === 'bsd' ? 'BSD' : name === 'sstats' ? 'SStats' : name === 'fbdata' ? 'FB_DATA' : 'Euro365'}: ${message}`);
+    errors.push(`${sourceLabel(name)}: ${message}`);
     return [];
   }
 }
