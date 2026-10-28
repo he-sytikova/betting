@@ -1,8 +1,9 @@
 'use strict';
 
-const { arr, dateKey } = require('./build-data');
 const BASE = 'https://api.sportmonks.com/v3/football';
 
+function arr(payload) { return Array.isArray(payload) ? payload : Array.isArray(payload?.data) ? payload.data : []; }
+function dateKey(value) { const d = new Date(value); return Number.isNaN(d.getTime()) ? null : d.toISOString().slice(0, 10); }
 function first(...values) {
   return values.find(value => value !== undefined && value !== null && value !== '') ?? null;
 }
