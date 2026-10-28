@@ -214,7 +214,6 @@ function renderSummaryTable(tbody) {
     }
     addCell(tr, '');
     addCell(tr, '');
-    addCell(tr, '');
     [...tr.children].forEach((cell, index) => { if (index >= 9) cell.style.display = 'none'; });
     highlightProbabilityCells(tr);
     tbody.appendChild(tr);
