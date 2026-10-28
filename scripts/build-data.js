@@ -5,13 +5,15 @@ const fs = require('node:fs');
 const BSD_BASE = 'https://sports.bzzoiro.com/api/v2';
 const SSTATS_BASE = 'https://api.sstats.net';
 const { fetchEuro365, getEuro365Diagnostics } = require('./euro365');
+const { fetchSportmonks } = require('./sportmonks');
 let date = new Date().toISOString().slice(0, 10);
 const errors = [];
 const sourceStatus = {
   bsd: { ok: false, count: 0, message: '', diagnostic: '' },
   sstats: { ok: false, count: 0, message: '', diagnostic: '' },
   euro365: { ok: false, count: 0, message: '', diagnostic: '' },
-  fbdata: { ok: false, count: 0, message: '', diagnostic: '' }
+  fbdata: { ok: false, count: 0, message: '', diagnostic: '' },
+  sportmonks: { ok: false, count: 0, message: '', diagnostic: '' }
 };
 
 function arr(payload, depth = 0) {
@@ -767,11 +769,13 @@ async function buildData() {
   sourceStatus.sstats = { ok: false, count: 0, message: '', diagnostic: '' };
   sourceStatus.euro365 = { ok: false, count: 0, message: '', diagnostic: '' };
   sourceStatus.fbdata = { ok: false, count: 0, message: '', diagnostic: '' };
-  const [bsd, sstats, euro365, fbdata] = await Promise.all([
+  sourceStatus.sportmonks = { ok: false, count: 0, message: '', diagnostic: '' };
+  const [bsd, sstats, euro365, fbdata, sportmonks] = await Promise.all([
     runSource('bsd', fetchBSD),
     runSource('sstats', fetchSStats),
     runSource('euro365', () => fetchEuro365(moscowDateKey(new Date()))),
-    runSource('fbdata', fetchFootballData)
+    runSource('fbdata', fetchFootballData),
+    runSource('sportmonks', fetchSportmonks)
   ]);
   const teamKey = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
   const bsdProbabilities = new Map();
@@ -784,7 +788,7 @@ async function buildData() {
     const bsdProbability = bsdProbabilities.get(`${teamKey(row.home)}|${teamKey(row.away)}`);
     if (bsdProbability) row.probabilityOutcome = bsdProbability;
   }
-  const predictions = [...bsd, ...sstats, ...euro365, ...fbdata]
+  const predictions = [...bsd, ...sstats, ...euro365, ...fbdata, ...sportmonks]
     .filter(row => row.time && (row.source === 'Euro365' ? moscowDateKey(row.time) === moscowDateKey(new Date()) : dateKey(row.time) === date))
     .sort((a, b) => new Date(a.time) - new Date(b.time));
   return { date, generatedAt: new Date().toISOString(), sources: sourceStatus, errors, predictions };
@@ -794,7 +798,7 @@ if (require.main === module) {
   buildData().then(output => {
     fs.writeFileSync('data.json', JSON.stringify(output, null, 2) + '\n');
     console.log(`Generated data.json: ${output.predictions.length} rows; BSD=${output.sources.bsd.count}; SStats=${output.sources.sstats.count}`);
-    if (!output.sources.bsd.ok && !output.sources.sstats.ok && !output.sources.euro365.ok && !output.sources.fbdata.ok) {
+    if (!output.sources.bsd.ok && !output.sources.sstats.ok && !output.sources.euro365.ok && !output.sources.fbdata.ok && !output.sources.sportmonks.ok) {
       console.warn('Both data sources failed; generated JSON contains diagnostic errors.');
     }
   }).catch(error => { console.error(error); process.exitCode = 1; });
