@@ -37,7 +37,6 @@ jobs:
           node --check app.js
           node --check scripts/build-data.js
           node --check scripts/euro365.js
-          node --check scripts/sportmonks.js
 
       # Rebuild the published snapshot whenever the workflow is updated.
       - name: Check API secrets
@@ -46,9 +45,8 @@ jobs:
           SSTATS_TOKEN: ${{ secrets.SSTATS_TOKEN }}
           EURO365_API_KEY: ${{ secrets.EURO365_API_KEY }}
           FD_DATA_TOKEN: ${{ secrets.FD_DATA_TOKEN }}
-          SPORTMONKS_TOKEN: ${{ secrets.SPORTMONKS_TOKEN }}
         run: |
-          if [ -z "$BSD_TOKEN" ] && [ -z "$SSTATS_TOKEN" ] && [ -z "$EURO365_API_KEY" ] && [ -z "$FD_DATA_TOKEN" ] && [ -z "$SPORTMONKS_TOKEN" ]; then
+          if [ -z "$BSD_TOKEN" ] && [ -z "$SSTATS_TOKEN" ] && [ -z "$EURO365_API_KEY" ] && [ -z "$FD_DATA_TOKEN" ]; then
             echo "Add at least one API key in Settings → Secrets and variables → Actions."
             exit 1
           fi
@@ -59,7 +57,6 @@ jobs:
           SSTATS_TOKEN: ${{ secrets.SSTATS_TOKEN }}
           EURO365_API_KEY: ${{ secrets.EURO365_API_KEY }}
           FD_DATA_TOKEN: ${{ secrets.FD_DATA_TOKEN }}
-          SPORTMONKS_TOKEN: ${{ secrets.SPORTMONKS_TOKEN }}
         run: node scripts/build-data.js
 
       - name: Commit data snapshot for GitHub Pages
