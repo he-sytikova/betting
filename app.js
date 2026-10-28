@@ -157,7 +157,7 @@ function bestMarket(item) {
 function setSummaryHeaders(isSummary) {
   const headers = [...$('predictions-table').querySelectorAll('thead th')];
   const normalLabels = ['Дата и время', 'Лига', 'Хозяева', 'Гости', 'Вер. исхода (П1/X/П2)', '1X (П1 или X)', '12 (П1 или П2)', 'X2 (X или П2)', 'ТБ (голы)', 'ТМ (голы)', 'Результат матча'];
-  const summaryLabels = ['Дата и время', 'Лига', 'Хозяева', 'Гости', 'BSD', 'SStats', 'Euro365', 'FB_DATA', '', '', ''];
+  const summaryLabels = ['Дата и время', 'Лига', 'Хозяева', 'Гости', 'BSD', 'SStats', 'Euro365', 'FB_DATA', 'Api-Football', '', ''];
   headers.forEach((header, index) => {
     header.textContent = isSummary ? summaryLabels[index] : normalLabels[index];
     header.style.display = isSummary && index >= 9 ? 'none' : '';
@@ -166,7 +166,7 @@ function setSummaryHeaders(isSummary) {
 }
 function renderSummaryTable(tbody) {
   setSummaryHeaders(true);
-  const sourceOrder = ['BSD', 'SStats', 'Euro365', 'FB_DATA'];
+  const sourceOrder = ['BSD', 'SStats', 'Euro365', 'FB_DATA', 'Api-Football'];
   const bySource = Object.fromEntries(sourceOrder.map((source) => [source, new Map()]));
   for (const item of allPredictions) {
     if (!bySource[item.source]) continue;
@@ -277,6 +277,7 @@ async function loadAll(requestRefresh = false) {
   $('status-sstats').textContent = 'SStats: загрузка…';
   $('status-euro365').textContent = 'Euro365: загрузка…';
   $('status-fbdata').textContent = 'FB_DATA: загрузка…';
+  $('status-apifootball').textContent = 'Api-Football: загрузка…';
   try {
     if (requestRefresh) {
       // GitHub Pages is static: refresh means re-read the latest published snapshot.
@@ -289,6 +290,7 @@ async function loadAll(requestRefresh = false) {
     setSourceStatus('status-sstats', 'SStats', data.sources?.sstats);
     setSourceStatus('status-euro365', 'Euro365', data.sources?.euro365);
     setSourceStatus('status-fbdata', 'FB_DATA', data.sources?.fbdata);
+    setSourceStatus('status-apifootball', 'Api-Football', data.sources?.apifootball);
     const generatedAt = data.generatedAt ? new Date(data.generatedAt) : null;
     $('current-date').textContent = generatedAt && !Number.isNaN(generatedAt.getTime())
       ? `Матчи на ${data.date || 'сегодня'} · обновлено ${generatedAt.toLocaleString('ru-RU')}`
