@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const BSD_BASE = 'https://sports.bzzoiro.com/api/v2';
 const SSTATS_BASE = 'https://api.sstats.net';
 const { fetchEuro365, getEuro365Diagnostics } = require('./euro365');
-let date = new Date().toISOString().slice(0, 10);
+let date = moscowDateKey(new Date());
 const errors = [];
 let apiFootballCache = null;
 const sourceStatus = {
@@ -484,9 +484,19 @@ async function fetchApiFootball() {
   }
   const base = 'https://v3.football.api-sports.io';
   const headers = { 'x-apisports-key': token, Accept: 'application/json' };
-  const payload = await getJson(base + '/fixtures?date=' + encodeURIComponent(date), headers, 10000);
-  if (payload.errors && Object.keys(payload.errors).length) throw new Error('Api-Football: ' + JSON.stringify(payload.errors).slice(0, 180));
-  const fixtures = arr(payload).filter(item => item.fixture?.id && ['NS', 'TBD'].includes(String(item.fixture?.status?.short || 'NS').toUpperCase()));
+  const payload = await getJson(base + '/fixtures?date=' + encodeURIComponent(date) + '&timezone=Europe%2FMoscow', headers, 10000);
+  if (payload.errors && (Array.isArray(payload.errors) ? payload.errors.length : Object.keys(payload.errors).length)) throw new Error('Api-Football: ' + JSON.stringify(payload.errors).slice(0, 180));
+  const responseRows = Array.isArray(payload.response) ? payload.response : arr(payload);
+  if (!Array.isArray(responseRows)) throw new Error('Api-Football: неизвестный формат ответа fixtures');
+  const allFixtures = responseRows.filter(item => item?.fixture?.id);
+  const fixtures = allFixtures.filter(item => ['NS', 'TBD'].includes(String(item.fixture?.status?.short || '').toUpperCase()));
+  if (!allFixtures.length) {
+    const resultCount = Number.isFinite(Number(payload.results)) ? Number(payload.results) : responseRows.length;
+    const detail = 'Api-Football: пустое расписание для ' + date + '; results=' + resultCount + '; parameters=' + JSON.stringify(payload.parameters || {}).slice(0, 140) + '; errors=' + JSON.stringify(payload.errors || {}).slice(0, 140);
+    sourceStatus.apifootball.message = detail;
+    sourceStatus.apifootball.diagnostic = detail;
+    throw new Error(detail);
+  }
   const maxPredictions = 20;
   const selected = fixtures.slice(0, maxPredictions);
   const rows = [];
@@ -505,7 +515,7 @@ async function fetchApiFootball() {
     }
   }
   const diagnostic = 'расписание: ' + fixtures.length + '; прогнозы запрошены для ' + selected.length + ' матчей; запросов в этом запуске: не более ' + requestsMade + (fixtures.length > selected.length ? '; не обработано матчей: ' + (fixtures.length - selected.length) : '') + (errorsFound.length ? '; ошибки: ' + errorsFound.slice(0, 3).join('; ') : '');
-  apiFootballCache = { date, rows, ok: true, diagnostic, message: '', requestsMade };
+  if (allFixtures.length) apiFootballCache = { date, rows, ok: true, diagnostic, message: '', requestsMade };
   sourceStatus.apifootball.diagnostic = diagnostic;
   return rows;
 }
@@ -834,7 +844,7 @@ async function runSource(name, fn) {
   }
 }
 async function buildData() {
-  date = new Date().toISOString().slice(0, 10);
+  date = moscowDateKey(new Date());
   errors.length = 0;
   sourceStatus.bsd = { ok: false, count: 0, message: '', diagnostic: '' };
   sourceStatus.sstats = { ok: false, count: 0, message: '', diagnostic: '' };
