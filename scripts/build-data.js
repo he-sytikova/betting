@@ -870,7 +870,7 @@ if (require.main === module) {
   buildData().then(output => {
     fs.writeFileSync('data.json', JSON.stringify(output, null, 2) + '\n');
     console.log(`Generated data.json: ${output.predictions.length} rows; BSD=${output.sources.bsd.count}; SStats=${output.sources.sstats.count}`);
-    if (!output.sources.bsd.ok && !output.sources.sstats.ok && !output.sources.euro365.ok && !output.sources.fbdata.ok) {
+    if (!output.sources.bsd.ok && !output.sources.sstats.ok && !output.sources.euro365.ok && !output.sources.fbdata.ok && !output.sources.apifootball.ok) {
       console.warn('Both data sources failed; generated JSON contains diagnostic errors.');
     }
   }).catch(error => { console.error(error); process.exitCode = 1; });
