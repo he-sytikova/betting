@@ -644,10 +644,23 @@ async function fetchBSD() {
   if (!token) throw new Error('Не задан BSD_TOKEN в GitHub Actions Secrets');
   const headers = { Authorization: `Token ${token}`, Accept: 'application/json' };
   const params = new URLSearchParams({ date_from: date, date_to: date, limit: '200', offset: '0' });
+  // BSD can respond slowly under load: retry once with a longer timeout before reporting a source failure.
+  const getBSDJson = async (url, timeoutMs) => {
+    let lastError;
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+      try {
+        if (attempt > 0) await new Promise(resolve => setTimeout(resolve, 1200));
+        return await getJson(url, headers, attempt === 0 ? timeoutMs : Math.max(timeoutMs * 2, 9000));
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    throw lastError;
+  };
   const [eventsResult, predictionsResult, leaguesResult] = await Promise.allSettled([
-    getJson(`${BSD_BASE}/events/?${params}`, headers, 4500),
-    getJson(`${BSD_BASE}/predictions/?${params}`, headers, 4500),
-    getJson(`${BSD_BASE}/leagues/?limit=200&offset=0`, headers, 3500)
+    getBSDJson(`${BSD_BASE}/events/?${params}`, 7000),
+    getBSDJson(`${BSD_BASE}/predictions/?${params}`, 7000),
+    getBSDJson(`${BSD_BASE}/leagues/?limit=200&offset=0`, 5000)
   ]);
   if (eventsResult.status === 'rejected' && predictionsResult.status === 'rejected') {
     throw new Error(`events: ${safeError(eventsResult.reason)}; predictions: ${safeError(predictionsResult.reason)}`);
@@ -697,7 +710,7 @@ async function fetchBSD() {
     // Query the documented per-event endpoint for missing forecasts too; /predictions/ can be empty while events exist.
     // Bound concurrency to avoid rate spikes and keep the whole refresh within the GitHub Actions job time limit.
     let cursor = 0;
-    const workers = Array.from({ length: 18 }, async () => {
+    const workers = Array.from({ length: 8 }, async () => {
       while (cursor < missingUpcoming.length) {
         const item = missingUpcoming[cursor++];
         await fetchEventPrediction(item);
@@ -707,7 +720,7 @@ async function fetchBSD() {
       const id = pick(event, 'id', 'event_id', 'eventId', 'matchId');
       if (id === null) return;
       try {
-        const payload = await getJson(`${BSD_BASE}/events/${encodeURIComponent(id)}/prediction/`, headers, 2500);
+        const payload = await getBSDJson(`${BSD_BASE}/events/${encodeURIComponent(id)}/prediction/`, 5000);
         const candidate = first(payload?.prediction, payload?.data?.prediction, payload?.data, payload);
         const unwrapped = first(candidate?.prediction, candidate?.data?.prediction, candidate?.data, candidate) || candidate;
         const hasProbabilityFields = pick(unwrapped, 'prob_home', 'prob_home_win', 'home_win_prob', 'home_win_probability', 'prob_draw', 'draw_prob', 'draw_probability', 'prob_away', 'prob_away_win', 'away_win_prob', 'away_win_probability', 'predicted_result', 'expected_home_goals') !== null;
