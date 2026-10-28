@@ -160,7 +160,7 @@ function setSummaryHeaders(isSummary) {
   const summaryLabels = ['Дата и время', 'Лига', 'Хозяева', 'Гости', 'BSD', 'SStats', 'Euro365', 'FB_DATA', 'Sportmonks', '', ''];
   headers.forEach((header, index) => {
     header.textContent = isSummary ? summaryLabels[index] : normalLabels[index];
-    header.style.display = isSummary && index >= 8 ? 'none' : '';
+    header.style.display = isSummary && index >= 9 ? 'none' : '';
     header.removeAttribute('aria-sort');
   });
 }
@@ -215,7 +215,7 @@ function renderSummaryTable(tbody) {
     addCell(tr, '');
     addCell(tr, '');
     addCell(tr, '');
-    [...tr.children].forEach((cell, index) => { if (index >= 8) cell.style.display = 'none'; });
+    [...tr.children].forEach((cell, index) => { if (index >= 9) cell.style.display = 'none'; });
     highlightProbabilityCells(tr);
     tbody.appendChild(tr);
   }
