@@ -476,7 +476,7 @@ async function fetchApiFootball() {
   let previous = null;
   try { previous = JSON.parse(fs.readFileSync('data.json', 'utf8')); } catch { /* first run */ }
   const cache = previous?.apiFootballCache;
-  if (cache?.date === date && Array.isArray(cache.rows) && !(cache.rows.length === 0 && String(cache.diagnostic || '').includes('расписание: 0'))) {
+  if (cache?.date === date && Array.isArray(cache.rows) && cache.rows.length > 0 && cache.ok === true) {
     apiFootballCache = cache;
     sourceStatus.apifootball = { ok: Boolean(cache.ok), count: cache.rows.length, message: cache.message || '', diagnostic: 'Api-Football: использован дневной кэш; ' + (cache.diagnostic || 'повторных запросов нет') };
     if (!cache.ok) throw new Error(cache.message || 'Api-Football: дневной кэш содержит ошибку');
@@ -503,6 +503,8 @@ async function fetchApiFootball() {
   let requestsMade = 1;
   const errorsFound = [];
   for (const fixture of selected) {
+    // Keep requests below the API's per-minute limit; the fixtures request was already made.
+    if (requestsMade > 1) await new Promise(resolve => setTimeout(resolve, 6500));
     try {
       const result = await getJson(base + '/predictions?fixture=' + encodeURIComponent(fixture.fixture.id), headers, 8000);
       requestsMade++;
@@ -515,9 +517,14 @@ async function fetchApiFootball() {
     }
   }
   const diagnostic = 'расписание: ' + fixtures.length + '; прогнозы запрошены для ' + selected.length + ' матчей; запросов в этом запуске: не более ' + requestsMade + (fixtures.length > selected.length ? '; не обработано матчей: ' + (fixtures.length - selected.length) : '') + (errorsFound.length ? '; ошибки: ' + errorsFound.slice(0, 3).join('; ') : '');
-  if (allFixtures.length) apiFootballCache = { date, rows, ok: true, diagnostic, message: '', requestsMade };
   sourceStatus.apifootball.diagnostic = diagnostic;
-  return rows;
+  if (rows.length > 0) {
+    apiFootballCache = { date, rows, ok: true, diagnostic, message: '', requestsMade };
+    return rows;
+  }
+  const detail = 'Api-Football: расписание найдено, но прогнозы не получены; пустой результат не сохранён в дневной кэш. ' + diagnostic;
+  sourceStatus.apifootball.message = detail;
+  throw new Error(detail);
 }
 
 async function fetchFootballData() {
