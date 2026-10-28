@@ -62,7 +62,7 @@ function preparePrediction(item) {
   const doubleChance = doubleChanceProbabilities(item.probabilityOutcome);
   // SStats and Euro365 provide full match feeds, not only pre-qualified picks:
   // keep all their events and market probabilities visible.
-  const keepAllMarkets = item.source === 'SStats' || item.source === 'Euro365' || item.source === 'Sportmonks';
+  const keepAllMarkets = item.source === 'SStats' || item.source === 'Euro365';
   return {
     ...item,
     ...doubleChance,
@@ -157,7 +157,7 @@ function bestMarket(item) {
 function setSummaryHeaders(isSummary) {
   const headers = [...$('predictions-table').querySelectorAll('thead th')];
   const normalLabels = ['Дата и время', 'Лига', 'Хозяева', 'Гости', 'Вер. исхода (П1/X/П2)', '1X (П1 или X)', '12 (П1 или П2)', 'X2 (X или П2)', 'ТБ (голы)', 'ТМ (голы)', 'Результат матча'];
-  const summaryLabels = ['Дата и время', 'Лига', 'Хозяева', 'Гости', 'BSD', 'SStats', 'Euro365', 'FB_DATA', 'Sportmonks', '', ''];
+  const summaryLabels = ['Дата и время', 'Лига', 'Хозяева', 'Гости', 'BSD', 'SStats', 'Euro365', 'FB_DATA', '', '', ''];
   headers.forEach((header, index) => {
     header.textContent = isSummary ? summaryLabels[index] : normalLabels[index];
     header.style.display = isSummary && index >= 9 ? 'none' : '';
@@ -166,7 +166,7 @@ function setSummaryHeaders(isSummary) {
 }
 function renderSummaryTable(tbody) {
   setSummaryHeaders(true);
-  const sourceOrder = ['BSD', 'SStats', 'Euro365', 'FB_DATA', 'Sportmonks'];
+  const sourceOrder = ['BSD', 'SStats', 'Euro365', 'FB_DATA'];
   const bySource = Object.fromEntries(sourceOrder.map((source) => [source, new Map()]));
   for (const item of allPredictions) {
     if (!bySource[item.source]) continue;
@@ -230,10 +230,10 @@ function renderTable() {
   setSummaryHeaders(false);
   const qualified = allPredictions
     .map(preparePrediction)
-    .filter((item) => item.source === 'SStats' ? item.maxProbability > 75 : item.maxProbability >= MIN_DISPLAY_PROBABILITY || item.source === 'Euro365' || item.source === 'Sportmonks')
+    .filter((item) => item.source === 'SStats' ? item.maxProbability > 75 : item.maxProbability >= MIN_DISPLAY_PROBABILITY || item.source === 'Euro365')
     .filter((item) => activeSource === 'all' || item.source === activeSource);
   const rows = sortPredictions(qualified);
-  const sourceLabel = activeSource === 'BSD' ? 'BSD' : activeSource === 'SStats' ? 'S-Stats' : activeSource === 'Euro365' ? 'Euro365' : activeSource === 'FB_DATA' ? 'FB_DATA' : activeSource === 'Sportmonks' ? 'Sportmonks' : '';
+  const sourceLabel = activeSource === 'BSD' ? 'BSD' : activeSource === 'SStats' ? 'S-Stats' : activeSource === 'Euro365' ? 'Euro365' : activeSource === 'FB_DATA' ? 'FB_DATA' : '';
   $('empty-state').textContent = `Нет матчей${sourceLabel ? ` из источника ${sourceLabel}` : ''} для отображения.`;
   $('empty-state').classList.toggle('hidden', rows.length > 0);
   for (const item of rows) {
@@ -277,7 +277,6 @@ async function loadAll(requestRefresh = false) {
   $('status-sstats').textContent = 'SStats: загрузка…';
   $('status-euro365').textContent = 'Euro365: загрузка…';
   $('status-fbdata').textContent = 'FB_DATA: загрузка…';
-  $('status-sportmonks').textContent = 'Sportmonks: загрузка…';
   try {
     if (requestRefresh) {
       // GitHub Pages is static: refresh means re-read the latest published snapshot.
@@ -290,7 +289,6 @@ async function loadAll(requestRefresh = false) {
     setSourceStatus('status-sstats', 'SStats', data.sources?.sstats);
     setSourceStatus('status-euro365', 'Euro365', data.sources?.euro365);
     setSourceStatus('status-fbdata', 'FB_DATA', data.sources?.fbdata);
-    setSourceStatus('status-sportmonks', 'Sportmonks', data.sources?.sportmonks);
     const generatedAt = data.generatedAt ? new Date(data.generatedAt) : null;
     $('current-date').textContent = generatedAt && !Number.isNaN(generatedAt.getTime())
       ? `Матчи на ${data.date || 'сегодня'} · обновлено ${generatedAt.toLocaleString('ru-RU')}`
