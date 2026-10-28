@@ -443,8 +443,8 @@ function normalizeFootballData(match, history = []) {
   };
 }
 
-function normalizeApiFootball(item) {
-  const fixture = item.fixture || {};
+function normalizeApiFootball(item, fallbackFixture = null) {
+  const fixture = item.fixture || fallbackFixture?.fixture || {};
   const teams = item.teams || {};
   const league = item.league || {};
   const prediction = item.predictions || {};
@@ -476,7 +476,7 @@ async function fetchApiFootball() {
   let previous = null;
   try { previous = JSON.parse(fs.readFileSync('data.json', 'utf8')); } catch { /* first run */ }
   const cache = previous?.apiFootballCache;
-  if (cache?.date === date && Array.isArray(cache.rows) && cache.rows.length > 0 && cache.ok === true &&
+  if (cache?.date === date && Array.isArray(cache.rows) && cache.rows.length > 0 && cache.ok === true && Array.isArray(cache.fixtureMeta) &&
       (!Array.isArray(cache.fixtureIds) || !cache.fixtureIds.some(id => !(cache.attemptedIds || []).map(String).includes(String(id))) || Number(cache.requestsMadeToday) >= 90)) {
     apiFootballCache = cache;
     sourceStatus.apifootball = { ok: true, count: cache.rows.length, message: '', diagnostic: 'Api-Football: использован дневной кэш; ' + (cache.diagnostic || 'дневная квота исчерпана или матчей для проверки больше нет') };
@@ -487,11 +487,12 @@ async function fetchApiFootball() {
   const headers = { 'x-apisports-key': token, Accept: 'application/json' };
   const priorityLeagues = new Set([2, 3, 848, 39, 140, 135, 78, 61, 88, 94, 253, 71, 144, 203, 179, 13, 45, 143]);
   let fixtureIds = cache?.date === date && Array.isArray(cache.fixtureIds) ? cache.fixtureIds : null;
+  let fixtureMeta = cache?.date === date && Array.isArray(cache.fixtureMeta) ? cache.fixtureMeta : null;
   let attemptedIds = new Set(cache?.date === date && Array.isArray(cache.attemptedIds) ? cache.attemptedIds.map(String) : []);
   let requestsMadeToday = Number(cache?.date === date ? cache.requestsMadeToday : 0) || 0;
   let fixturesTotal = Number(cache?.date === date ? cache.fixturesTotal : 0) || 0;
 
-  if (!fixtureIds) {
+  if (!fixtureIds || !fixtureMeta) {
     if (requestsMadeToday >= 90) {
       const detail = 'Api-Football: дневной лимит запросов приложения исчерпан; прогнозы будут проверены при следующем обновлении даты.';
       apiFootballCache = { date, rows: [], ok: false, message: detail, diagnostic: detail, fixtureIds: [], attemptedIds: [], requestsMadeToday, fixturesTotal: 0 };
@@ -516,8 +517,11 @@ async function fetchApiFootball() {
       const bp = priorityLeagues.has(Number(b.league?.id)) ? 0 : 1;
       return ap - bp || new Date(a.fixture?.date || 0) - new Date(b.fixture?.date || 0);
     });
-    fixtureIds = sorted.map(item => Number(item.fixture.id)).filter(Number.isFinite);
-    fixturesTotal = fixtureIds.length;
+    fixtureMeta = sorted;
+    if (!fixtureIds) {
+      fixtureIds = sorted.map(item => Number(item.fixture.id)).filter(Number.isFinite);
+      fixturesTotal = fixtureIds.length;
+    }
   }
 
   if (requestsMadeToday >= 90) {
@@ -529,6 +533,21 @@ async function fetchApiFootball() {
 
   const selected = fixtureIds.filter(id => !attemptedIds.has(String(id))).slice(0, Math.min(10, 90 - requestsMadeToday));
   const rows = cache?.date === date && Array.isArray(cache.rows) ? cache.rows.slice() : [];
+  const normalizeTeamKey = value => String(value || '').normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLocaleLowerCase('ru').replace(/[^a-zа-яё0-9]/gi, '');
+  const fixtureByTeams = new Map((fixtureMeta || []).map(item => [
+    normalizeTeamKey(item.teams?.home?.name) + '|' + normalizeTeamKey(item.teams?.away?.name), item
+  ]));
+  for (const row of rows) {
+    if (row.time && row.eventId !== null && row.eventId !== undefined) continue;
+    const fixture = fixtureByTeams.get(normalizeTeamKey(row.home) + '|' + normalizeTeamKey(row.away));
+    if (fixture?.fixture) {
+      row.eventId = fixture.fixture.id ?? row.eventId;
+      row.time = fixture.fixture.date || row.time;
+      row.league = fixture.league?.name || row.league;
+      row.home = fixture.teams?.home?.name || row.home;
+      row.away = fixture.teams?.away?.name || row.away;
+    }
+  }
   const errorsFound = [];
   let emptyResponses = 0;
   for (const fixtureId of selected) {
@@ -542,7 +561,8 @@ async function fetchApiFootball() {
         continue;
       }
       const prediction = Array.isArray(result.response) ? result.response[0] : arr(result)[0];
-      if (prediction) rows.push(normalizeApiFootball(prediction));
+      const fixtureInfo = (fixtureMeta || []).find(item => String(item.fixture?.id) === String(fixtureId));
+      if (prediction) rows.push(normalizeApiFootball(prediction, fixtureInfo));
       else emptyResponses++;
     } catch (error) {
       requestsMadeToday++;
@@ -557,7 +577,7 @@ async function fetchApiFootball() {
     (errorsFound.length ? '; ошибки: ' + errorsFound.slice(0, 2).join('; ') : '');
   apiFootballCache = {
     date, rows, ok: rows.length > 0, message: rows.length ? '' : 'Api-Football: прогнозы пока не найдены; следующие матчи будут проверены при следующем обновлении.',
-    diagnostic, fixtureIds, attemptedIds: [...attemptedIds], requestsMadeToday, fixturesTotal
+    diagnostic, fixtureIds, fixtureMeta: fixtureMeta || [], attemptedIds: [...attemptedIds], requestsMadeToday, fixturesTotal
   };
   sourceStatus.apifootball = {
     ok: rows.length > 0, count: rows.length,
