@@ -533,7 +533,7 @@ async function fetchApiFootball() {
 
   const selected = fixtureIds.filter(id => !attemptedIds.has(String(id))).slice(0, Math.min(10, 90 - requestsMadeToday));
   const rows = cache?.date === date && Array.isArray(cache.rows) ? cache.rows.slice() : [];
-  const normalizeTeamKey = value => String(value || '').normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLocaleLowerCase('ru').replace(/[^a-zа-яё0-9]/gi, '');
+  const normalizeTeamKey = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('ru').replace(/[^a-zа-яё0-9]/gi, '');
   const fixtureByTeams = new Map((fixtureMeta || []).map(item => [
     normalizeTeamKey(item.teams?.home?.name) + '|' + normalizeTeamKey(item.teams?.away?.name), item
   ]));
