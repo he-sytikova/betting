@@ -48,7 +48,7 @@ jobs:
           FD_DATA_TOKEN: ${{ secrets.FD_DATA_TOKEN }}
           SPORTMONKS_TOKEN: ${{ secrets.SPORTMONKS_TOKEN }}
         run: |
-          if [ -z "$BSD_TOKEN" ] && [ -z "$SSTATS_TOKEN" ] && [ -z "$EURO365_API_KEY" ] && [ -z "$FD_DATA_TOKEN" ]; then
+          if [ -z "$BSD_TOKEN" ] && [ -z "$SSTATS_TOKEN" ] && [ -z "$EURO365_API_KEY" ] && [ -z "$FD_DATA_TOKEN" ] && [ -z "$SPORTMONKS_TOKEN" ]; then
             echo "Add at least one API key in Settings → Secrets and variables → Actions."
             exit 1
           fi
