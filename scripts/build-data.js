@@ -7,11 +7,13 @@ const SSTATS_BASE = 'https://api.sstats.net';
 const { fetchEuro365, getEuro365Diagnostics } = require('./euro365');
 let date = new Date().toISOString().slice(0, 10);
 const errors = [];
+let apiFootballCache = null;
 const sourceStatus = {
   bsd: { ok: false, count: 0, message: '', diagnostic: '' },
   sstats: { ok: false, count: 0, message: '', diagnostic: '' },
   euro365: { ok: false, count: 0, message: '', diagnostic: '' },
   fbdata: { ok: false, count: 0, message: '', diagnostic: '' },
+  apifootball: { ok: false, count: 0, message: '', diagnostic: '' },
 };
 
 function arr(payload, depth = 0) {
@@ -82,7 +84,7 @@ function poissonOver(lambda, threshold) {
 }
 function safeError(error) {
   let message = String(error?.message || error).replace(/https?:\/\/\S+/g, '[API URL]');
-  for (const name of ['BSD_TOKEN', 'SSTATS_TOKEN', 'EURO365_API_KEY', 'FD_DATA_TOKEN']) {
+  for (const name of ['BSD_TOKEN', 'SSTATS_TOKEN', 'EURO365_API_KEY', 'FD_DATA_TOKEN', 'API_FOOTBALL_KEY']) {
     const secret = process.env[name];
     if (secret) message = message.split(secret).join('[REDACTED]');
   }
@@ -440,6 +442,74 @@ function normalizeFootballData(match, history = []) {
     yellowCards: '—'
   };
 }
+
+function normalizeApiFootball(item) {
+  const fixture = item.fixture || {};
+  const teams = item.teams || {};
+  const league = item.league || {};
+  const prediction = item.predictions || {};
+  const percentValues = prediction.percent || {};
+  const homeProb = percent(percentValues.home);
+  const drawProb = percent(percentValues.draw);
+  const awayProb = percent(percentValues.away);
+  const hasProb = [percentValues.home, percentValues.draw, percentValues.away].some(value => value !== undefined && value !== null && Number.isFinite(Number(String(value).replace('%', ''))));
+  const outcomeValues = [['П1', Number(String(percentValues.home ?? '').replace('%', '')) || 0], ['X', Number(String(percentValues.draw ?? '').replace('%', '')) || 0], ['П2', Number(String(percentValues.away ?? '').replace('%', '')) || 0]];
+  const winner = prediction.winner?.name || prediction.advice || (hasProb ? outcomeValues.sort((a, b) => b[1] - a[1])[0][0] : '—');
+  const status = String(fixture.status?.short || '').toUpperCase();
+  const goals = item.goals || {};
+  const hasScore = goals.home !== null && goals.home !== undefined && goals.away !== null && goals.away !== undefined;
+  const actualResult = hasScore ? (['FT', 'AET', 'PEN'].includes(status) ? 'ФТ · ' : ['1H', '2H', 'HT', 'ET', 'LIVE'].includes(status) ? 'LIVE · ' : '') + goals.home + ':' + goals.away : ['1H', '2H', 'HT', 'ET', 'LIVE'].includes(status) ? 'Матч идёт' : '—';
+  return {
+    source: 'Api-Football', eventId: fixture.id ?? null, time: fixture.date || null,
+    league: league.name || '—', home: teams.home?.name || '—', away: teams.away?.name || '—',
+    actualResult, outcome: winner,
+    probabilityOutcome: hasProb ? 'П1 ' + (homeProb ?? '—') + ' / X ' + (drawProb ?? '—') + ' / П2 ' + (awayProb ?? '—') : '—',
+    totalGoals: prediction.under_over ? 'Тотал: ' + prediction.under_over : '—',
+    underGoals: '—',
+    individualTotals: prediction.goals ? 'Х ' + (prediction.goals.home ?? '—') + ' / Г ' + (prediction.goals.away ?? '—') : '—',
+    corners: '—', yellowCards: '—'
+  };
+}
+async function fetchApiFootball() {
+  const token = process.env.API_FOOTBALL_KEY || '';
+  if (!token) throw new Error('Не задан API_FOOTBALL_KEY в GitHub Actions Secrets');
+  let previous = null;
+  try { previous = JSON.parse(fs.readFileSync('data.json', 'utf8')); } catch { /* first run */ }
+  const cache = previous?.apiFootballCache;
+  if (cache?.date === date && Array.isArray(cache.rows)) {
+    apiFootballCache = cache;
+    sourceStatus.apifootball = { ok: Boolean(cache.ok), count: cache.rows.length, message: cache.message || '', diagnostic: 'Api-Football: использован дневной кэш; ' + (cache.diagnostic || 'повторных запросов нет') };
+    if (!cache.ok) throw new Error(cache.message || 'Api-Football: дневной кэш содержит ошибку');
+    return cache.rows;
+  }
+  const base = 'https://v3.football.api-sports.io';
+  const headers = { 'x-apisports-key': token, Accept: 'application/json' };
+  const payload = await getJson(base + '/fixtures?date=' + encodeURIComponent(date) + '&timezone=Europe%2FMoscow', headers, 10000);
+  if (payload.errors && Object.keys(payload.errors).length) throw new Error('Api-Football: ' + JSON.stringify(payload.errors).slice(0, 180));
+  const fixtures = arr(payload).filter(item => item.fixture?.id && ['NS', 'TBD'].includes(String(item.fixture?.status?.short || 'NS').toUpperCase()));
+  const maxPredictions = 20;
+  const selected = fixtures.slice(0, maxPredictions);
+  const rows = [];
+  let requestsMade = 1;
+  const errorsFound = [];
+  for (const fixture of selected) {
+    try {
+      const result = await getJson(base + '/predictions?fixture=' + encodeURIComponent(fixture.fixture.id), headers, 8000);
+      requestsMade++;
+      if (result.errors && Object.keys(result.errors).length) { errorsFound.push('fixture ' + fixture.fixture.id + ': ' + JSON.stringify(result.errors).slice(0, 80)); continue; }
+      const prediction = arr(result)[0];
+      if (prediction) rows.push(normalizeApiFootball(prediction));
+    } catch (error) {
+      requestsMade++;
+      errorsFound.push('fixture ' + fixture.fixture.id + ': ' + safeError(error));
+    }
+  }
+  const diagnostic = 'расписание: ' + fixtures.length + '; прогнозы запрошены для ' + selected.length + ' матчей; запросов в этом запуске: не более ' + requestsMade + (fixtures.length > selected.length ? '; не обработано матчей: ' + (fixtures.length - selected.length) : '') + (errorsFound.length ? '; ошибки: ' + errorsFound.slice(0, 3).join('; ') : '');
+  apiFootballCache = { date, rows, ok: true, diagnostic, message: '', requestsMade };
+  sourceStatus.apifootball.diagnostic = diagnostic;
+  return rows;
+}
+
 async function fetchFootballData() {
   const token = process.env.FD_DATA_TOKEN || '';
   if (!token) throw new Error('Не задан FD_DATA_TOKEN в GitHub Actions Secrets');
@@ -740,7 +810,7 @@ async function fetchSStats() {
   return rows;
 }
 function sourceLabel(name) {
-  return ({ bsd: 'BSD', sstats: 'SStats', euro365: 'Euro365', fbdata: 'FB_DATA', sportmonks: 'Sportmonks' })[name] || name;
+  return ({ bsd: 'BSD', sstats: 'SStats', euro365: 'Euro365', fbdata: 'FB_DATA', apifootball: 'Api-Football', sportmonks: 'Sportmonks' })[name] || name;
 }
 async function runSource(name, fn) {
   try {
@@ -770,11 +840,14 @@ async function buildData() {
   sourceStatus.sstats = { ok: false, count: 0, message: '', diagnostic: '' };
   sourceStatus.euro365 = { ok: false, count: 0, message: '', diagnostic: '' };
   sourceStatus.fbdata = { ok: false, count: 0, message: '', diagnostic: '' };
-  const [bsd, sstats, euro365, fbdata] = await Promise.all([
+  sourceStatus.apifootball = { ok: false, count: 0, message: '', diagnostic: '' };
+  apiFootballCache = null;
+  const [bsd, sstats, euro365, fbdata, apifootball] = await Promise.all([
     runSource('bsd', fetchBSD),
     runSource('sstats', fetchSStats),
     runSource('euro365', () => fetchEuro365(moscowDateKey(new Date()))),
-    runSource('fbdata', fetchFootballData)
+    runSource('fbdata', fetchFootballData),
+    runSource('apifootball', fetchApiFootball)
   ]);
   const teamKey = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
   const bsdProbabilities = new Map();
@@ -787,10 +860,10 @@ async function buildData() {
     const bsdProbability = bsdProbabilities.get(`${teamKey(row.home)}|${teamKey(row.away)}`);
     if (bsdProbability) row.probabilityOutcome = bsdProbability;
   }
-  const predictions = [...bsd, ...sstats, ...euro365, ...fbdata]
+  const predictions = [...bsd, ...sstats, ...euro365, ...fbdata, ...apifootball]
     .filter(row => row.time && (row.source === 'Euro365' ? moscowDateKey(row.time) === moscowDateKey(new Date()) : dateKey(row.time) === date))
     .sort((a, b) => new Date(a.time) - new Date(b.time));
-  return { date, generatedAt: new Date().toISOString(), sources: sourceStatus, errors, predictions };
+  return { date, generatedAt: new Date().toISOString(), sources: sourceStatus, errors, predictions, apiFootballCache };
 }
 
 if (require.main === module) {
