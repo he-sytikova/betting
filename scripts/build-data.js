@@ -476,7 +476,7 @@ async function fetchApiFootball() {
   let previous = null;
   try { previous = JSON.parse(fs.readFileSync('data.json', 'utf8')); } catch { /* first run */ }
   const cache = previous?.apiFootballCache;
-  if (cache?.date === date && Array.isArray(cache.rows)) {
+  if (cache?.date === date && Array.isArray(cache.rows) && !(cache.rows.length === 0 && String(cache.diagnostic || '').includes('расписание: 0'))) {
     apiFootballCache = cache;
     sourceStatus.apifootball = { ok: Boolean(cache.ok), count: cache.rows.length, message: cache.message || '', diagnostic: 'Api-Football: использован дневной кэш; ' + (cache.diagnostic || 'повторных запросов нет') };
     if (!cache.ok) throw new Error(cache.message || 'Api-Football: дневной кэш содержит ошибку');
