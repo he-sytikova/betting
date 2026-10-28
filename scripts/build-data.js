@@ -478,53 +478,93 @@ async function fetchApiFootball() {
   const cache = previous?.apiFootballCache;
   if (cache?.date === date && Array.isArray(cache.rows) && cache.rows.length > 0 && cache.ok === true) {
     apiFootballCache = cache;
-    sourceStatus.apifootball = { ok: Boolean(cache.ok), count: cache.rows.length, message: cache.message || '', diagnostic: 'Api-Football: использован дневной кэш; ' + (cache.diagnostic || 'повторных запросов нет') };
-    if (!cache.ok) throw new Error(cache.message || 'Api-Football: дневной кэш содержит ошибку');
+    sourceStatus.apifootball = { ok: true, count: cache.rows.length, message: '', diagnostic: 'Api-Football: использован дневной кэш; ' + (cache.diagnostic || 'повторных запросов нет') };
     return cache.rows;
   }
+
   const base = 'https://v3.football.api-sports.io';
   const headers = { 'x-apisports-key': token, Accept: 'application/json' };
-  const payload = await getJson(base + '/fixtures?date=' + encodeURIComponent(date) + '&timezone=Europe%2FMoscow', headers, 10000);
-  if (payload.errors && (Array.isArray(payload.errors) ? payload.errors.length : Object.keys(payload.errors).length)) throw new Error('Api-Football: ' + JSON.stringify(payload.errors).slice(0, 180));
-  const responseRows = Array.isArray(payload.response) ? payload.response : arr(payload);
-  if (!Array.isArray(responseRows)) throw new Error('Api-Football: неизвестный формат ответа fixtures');
-  const allFixtures = responseRows.filter(item => item?.fixture?.id);
-  const fixtures = allFixtures.filter(item => ['NS', 'TBD'].includes(String(item.fixture?.status?.short || '').toUpperCase()));
-  if (!allFixtures.length) {
-    const resultCount = Number.isFinite(Number(payload.results)) ? Number(payload.results) : responseRows.length;
-    const detail = 'Api-Football: пустое расписание для ' + date + '; results=' + resultCount + '; parameters=' + JSON.stringify(payload.parameters || {}).slice(0, 140) + '; errors=' + JSON.stringify(payload.errors || {}).slice(0, 140);
-    sourceStatus.apifootball.message = detail;
-    sourceStatus.apifootball.diagnostic = detail;
+  const priorityLeagues = new Set([2, 3, 848, 39, 140, 135, 78, 61, 88, 94, 253, 71, 144, 203, 179, 13, 45, 143]);
+  let fixtureIds = cache?.date === date && Array.isArray(cache.fixtureIds) ? cache.fixtureIds : null;
+  let attemptedIds = new Set(cache?.date === date && Array.isArray(cache.attemptedIds) ? cache.attemptedIds.map(String) : []);
+  let requestsMadeToday = Number(cache?.date === date ? cache.requestsMadeToday : 0) || 0;
+  let fixturesTotal = Number(cache?.date === date ? cache.fixturesTotal : 0) || 0;
+
+  if (!fixtureIds) {
+    if (requestsMadeToday >= 90) {
+      const detail = 'Api-Football: дневной лимит запросов приложения исчерпан; прогнозы будут проверены при следующем обновлении даты.';
+      apiFootballCache = { date, rows: [], ok: false, message: detail, diagnostic: detail, fixtureIds: [], attemptedIds: [], requestsMadeToday, fixturesTotal: 0 };
+      sourceStatus.apifootball = { ok: false, count: 0, message: detail, diagnostic: detail };
+      throw new Error(detail);
+    }
+    const payload = await getJson(base + '/fixtures?date=' + encodeURIComponent(date) + '&timezone=Europe%2FMoscow', headers, 10000);
+    requestsMadeToday++;
+    if (payload.errors && (Array.isArray(payload.errors) ? payload.errors.length : Object.keys(payload.errors).length)) throw new Error('Api-Football: ' + JSON.stringify(payload.errors).slice(0, 180));
+    const responseRows = Array.isArray(payload.response) ? payload.response : arr(payload);
+    const allFixtures = responseRows.filter(item => item?.fixture?.id);
+    const upcoming = allFixtures.filter(item => ['NS', 'TBD'].includes(String(item.fixture?.status?.short || '').toUpperCase()));
+    if (!allFixtures.length) {
+      const detail = 'Api-Football: пустое расписание для ' + date + '; results=' + (payload.results ?? responseRows.length) + '; parameters=' + JSON.stringify(payload.parameters || {}).slice(0, 140) + '; errors=' + JSON.stringify(payload.errors || {}).slice(0, 140);
+      apiFootballCache = { date, rows: [], ok: false, message: detail, diagnostic: detail, fixtureIds: [], attemptedIds: [], requestsMadeToday, fixturesTotal: 0 };
+      sourceStatus.apifootball = { ok: false, count: 0, message: detail, diagnostic: detail };
+      throw new Error(detail);
+    }
+    // Prioritize major competitions, then spread the remaining checks across the day's schedule.
+    const sorted = upcoming.slice().sort((a, b) => {
+      const ap = priorityLeagues.has(Number(a.league?.id)) ? 0 : 1;
+      const bp = priorityLeagues.has(Number(b.league?.id)) ? 0 : 1;
+      return ap - bp || new Date(a.fixture?.date || 0) - new Date(b.fixture?.date || 0);
+    });
+    fixtureIds = sorted.map(item => Number(item.fixture.id)).filter(Number.isFinite);
+    fixturesTotal = fixtureIds.length;
+  }
+
+  if (requestsMadeToday >= 90) {
+    const detail = 'Api-Football: дневной лимит приложения достигнут (' + requestsMadeToday + ' запросов); новые проверки остановлены до следующего дня.';
+    apiFootballCache = { date, rows: [], ok: false, message: detail, diagnostic: detail, fixtureIds, attemptedIds: [...attemptedIds], requestsMadeToday, fixturesTotal };
+    sourceStatus.apifootball = { ok: false, count: 0, message: detail, diagnostic: detail };
     throw new Error(detail);
   }
-  const maxPredictions = 20;
-  const selected = fixtures.slice(0, maxPredictions);
+
+  const selected = fixtureIds.filter(id => !attemptedIds.has(String(id))).slice(0, Math.min(10, 90 - requestsMadeToday));
   const rows = [];
-  let requestsMade = 1;
   const errorsFound = [];
-  for (const fixture of selected) {
-    // Keep requests below the API's per-minute limit; the fixtures request was already made.
-    if (requestsMade > 1) await new Promise(resolve => setTimeout(resolve, 6500));
+  let emptyResponses = 0;
+  for (const fixtureId of selected) {
+    if (requestsMadeToday > 1) await new Promise(resolve => setTimeout(resolve, 6500));
+    attemptedIds.add(String(fixtureId));
     try {
-      const result = await getJson(base + '/predictions?fixture=' + encodeURIComponent(fixture.fixture.id), headers, 8000);
-      requestsMade++;
-      if (result.errors && Object.keys(result.errors).length) { errorsFound.push('fixture ' + fixture.fixture.id + ': ' + JSON.stringify(result.errors).slice(0, 80)); continue; }
-      const prediction = arr(result)[0];
+      const result = await getJson(base + '/predictions?fixture=' + encodeURIComponent(fixtureId), headers, 8000);
+      requestsMadeToday++;
+      if (result.errors && (Array.isArray(result.errors) ? result.errors.length : Object.keys(result.errors).length)) {
+        errorsFound.push('fixture ' + fixtureId + ': ' + JSON.stringify(result.errors).slice(0, 100));
+        continue;
+      }
+      const prediction = Array.isArray(result.response) ? result.response[0] : arr(result)[0];
       if (prediction) rows.push(normalizeApiFootball(prediction));
+      else emptyResponses++;
     } catch (error) {
-      requestsMade++;
-      errorsFound.push('fixture ' + fixture.fixture.id + ': ' + safeError(error));
+      requestsMadeToday++;
+      errorsFound.push('fixture ' + fixtureId + ': ' + safeError(error));
+      if (/429|rate.?limit/i.test(String(error?.message || error))) break;
     }
   }
-  const diagnostic = 'расписание: ' + fixtures.length + '; прогнозы запрошены для ' + selected.length + ' матчей; запросов в этом запуске: не более ' + requestsMade + (fixtures.length > selected.length ? '; не обработано матчей: ' + (fixtures.length - selected.length) : '') + (errorsFound.length ? '; ошибки: ' + errorsFound.slice(0, 3).join('; ') : '');
-  sourceStatus.apifootball.diagnostic = diagnostic;
-  if (rows.length > 0) {
-    apiFootballCache = { date, rows, ok: true, diagnostic, message: '', requestsMade };
-    return rows;
-  }
-  const detail = 'Api-Football: расписание найдено, но прогнозы не получены; пустой результат не сохранён в дневной кэш. ' + diagnostic;
-  sourceStatus.apifootball.message = detail;
-  throw new Error(detail);
+
+  const diagnostic = 'расписание: ' + fixturesTotal + '; проверено прогнозов в этом запуске: ' + selected.length +
+    '; пустых ответов: ' + emptyResponses + '; накоплено запросов за день: ' + requestsMadeToday +
+    '; осталось проверить матчей: ' + fixtureIds.filter(id => !attemptedIds.has(String(id))).length +
+    (errorsFound.length ? '; ошибки: ' + errorsFound.slice(0, 2).join('; ') : '');
+  apiFootballCache = {
+    date, rows, ok: rows.length > 0, message: rows.length ? '' : 'Api-Football: прогнозы пока не найдены; следующие матчи будут проверены при следующем обновлении.',
+    diagnostic, fixtureIds, attemptedIds: [...attemptedIds], requestsMadeToday, fixturesTotal
+  };
+  sourceStatus.apifootball = {
+    ok: rows.length > 0, count: rows.length,
+    message: rows.length ? '' : apiFootballCache.message,
+    diagnostic
+  };
+  if (!rows.length) throw new Error(apiFootballCache.message + ' ' + diagnostic);
+  return rows;
 }
 
 async function fetchFootballData() {
