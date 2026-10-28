@@ -476,9 +476,10 @@ async function fetchApiFootball() {
   let previous = null;
   try { previous = JSON.parse(fs.readFileSync('data.json', 'utf8')); } catch { /* first run */ }
   const cache = previous?.apiFootballCache;
-  if (cache?.date === date && Array.isArray(cache.rows) && cache.rows.length > 0 && cache.ok === true) {
+  if (cache?.date === date && Array.isArray(cache.rows) && cache.rows.length > 0 && cache.ok === true &&
+      (!Array.isArray(cache.fixtureIds) || !cache.fixtureIds.some(id => !(cache.attemptedIds || []).map(String).includes(String(id))) || Number(cache.requestsMadeToday) >= 90)) {
     apiFootballCache = cache;
-    sourceStatus.apifootball = { ok: true, count: cache.rows.length, message: '', diagnostic: 'Api-Football: использован дневной кэш; ' + (cache.diagnostic || 'повторных запросов нет') };
+    sourceStatus.apifootball = { ok: true, count: cache.rows.length, message: '', diagnostic: 'Api-Football: использован дневной кэш; ' + (cache.diagnostic || 'дневная квота исчерпана или матчей для проверки больше нет') };
     return cache.rows;
   }
 
@@ -527,7 +528,7 @@ async function fetchApiFootball() {
   }
 
   const selected = fixtureIds.filter(id => !attemptedIds.has(String(id))).slice(0, Math.min(10, 90 - requestsMadeToday));
-  const rows = [];
+  const rows = cache?.date === date && Array.isArray(cache.rows) ? cache.rows.slice() : [];
   const errorsFound = [];
   let emptyResponses = 0;
   for (const fixtureId of selected) {
