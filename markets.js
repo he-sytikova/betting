@@ -8,7 +8,8 @@ function fmtTime(v) {
 }
 function setSourceStatus(id, name, status) {
   const el = $(id);
-  if (!el) return;\n  const count = Number(status?.count || 0);
+  if (!el) return;
+  const count = Number(status?.count || 0);
   el.title = status?.message || status?.diagnostic || '';
   if (status?.ok) {
     el.textContent = name + ': ' + count + ' матчей';
@@ -69,6 +70,7 @@ async function load() {
 document.addEventListener('DOMContentLoaded', () => {
   ['market-type','market-source'].forEach(id => $(id).addEventListener('change',render));
   $('market-search').addEventListener('input',render);
-  const refresh = $('refresh-btn');\n  if (refresh) refresh.addEventListener('click', () => load());
+  const refresh = $('refresh-btn');
+  if (refresh) refresh.addEventListener('click', () => load());
   load();
 });
