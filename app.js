@@ -284,7 +284,14 @@ async function loadAll(requestRefresh = false) {
     const response = await fetch(`./data.json?t=${Date.now()}`, { cache: 'no-store' });
     if (!response.ok) throw new Error(`Не удалось загрузить data.json (HTTP ${response.status})`);
     const data = await response.json();
-    allPredictions = Array.isArray(data.predictions) ? data.predictions : [];
+    const now = Date.now();
+    // Hide fixtures that have already started or finished on every main-page tab.
+    allPredictions = (Array.isArray(data.predictions) ? data.predictions : [])
+      .filter((item) => {
+        if (!item.time) return false;
+        const kickoff = Date.parse(item.time);
+        return Number.isFinite(kickoff) && kickoff > now;
+      });
     setSourceStatus('status-bsd', 'BSD', data.sources?.bsd);
     setSourceStatus('status-sstats', 'SStats', data.sources?.sstats);
     setSourceStatus('status-euro365', 'Euro365', data.sources?.euro365);
