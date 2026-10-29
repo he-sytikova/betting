@@ -24,14 +24,13 @@ function colorMarketCells(row) {
     cell.style.backgroundColor = '#fff';
     cell.style.color = '#000';
     if (cell.cellIndex < 5) continue;
-    const nums = cell.textContent.split('%').map(part => {
-      const pieces = part.trim().split(' ');
-      return Number.parseFloat(pieces[pieces.length - 1].replace(',', '.'));
-    }).filter(Number.isFinite);
+    const nums = Array.from(cell.textContent.matchAll(/([0-9]+(?:[.,][0-9]+)?)\\s*%/g), match =>
+      Number.parseFloat(match[1].replace(',', '.'))
+    ).filter(Number.isFinite);
     if (!nums.length) continue;
     const highest = Math.max(...nums);
-    if (highest > 80) {
-      const ratio = Math.max(0, Math.min(1, (highest - 80) / 20));
+    if (highest > 65) {
+      const ratio = Math.max(0, Math.min(1, (highest - 65) / 35));
       const pale = [220, 252, 231], dark = [20, 83, 45];
       cell.style.backgroundColor = 'rgb(' + pale.map((start, i) => Math.round(start + (dark[i] - start) * ratio)).join(', ') + ')';
       cell.title = 'Вероятность: ' + highest.toFixed(1) + '%';
