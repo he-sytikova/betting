@@ -24,7 +24,7 @@ function colorMarketCells(row) {
     cell.style.backgroundColor = '#fff';
     cell.style.color = '#000';
     if (cell.cellIndex < 5) continue;
-    const nums = Array.from(cell.textContent.matchAll(/([0-9]+(?:[.,][0-9]+)?)\\s*%/g), match =>
+    const nums = Array.from(cell.textContent.matchAll(/([0-9]+(?:[.,][0-9]+)?)\s*%/g), match =>
       Number.parseFloat(match[1].replace(',', '.'))
     ).filter(Number.isFinite);
     if (!nums.length) continue;
