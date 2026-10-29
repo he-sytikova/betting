@@ -6,6 +6,18 @@ function fmtTime(v) {
   const d = new Date(v);
   return Number.isNaN(d.getTime()) ? '—' : d.toLocaleString('ru-RU', {timeZone:'Europe/Moscow',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
 }
+function setSourceStatus(id, name, status) {
+  const el = $(id);
+  const count = Number(status?.count || 0);
+  el.title = status?.message || status?.diagnostic || '';
+  if (status?.ok) {
+    el.textContent = name + ': ' + count + ' матчей';
+    el.className = 'status-badge ok';
+  } else {
+    el.textContent = name + ': нет данных';
+    el.className = 'status-badge error';
+  }
+}
 function render() {
   const type = $('market-type').value;
   const source = $('market-source').value;
@@ -39,6 +51,11 @@ async function load() {
     if (!response.ok) throw new Error('Не удалось загрузить data.json (HTTP ' + response.status + ')');
     const data = await response.json();
     allMarkets = Array.isArray(data.predictions) ? data.predictions : [];
+    setSourceStatus('status-bsd','BSD',data.sources?.bsd);
+    setSourceStatus('status-sstats','SStats',data.sources?.sstats);
+    setSourceStatus('status-euro365','Euro365',data.sources?.euro365);
+    setSourceStatus('status-fbdata','FB_DATA',data.sources?.fbdata);
+    setSourceStatus('status-apifootball','Api-Football',data.sources?.apifootball);
     const generated = data.generatedAt ? new Date(data.generatedAt) : null;
     $('markets-date').textContent = 'Матчи на ' + (data.date || 'сегодня') + (generated && !Number.isNaN(generated.getTime()) ? ' · обновлено ' + generated.toLocaleString('ru-RU') : '');
     render();
@@ -52,5 +69,6 @@ async function load() {
 document.addEventListener('DOMContentLoaded', () => {
   ['market-type','market-source'].forEach(id => $(id).addEventListener('change',render));
   $('market-search').addEventListener('input',render);
+  $('refresh-btn').addEventListener('click', () => load());
   load();
 });
