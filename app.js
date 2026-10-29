@@ -2,8 +2,8 @@
 const $ = (id) => document.getElementById(id);
 let allPredictions = [];
 let activeSource = 'summary';
-let sortKey = 'maxProbability';
-let sortAscending = false;
+let sortKey = 'time';
+let sortAscending = true;
 const MIN_DISPLAY_PROBABILITY = 80;
 
 function text(value, fallback = '—') {
