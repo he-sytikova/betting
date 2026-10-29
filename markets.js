@@ -19,6 +19,25 @@ function setSourceStatus(id, name, status) {
     el.className = 'status-badge error';
   }
 }
+function colorMarketCells(row) {
+  for (const cell of row.cells) {
+    cell.style.backgroundColor = '#fff';
+    cell.style.color = '#000';
+    if (cell.cellIndex < 5) continue;
+    const nums = cell.textContent.split('%').map(part => {
+      const pieces = part.trim().split(' ');
+      return Number.parseFloat(pieces[pieces.length - 1].replace(',', '.'));
+    }).filter(Number.isFinite);
+    if (!nums.length) continue;
+    const highest = Math.max(...nums);
+    if (highest > 80) {
+      const ratio = Math.max(0, Math.min(1, (highest - 80) / 20));
+      const pale = [220, 252, 231], dark = [20, 83, 45];
+      cell.style.backgroundColor = 'rgb(' + pale.map((start, i) => Math.round(start + (dark[i] - start) * ratio)).join(', ') + ')';
+      cell.title = 'Вероятность: ' + highest.toFixed(1) + '%';
+    }
+  }
+}
 function render() {
   const type = $('market-type').value;
   const source = $('market-source').value;
@@ -41,6 +60,7 @@ function render() {
       td.textContent = v;
       tr.appendChild(td);
     }
+    colorMarketCells(tr);
     tbody.appendChild(tr);
   }
   $('markets-count').textContent = 'Матчей с прогнозами: ' + rows.length;
