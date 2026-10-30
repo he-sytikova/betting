@@ -70,12 +70,15 @@ async function load() {
     const response = await fetch('./data.json?t=' + Date.now(), {cache:'no-store'});
     if (!response.ok) throw new Error('Не удалось загрузить data.json (HTTP ' + response.status + ')');
     const data = await response.json();
-    allMarkets = Array.isArray(data.predictions) ? data.predictions : [];
+    const now = Date.now();
+    allMarkets = (Array.isArray(data.predictions) ? data.predictions : []).filter(item => {
+      const kickoff = Date.parse(item.time);
+      return Number.isFinite(kickoff) && kickoff > now && item.source !== 'Api-Football';
+    });
     setSourceStatus('status-bsd','BSD',data.sources?.bsd);
     setSourceStatus('status-sstats','SStats',data.sources?.sstats);
     setSourceStatus('status-euro365','Euro365',data.sources?.euro365);
     setSourceStatus('status-fbdata','FB_DATA',data.sources?.fbdata);
-    setSourceStatus('status-apifootball','Api-Football',data.sources?.apifootball);
     const generated = data.generatedAt ? new Date(data.generatedAt) : null;
     $('markets-date').textContent = 'Матчи на ' + (data.date || 'сегодня') + (generated && !Number.isNaN(generated.getTime()) ? ' · обновлено ' + generated.toLocaleString('ru-RU') : '');
     render();
