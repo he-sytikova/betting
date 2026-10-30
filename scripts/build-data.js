@@ -13,8 +13,7 @@ const sourceStatus = {
   sstats: { ok: false, count: 0, message: '', diagnostic: '' },
   euro365: { ok: false, count: 0, message: '', diagnostic: '' },
   fbdata: { ok: false, count: 0, message: '', diagnostic: '' },
-  apifootball: { ok: false, count: 0, message: '', diagnostic: '' },
-};
+  };
 
 function arr(payload, depth = 0) {
   if (Array.isArray(payload)) return payload;
@@ -84,7 +83,7 @@ function poissonOver(lambda, threshold) {
 }
 function safeError(error) {
   let message = String(error?.message || error).replace(/https?:\/\/\S+/g, '[API URL]');
-  for (const name of ['BSD_TOKEN', 'SSTATS_TOKEN', 'EURO365_API_KEY', 'FD_DATA_TOKEN', 'API_FOOTBALL_KEY']) {
+  for (const name of ['BSD_TOKEN', 'SSTATS_TOKEN', 'EURO365_API_KEY', 'FD_DATA_TOKEN']) {
     const secret = process.env[name];
     if (secret) message = message.split(secret).join('[REDACTED]');
   }
@@ -931,7 +930,6 @@ async function buildData() {
   sourceStatus.sstats = { ok: false, count: 0, message: '', diagnostic: '' };
   sourceStatus.euro365 = { ok: false, count: 0, message: '', diagnostic: '' };
   sourceStatus.fbdata = { ok: false, count: 0, message: '', diagnostic: '' };
-  sourceStatus.apifootball = { ok: false, count: 0, message: '', diagnostic: '' };
   apiFootballCache = null;
   const [bsd, sstats, euro365, fbdata, apifootball] = await Promise.all([
     runSource('bsd', fetchBSD),
@@ -951,7 +949,7 @@ async function buildData() {
     const bsdProbability = bsdProbabilities.get(`${teamKey(row.home)}|${teamKey(row.away)}`);
     if (bsdProbability) row.probabilityOutcome = bsdProbability;
   }
-  const predictions = [...bsd, ...sstats, ...euro365, ...fbdata, ...apifootball]
+  const predictions = [...bsd, ...sstats, ...euro365, ...fbdata]
     .filter(row => row.time && (row.source === 'Euro365' ? moscowDateKey(row.time) === moscowDateKey(new Date()) : dateKey(row.time) === date))
     .sort((a, b) => new Date(a.time) - new Date(b.time));
   return { date, generatedAt: new Date().toISOString(), sources: sourceStatus, errors, predictions, apiFootballCache };
@@ -961,7 +959,7 @@ if (require.main === module) {
   buildData().then(output => {
     fs.writeFileSync('data.json', JSON.stringify(output, null, 2) + '\n');
     console.log(`Generated data.json: ${output.predictions.length} rows; BSD=${output.sources.bsd.count}; SStats=${output.sources.sstats.count}`);
-    if (!output.sources.bsd.ok && !output.sources.sstats.ok && !output.sources.euro365.ok && !output.sources.fbdata.ok && !output.sources.apifootball.ok) {
+    if (!output.sources.bsd.ok && !output.sources.sstats.ok && !output.sources.euro365.ok && !output.sources.fbdata.ok) {
       console.warn('Both data sources failed; generated JSON contains diagnostic errors.');
     }
   }).catch(error => { console.error(error); process.exitCode = 1; });
