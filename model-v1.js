@@ -158,7 +158,7 @@ function makeModelRows(fixtures) {
     const cornerMean = predictMean(productionModels.models.corners, features);
     const cardMean = predictMean(productionModels.models.yellowCards, features);
     output.push({
-      source: 'Модель', time: fixture.time, league: fixture.league,
+      source: 'Модель v1', time: fixture.time, league: fixture.league,
       home: fixture.home, away: fixture.away,
       corners: formatTotals(cornerMean, 'corners'),
       yellowCards: formatTotals(cardMean, 'yellowCards'),
@@ -193,7 +193,7 @@ function render() {
     const hasCards = val(x.yellowCards) !== '—';
     if (type === 'corners' && !hasCorners) return false;
     if (type === 'cards' && !hasCards) return false;
-    if (source !== 'all' && (source !== 'all' && x.source !== source)) return false;
+    if (source !== 'all' && x.source !== source) return false;
     const haystack = [x.league,x.home,x.away,x.source].join(' ').toLocaleLowerCase('ru');
     return !query || haystack.includes(query);
   }).sort((a,b) => (Date.parse(a.time)||0) - (Date.parse(b.time)||0));
@@ -229,7 +229,7 @@ async function load() {
       try { distributionConfig = await distributionResponse.json(); }
       catch (_) { distributionConfig = null; }
     }
-    if (!distributionConfig?.markets?.corners || !distributionConfig?.markets?.yellowCards) {
+    if (!productionModels?.models || !productionModels?.teams || !distributionConfig?.markets?.corners || !distributionConfig?.markets?.yellowCards) {
       throw new Error('Не удалось загрузить конфигурацию гибридного распределения v1.');
     }
     const now = Date.now();
