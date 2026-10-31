@@ -131,6 +131,24 @@ def main():
             if code and name:
                 league_names[code] = name
 
+    # Map normalized fixture competition names to football-data league codes.
+    # Canonical names from the audit are added automatically; aliases cover common
+    # labels used by the fixture feed.
+    league_aliases = {norm(name): code for code, name in league_names.items() if code and name}
+    league_aliases.update({
+        "premier league": "E0",
+        "championship": "E1",
+        "league one": "E2",
+        "league two": "E3",
+        "scottish premiership": "SC0",
+        "eredivisie": "N1",
+        "bundesliga": "D1",
+        "2 bundesliga": "D2",
+        "serie a": "I1",
+        "la liga": "SP1",
+        "ligue 1": "F1",
+    })
+
     output = {
         "schemaVersion": 1,
         "generatedAt": date.today().isoformat(),
