@@ -73,7 +73,7 @@ async function load() {
     const now = Date.now();
     allMarkets = (Array.isArray(data.predictions) ? data.predictions : []).filter(item => {
       const kickoff = Date.parse(item.time);
-      return Number.isFinite(kickoff) && kickoff > now && item.source !== 'Api-Football';
+      return Number.isFinite(kickoff) && kickoff > now;
     });
     setSourceStatus('status-bsd','BSD',data.sources?.bsd);
     setSourceStatus('status-sstats','SStats',data.sources?.sstats);
