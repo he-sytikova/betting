@@ -37,6 +37,49 @@ jobs:
       - name: Train, calibrate and evaluate total lines
         run: python scripts/predictions/train-models.py
 
+      - name: Create compact walk-forward summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report = json.loads(Path("data/corners_cards_model_report.json").read_text(encoding="utf-8"))
+          summary = {
+              "generatedAt": report.get("generatedAt"),
+              "datasetRows": report.get("datasetRows"),
+              "method": "Expanding-window seasonal walk-forward; refit each fold using only earlier matches",
+              "markets": {}
+          }
+          for market in ("corners", "yellowCards"):
+              walk = report.get(market, {}).get("walkForward", {})
+              summary["markets"][market] = {
+                  "status": walk.get("status"),
+                  "evaluatedFolds": walk.get("evaluatedFolds", 0),
+                  "pooledTestRows": walk.get("pooledTestRows", 0),
+                  "folds": [
+                      {
+                          "seasonStart": fold.get("seasonStart"),
+                          "seasonEndExclusive": fold.get("seasonEndExclusive"),
+                          "status": fold.get("status"),
+                          "trainRows": fold.get("trainRows"),
+                          "testRows": fold.get("testRows"),
+                          "trainThrough": fold.get("trainThrough"),
+                          "testFrom": fold.get("testFrom"),
+                          "testThrough": fold.get("testThrough"),
+                          "negativeBinomialAlpha": fold.get("negativeBinomialAlpha"),
+                          "pointMetrics": fold.get("pointMetrics"),
+                      }
+                      for fold in walk.get("folds", [])
+                  ],
+                  "pooledComparisons": walk.get("pooledComparisons", []),
+                  "significanceLevel": walk.get("significanceLevel"),
+                  "interpretation": walk.get("interpretation"),
+              }
+          Path("data/walk-forward-summary.json").write_text(
+              json.dumps(summary, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8"
+          )
+          print("Created data/walk-forward-summary.json")
+          PY
+
       - name: Publish dataset and backtest report
         run: |
           git config user.name "github-actions[bot]"
@@ -52,7 +95,15 @@ jobs:
           print("Validated Poisson and Negative Binomial report sections")
           PY
           git add data/corners_cards_audit.json data/corners_cards_training.csv
-          git add -f data/corners_cards_model_report.json
+          git add -f data/corners_cards_model_report.json data/walk-forward-summary.json
           git commit -m "chore: refresh corners and cards audit and training outputs" || echo "No changes to commit"
           git pull --rebase origin main
+      - name: Upload compact walk-forward summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: walk-forward-summary
+          path: data/walk-forward-summary.json
+          if-no-files-found: error
+          retention-days: 30
+
           git push
