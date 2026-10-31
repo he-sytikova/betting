@@ -55,11 +55,21 @@ def line_probability(mean, alpha, line, distribution):
     return BASE.negative_binomial_sf(line, mean, alpha)
 
 
-def compare(actual, candidate, baseline, seed):
+def compare(actual, candidate, baseline, seed, comparison_label):
+    # paired_bootstrap_ci expects (Poisson, NB2); use baseline then candidate.
     boot = BASE.paired_bootstrap_ci(actual, baseline, candidate, seed=seed, samples=1000)
     brier_p = BASE.paired_permutation_pvalue(actual, baseline, candidate, "brier", seed=seed + 1000, samples=1999)
     log_p = BASE.paired_permutation_pvalue(actual, baseline, candidate, "logloss", seed=seed + 2000, samples=1999)
-    return {**boot, "brierPermutationP": round(brier_p, 7), "logLossPermutationP": round(log_p, 7)}
+    return {
+        "comparison": comparison_label,
+        "brierDelta": boot["brierDeltaNbMinusPoisson"],
+        "brierDelta95CI": boot["brierDelta95CI"],
+        "logLossDelta": boot["logLossDeltaNbMinusPoisson"],
+        "logLossDelta95CI": boot["logLossDelta95CI"],
+        "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
+        "brierPermutationP": round(brier_p, 7),
+        "logLossPermutationP": round(log_p, 7),
+    }
 
 
 def run_market(rows, market, target, eligible, league_key, lines):
@@ -131,7 +141,7 @@ def run_market(rows, market, target, eligible, league_key, lines):
             actual = np.asarray(c["actual"], dtype=float)
             base_p = np.asarray(b["prob"], dtype=float)
             cand_p = np.asarray(c["prob"], dtype=float)
-            comparison = compare(actual, cand_p, base_p, 20261031 + i + (0 if dist == "poisson" else 500))
+            comparison = compare(actual, cand_p, base_p, 20261031 + i + (0 if dist == "poisson" else 500), "featureModel minus leagueBaseline")
             brier_p.append(comparison["brierPermutationP"])
             log_p.append(comparison["logLossPermutationP"])
             line_rows.append({
@@ -151,6 +161,27 @@ def run_market(rows, market, target, eligible, league_key, lines):
             item["over"]["comparisonFeatureMinusBaseline"]["brierHolmAdjustedP"] = round(brier_adj[i], 7)
             item["over"]["comparisonFeatureMinusBaseline"]["logLossHolmAdjustedP"] = round(log_adj[i], 7)
         report["distributions"][dist] = line_rows
+
+    # Direct paired test of NB2 against Poisson using the same feature-model mean.
+    distribution_rows = []
+    distribution_brier_p, distribution_log_p = [], []
+    for i, line in enumerate(lines):
+        key = str(line)
+        actual = np.asarray(pooled["featureModel"]["poisson"][key]["actual"], dtype=float)
+        poisson_probability = np.asarray(pooled["featureModel"]["poisson"][key]["prob"], dtype=float)
+        nb_probability = np.asarray(pooled["featureModel"]["negativeBinomial"][key]["prob"], dtype=float)
+        comparison = compare(actual, nb_probability, poisson_probability, 20262031 + i,
+                             "NB2 minus Poisson (feature-model mean)")
+        distribution_brier_p.append(comparison["brierPermutationP"])
+        distribution_log_p.append(comparison["logLossPermutationP"])
+        distribution_rows.append({"line": line, "NB2MinusPoisson": comparison})
+    distribution_brier_adj = BASE.holm_adjust(distribution_brier_p)
+    distribution_log_adj = BASE.holm_adjust(distribution_log_p)
+    for i, item in enumerate(distribution_rows):
+        item["NB2MinusPoisson"]["brierHolmAdjustedP"] = round(distribution_brier_adj[i], 7)
+        item["NB2MinusPoisson"]["logLossHolmAdjustedP"] = round(distribution_log_adj[i], 7)
+    report["distributionComparison"] = distribution_rows
+
     report["interpretation"] = (
         "Negative Brier/log-loss deltas favor the feature model. Holm-adjusted p<0.05 indicates "
         "evidence of a difference across the market's tested lines. Reliability bins and ECE/MCE "
