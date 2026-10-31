@@ -75,7 +75,7 @@ jobs:
                   "interpretation": walk.get("interpretation"),
               }
           Path("data/walk-forward-summary.json").write_text(
-              json.dumps(summary, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8"
+              json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
           )
           print("Created data/walk-forward-summary.json")
           PY
