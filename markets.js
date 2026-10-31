@@ -1,10 +1,15 @@
 const $ = (id) => document.getElementById(id);
 let allMarkets = [];
+let productionModels = null;
 function val(v) { return v === null || v === undefined || v === '' || v === '—' ? '—' : String(v); }
 function fmtTime(v) {
   if (!v) return '—';
   const d = new Date(v);
   return Number.isNaN(d.getTime()) ? '—' : d.toLocaleString('ru-RU', {timeZone:'Europe/Moscow',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+}
+function normalize(value) {
+  return String(value || '').normalize('NFKC').toLocaleLowerCase('ru')
+    .replace(/[^\p{L}\p{N}]+/gu, ' ').trim().replace(/\s+/g, ' ');
 }
 function setSourceStatus(id, name, status) {
   const el = $(id);
@@ -18,6 +23,80 @@ function setSourceStatus(id, name, status) {
     el.textContent = name + ': нет данных';
     el.className = 'status-badge error';
   }
+}
+function poissonOver(mean, line) {
+  if (!Number.isFinite(mean) || mean <= 0) return null;
+  const limit = Math.floor(line);
+  let term = Math.exp(-mean), cumulative = term;
+  for (let k = 1; k <= limit; k++) {
+    term *= mean / k;
+    cumulative += term;
+  }
+  return Math.max(0, Math.min(1, 1 - cumulative));
+}
+function predictMean(model, featureValues) {
+  const z = model.features.map((name, i) => {
+    const raw = featureValues[name];
+    const value = Number.isFinite(raw) ? raw : model.imputerMedian[i];
+    return (value - model.scalerMean[i]) / (model.scalerScale[i] || 1);
+  });
+  const eta = model.intercept + z.reduce((sum, value, i) => sum + value * model.coefficients[i], 0);
+  return Math.max(0.05, Math.min(30, Math.exp(Math.max(-5, Math.min(5, eta)))));
+}
+function formatTotals(mean) {
+  return productionModels.lines.map(line => {
+    const over = poissonOver(mean, line);
+    if (over === null) return '';
+    return 'ТБ ' + line + ': ' + (over * 100).toFixed(1) + '% / ТМ: ' + ((1 - over) * 100).toFixed(1) + '%';
+  }).join(' · ');
+}
+function makeModelRows(fixtures) {
+  if (!productionModels?.models || !productionModels?.teams || !productionModels?.leagueNames) return [];
+  const leagueCodeByName = new Map(Object.entries(productionModels.leagueNames)
+    .map(([code, name]) => [normalize(name), code]));
+  const seen = new Set(), output = [];
+  for (const fixture of fixtures) {
+    const leagueCode = leagueCodeByName.get(normalize(fixture.league));
+    if (!leagueCode) continue;
+    const leagueTeams = productionModels.teams[leagueCode];
+    const home = leagueTeams?.[normalize(fixture.home)];
+    const away = leagueTeams?.[normalize(fixture.away)];
+    const league = productionModels.leagueStats?.[leagueCode];
+    if (!home || !away || !league) continue;
+    const key = [fixture.time, leagueCode, normalize(fixture.home), normalize(fixture.away)].join('|');
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const features = {
+      home_team_for_avg5: home.stats.team_for_avg5,
+      home_team_against_avg5: home.stats.team_against_avg5,
+      home_team_for_avg10: home.stats.team_for_avg10,
+      home_team_against_avg10: home.stats.team_against_avg10,
+      away_team_for_avg5: away.stats.team_for_avg5,
+      away_team_against_avg5: away.stats.team_against_avg5,
+      away_team_for_avg10: away.stats.team_for_avg10,
+      away_team_against_avg10: away.stats.team_against_avg10,
+      home_card_team_for_avg5: home.stats.card_team_for_avg5,
+      home_card_team_against_avg5: home.stats.card_team_against_avg5,
+      home_card_team_for_avg10: home.stats.card_team_for_avg10,
+      home_card_team_against_avg10: home.stats.card_team_against_avg10,
+      away_card_team_for_avg5: away.stats.card_team_for_avg5,
+      away_card_team_against_avg5: away.stats.card_team_against_avg5,
+      away_card_team_for_avg10: away.stats.card_team_for_avg10,
+      away_card_team_against_avg10: away.stats.card_team_against_avg10,
+      league_corners_avg: league.league_corners_avg,
+      league_cards_avg: league.league_cards_avg,
+      home_advantage: 1,
+    };
+    const cornerMean = predictMean(productionModels.models.corners, features);
+    const cardMean = predictMean(productionModels.models.yellowCards, features);
+    output.push({
+      source: 'Модель', time: fixture.time, league: fixture.league,
+      home: fixture.home, away: fixture.away,
+      corners: formatTotals(cornerMean),
+      yellowCards: formatTotals(cardMean),
+    });
+  }
+  return output;
 }
 function colorMarketCells(row) {
   for (const cell of row.cells) {
@@ -67,20 +146,31 @@ function render() {
 }
 async function load() {
   try {
-    const response = await fetch('./data.json?t=' + Date.now(), {cache:'no-store'});
+    const [response, modelResponse] = await Promise.all([
+      fetch('./data.json?t=' + Date.now(), {cache:'no-store'}),
+      fetch('./data/corners_cards_models.json?t=' + Date.now(), {cache:'no-store'}).catch(() => null),
+    ]);
     if (!response.ok) throw new Error('Не удалось загрузить data.json (HTTP ' + response.status + ')');
     const data = await response.json();
+    if (modelResponse?.ok) {
+      try { productionModels = await modelResponse.json(); }
+      catch (_) { productionModels = null; }
+    }
     const now = Date.now();
-    allMarkets = (Array.isArray(data.predictions) ? data.predictions : []).filter(item => {
+    const fixtures = (Array.isArray(data.predictions) ? data.predictions : []).filter(item => {
       const kickoff = Date.parse(item.time);
       return Number.isFinite(kickoff) && kickoff > now;
     });
+    const externalRows = fixtures.filter(item => val(item.corners) !== '—' || val(item.yellowCards) !== '—');
+    const modelRows = makeModelRows(fixtures);
+    allMarkets = [...externalRows, ...modelRows];
     setSourceStatus('status-bsd','BSD',data.sources?.bsd);
     setSourceStatus('status-sstats','SStats',data.sources?.sstats);
     setSourceStatus('status-euro365','Euro365',data.sources?.euro365);
     setSourceStatus('status-fbdata','FB_DATA',data.sources?.fbdata);
     const generated = data.generatedAt ? new Date(data.generatedAt) : null;
     $('markets-date').textContent = 'Матчи на ' + (data.date || 'сегодня') + (generated && !Number.isNaN(generated.getTime()) ? ' · обновлено ' + generated.toLocaleString('ru-RU') : '');
+    $('markets-count').textContent = productionModels ? 'Модель: ' + modelRows.length + ' сопоставленных матчей' : 'Модель не загружена — доступны внешние источники';
     render();
   } catch (e) {
     $('markets-error').textContent = e.message || 'Ошибка загрузки данных.';
