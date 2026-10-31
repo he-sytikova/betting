@@ -634,7 +634,7 @@ def train_market(rows, target, eligible_flag, baseline_key, market_lines):
             },
             "totalLines": evaluate_lines(y_test, nb_pred, "negative_binomial", pearson_alpha, market_lines),
             "byLeague": grouped_metrics(test, y_test, nb_pred, baseline, "league", distribution="negative_binomial", alpha=pearson_alpha, lines=market_lines),
-            "bySeason": grouped_metrics(test, y_test, nb_pred, baseline, "league", distribution="negative_binomial", alpha=pearson_alpha, lines=market_lines)
+            "bySeason": grouped_metrics(test, y_test, nb_pred, baseline, "season", distribution="negative_binomial", alpha=pearson_alpha, lines=market_lines)
         },
         "model": {
             "type": "PoissonRegressor",
