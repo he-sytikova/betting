@@ -8,7 +8,8 @@ from datetime import date
 from pathlib import Path
 
 import numpy as np
-from scipy.stats import poisson
+from scipy.stats import nbinom, poisson
+import statsmodels.api as sm
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import PoissonRegressor
 from sklearn.pipeline import Pipeline
@@ -60,12 +61,22 @@ def probability_metrics(actual, probability):
         "calibrationBins": bins,
     }
 
-def evaluate_lines(y, prediction):
+def negative_binomial_sf(line, mean, alpha):
+    mean = np.maximum(np.asarray(mean, dtype=float), 1e-8)
+    alpha = max(float(alpha), 1e-8)
+    size = 1.0 / alpha
+    probability = size / (size + mean)
+    return nbinom.sf(int(line), size, probability)
+
+def evaluate_lines(y, prediction, distribution="poisson", alpha=None):
     results = []
     for line in LINES:
         # For half-point lines there is no push: over means integer total > line.
         over_actual = (y > line).astype(float)
-        over_probability = poisson.sf(int(line), prediction)
+        if distribution == "negative_binomial":
+            over_probability = negative_binomial_sf(line, prediction, alpha)
+        else:
+            over_probability = poisson.sf(int(line), prediction)
         under_actual = 1.0 - over_actual
         under_probability = 1.0 - over_probability
         results.append({
@@ -83,7 +94,7 @@ def evaluate_lines(y, prediction):
         })
     return results
 
-def grouped_metrics(rows, y, pred, baseline, group_key, min_rows=100):
+def grouped_metrics(rows, y, pred, baseline, group_key, min_rows=100, distribution="poisson", alpha=None):
     groups = {}
     keys = sorted({r.get(group_key, "") for r in rows if r.get(group_key, "")})
     for key in keys:
@@ -98,7 +109,7 @@ def grouped_metrics(rows, y, pred, baseline, group_key, min_rows=100):
             "baselineMae": round(float(np.mean(np.abs(gy - gb))), 4),
             "poissonDeviance": round(poisson_deviance(gy, gp), 4),
             "baselinePoissonDeviance": round(poisson_deviance(gy, gb), 4),
-            "totalLines": evaluate_lines(gy, gp),
+            "totalLines": evaluate_lines(gy, gp, distribution, alpha),
             "baselineTotalLines": evaluate_lines(gy, gb),
             "actualMean": round(float(np.mean(gy)), 4),
             "actualVariance": round(float(np.var(gy)), 4),
@@ -123,6 +134,22 @@ def train_market(rows, target, eligible_flag, baseline_key):
     ])
     model.fit(x_train, y_train)
     pred = np.maximum(model.predict(x_test), 1e-8)
+    x_train_scaled = model[:-1].transform(x_train)
+    x_test_scaled = model[:-1].transform(x_test)
+    poisson_train_mean = np.maximum(model.predict(x_train), 1e-8)
+    pearson_alpha = max(
+        float(np.sum((y_train - poisson_train_mean) ** 2 - poisson_train_mean)
+              / np.sum(poisson_train_mean ** 2)),
+        1e-6,
+    )
+    nb_model = sm.GLM(
+        y_train,
+        sm.add_constant(x_train_scaled, has_constant="add"),
+        family=sm.families.NegativeBinomial(alpha=pearson_alpha),
+    ).fit(maxiter=200)
+    nb_pred = np.maximum(nb_model.predict(
+        sm.add_constant(x_test_scaled, has_constant="add")
+    ), 1e-8)
     baseline = np.array([
         float(r[baseline_key]) if r.get(baseline_key) else float(np.mean(y_train))
         for r in test
@@ -154,6 +181,19 @@ def train_market(rows, target, eligible_flag, baseline_key):
         },
         "byLeague": grouped_metrics(test, y_test, pred, baseline, "league"),
         "bySeason": grouped_metrics(test, y_test, pred, baseline, "season"),
+        "negativeBinomial": {
+            "status": "evaluated",
+            "alpha": round(float(pearson_alpha), 8),
+            "metrics": {
+                "mae": round(float(np.mean(np.abs(y_test - nb_pred))), 4),
+                "poissonDeviance": round(poisson_deviance(y_test, nb_pred), 4),
+                "improvesMaeOverPoisson": float(np.mean(np.abs(y_test - nb_pred))) < mae,
+                "improvesDevianceOverPoisson": poisson_deviance(y_test, nb_pred) < poisson_deviance(y_test, pred),
+            },
+            "totalLines": evaluate_lines(y_test, nb_pred, "negative_binomial", pearson_alpha),
+            "byLeague": grouped_metrics(test, y_test, nb_pred, baseline, "league", distribution="negative_binomial", alpha=pearson_alpha),
+            "bySeason": grouped_metrics(test, y_test, nb_pred, baseline, "season", distribution="negative_binomial", alpha=pearson_alpha),
+        },
         "model": {
             "type": "PoissonRegressor",
             "alpha": 0.5,
@@ -174,7 +214,7 @@ def main():
     report = {
         "generatedAt": date.today().isoformat(),
         "status": "calibration_and_line_backtest_only_not_for_public_predictions",
-        "method": "Poisson regression with chronological holdout; half-point totals evaluated as Poisson tail probabilities",
+        "method": "Poisson and Negative Binomial GLM comparison with chronological holdout; Negative Binomial dispersion estimated from training-only Pearson residuals",
         "holdoutStart": HOLDOUT_START.isoformat(),
         "datasetRows": len(rows),
         "evaluatedLines": LINES,
