@@ -139,6 +139,7 @@ def main():
                     "home_matches_before": len(histories[hkey]["matches"]),
                     "away_matches_before": len(histories[akey]["matches"]),
                     "league_matches_before": len(league_history["matches"]),
+                    "home_advantage": 1,
                     "referee_available": int(bool(m["referee"])),
                     "referee_matches_before": len(referee_histories[(code, m["referee"])]) if m["referee"] else 0,
                     "corners_model_eligible": int(corner_ok),
