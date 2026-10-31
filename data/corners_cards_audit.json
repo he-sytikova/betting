@@ -1,0 +1,244 @@
+{
+  "generatedAt": "2026-10-31T04:39:22.959806+00:00",
+  "modelStatus": "audit_only_no_predictions",
+  "policy": {
+    "minimumHistoricalMatches": 100,
+    "minimumMatchesPerTeam": 8,
+    "minimumRecentStatCoverage": 0.8,
+    "note": "A league is eligible separately for corners and yellow cards only after historical and per-team checks."
+  },
+  "sources": {
+    "openMatchday": {
+      "url": "https://github.com/oladeeayo/open-matchday",
+      "season": "2026/27",
+      "license": "non-commercial; attribution required",
+      "leagues": []
+    },
+    "footballData": {
+      "url": "https://www.football-data.co.uk/data.php",
+      "seasons": "2015/16-2025/26",
+      "leagues": [
+        {
+          "league": "England - Premier League",
+          "seasons_checked": 11,
+          "matches": 4180,
+          "corners_complete": 4180,
+          "yellow_cards_complete": 4180,
+          "source": "football-data.co.uk",
+          "corners_coverage": 1.0,
+          "cards_coverage": 1.0
+        },
+        {
+          "league": "England - Championship",
+          "seasons_checked": 11,
+          "matches": 6072,
+          "corners_complete": 6071,
+          "yellow_cards_complete": 6071,
+          "source": "football-data.co.uk",
+          "corners_coverage": 0.9998,
+          "cards_coverage": 0.9998
+        },
+        {
+          "league": "England - League One",
+          "seasons_checked": 11,
+          "matches": 5920,
+          "corners_complete": 5920,
+          "yellow_cards_complete": 5920,
+          "source": "football-data.co.uk",
+          "corners_coverage": 1.0,
+          "cards_coverage": 1.0
+        },
+        {
+          "league": "England - League Two",
+          "seasons_checked": 11,
+          "matches": 5960,
+          "corners_complete": 5960,
+          "yellow_cards_complete": 5960,
+          "source": "football-data.co.uk",
+          "corners_coverage": 1.0,
+          "cards_coverage": 1.0
+        },
+        {
+          "league": "Scotland - Premiership",
+          "seasons_checked": 11,
+          "matches": 2459,
+          "corners_complete": 2459,
+          "yellow_cards_complete": 2459,
+          "source": "football-data.co.uk",
+          "corners_coverage": 1.0,
+          "cards_coverage": 1.0
+        },
+        {
+          "league": "Scotland - Championship",
+          "seasons_checked": 11,
+          "matches": 1892,
+          "corners_complete": 1532,
+          "yellow_cards_complete": 1532,
+          "source": "football-data.co.uk",
+          "corners_coverage": 0.8097,
+          "cards_coverage": 0.8097
+        },
+        {
+          "league": "Scotland - League One",
+          "seasons_checked": 11,
+          "matches": 1869,
+          "corners_complete": 1508,
+          "yellow_cards_complete": 1509,
+          "source": "football-data.co.uk",
+          "corners_coverage": 0.8068,
+          "cards_coverage": 0.8074
+        },
+        {
+          "league": "Scotland - League Two",
+          "seasons_checked": 11,
+          "matches": 1867,
+          "corners_complete": 1506,
+          "yellow_cards_complete": 1507,
+          "source": "football-data.co.uk",
+          "corners_coverage": 0.8066,
+          "cards_coverage": 0.8072
+        },
+        {
+          "league": "Germany - Bundesliga",
+          "seasons_checked": 11,
+          "matches": 3366,
+          "corners_complete": 3365,
+          "yellow_cards_complete": 3365,
+          "source": "football-data.co.uk",
+          "corners_coverage": 0.9997,
+          "cards_coverage": 0.9997
+        },
+        {
+          "league": "Germany - 2. Bundesliga",
+          "seasons_checked": 11,
+          "matches": 3366,
+          "corners_complete": 2754,
+          "yellow_cards_complete": 2754,
+          "source": "football-data.co.uk",
+          "corners_coverage": 0.8182,
+          "cards_coverage": 0.8182
+        },
+        {
+          "league": "Italy - Serie A",
+          "seasons_checked": 11,
+          "matches": 4180,
+          "corners_complete": 4180,
+          "yellow_cards_complete": 4180,
+          "source": "football-data.co.uk",
+          "corners_coverage": 1.0,
+          "cards_coverage": 1.0
+        },
+        {
+          "league": "Italy - Serie B",
+          "seasons_checked": 11,
+          "matches": 4388,
+          "corners_complete": 3462,
+          "yellow_cards_complete": 3462,
+          "source": "football-data.co.uk",
+          "corners_coverage": 0.789,
+          "cards_coverage": 0.789
+        },
+        {
+          "league": "Spain - La Liga",
+          "seasons_checked": 11,
+          "matches": 4180,
+          "corners_complete": 4180,
+          "yellow_cards_complete": 4180,
+          "source": "football-data.co.uk",
+          "corners_coverage": 1.0,
+          "cards_coverage": 1.0
+        },
+        {
+          "league": "Spain - Segunda",
+          "seasons_checked": 11,
+          "matches": 5082,
+          "corners_complete": 4137,
+          "yellow_cards_complete": 4137,
+          "source": "football-data.co.uk",
+          "corners_coverage": 0.814,
+          "cards_coverage": 0.814
+        },
+        {
+          "league": "France - Ligue 1",
+          "seasons_checked": 11,
+          "matches": 3857,
+          "corners_complete": 3856,
+          "yellow_cards_complete": 3856,
+          "source": "football-data.co.uk",
+          "corners_coverage": 0.9997,
+          "cards_coverage": 0.9997
+        },
+        {
+          "league": "France - Ligue 2",
+          "seasons_checked": 11,
+          "matches": 3930,
+          "corners_complete": 3167,
+          "yellow_cards_complete": 3167,
+          "source": "football-data.co.uk",
+          "corners_coverage": 0.8059,
+          "cards_coverage": 0.8059
+        },
+        {
+          "league": "Netherlands - Eredivisie",
+          "seasons_checked": 11,
+          "matches": 3292,
+          "corners_complete": 2680,
+          "yellow_cards_complete": 2680,
+          "source": "football-data.co.uk",
+          "corners_coverage": 0.8141,
+          "cards_coverage": 0.8141
+        },
+        {
+          "league": "Belgium - First Division",
+          "seasons_checked": 11,
+          "matches": 3045,
+          "corners_complete": 2559,
+          "yellow_cards_complete": 2560,
+          "source": "football-data.co.uk",
+          "corners_coverage": 0.8404,
+          "cards_coverage": 0.8407
+        },
+        {
+          "league": "Portugal - Primeira Liga",
+          "seasons_checked": 11,
+          "matches": 3366,
+          "corners_complete": 2754,
+          "yellow_cards_complete": 2754,
+          "source": "football-data.co.uk",
+          "corners_coverage": 0.8182,
+          "cards_coverage": 0.8182
+        },
+        {
+          "league": "Turkey - Super Lig",
+          "seasons_checked": 11,
+          "matches": 3700,
+          "corners_complete": 3057,
+          "yellow_cards_complete": 3057,
+          "source": "football-data.co.uk",
+          "corners_coverage": 0.8262,
+          "cards_coverage": 0.8262
+        },
+        {
+          "league": "Greece - Super League",
+          "seasons_checked": 11,
+          "matches": 2628,
+          "corners_complete": 2145,
+          "yellow_cards_complete": 2145,
+          "source": "football-data.co.uk",
+          "corners_coverage": 0.8162,
+          "cards_coverage": 0.8162
+        }
+      ],
+      "errors": []
+    }
+  },
+  "summary": {
+    "openMatchdayLeaguesChecked": 0,
+    "openMatchdayAvailable": 0,
+    "openMatchdayCornerMatches": 0,
+    "openMatchdayCardMatches": 0,
+    "footballDataHistoricalMatches": 78599,
+    "footballDataCornerMatches": 71432,
+    "footballDataCardMatches": 71435
+  }
+}
