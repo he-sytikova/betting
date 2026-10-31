@@ -98,6 +98,8 @@ jobs:
           git add -f data/corners_cards_model_report.json data/walk-forward-summary.json
           git commit -m "chore: refresh corners and cards audit and training outputs" || echo "No changes to commit"
           git pull --rebase origin main
+          git push
+
       - name: Upload compact walk-forward summary
         uses: actions/upload-artifact@v4
         with:
@@ -105,5 +107,3 @@ jobs:
           path: data/walk-forward-summary.json
           if-no-files-found: error
           retention-days: 30
-
-          git push
