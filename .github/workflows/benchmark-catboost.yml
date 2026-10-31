@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - model-development
+    paths:
+      - scripts/predictions/benchmark-catboost.py
+      - scripts/predictions/train-models.py
+      - data/corners_cards_training.csv
+      - .github/workflows/benchmark-catboost.yml
 
 permissions:
   contents: write
