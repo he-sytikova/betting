@@ -67,8 +67,9 @@ function predictMean(model, featureValues) {
   const eta = model.intercept + z.reduce((sum, value, i) => sum + value * model.coefficients[i], 0);
   return Math.max(0.05, Math.min(30, Math.exp(Math.max(-5, Math.min(5, eta)))));
 }
-function formatTotals(mean) {
-  return productionModels.lines.map(line => {
+function formatTotals(mean, market) {
+  const lines = productionModels.marketLines?.[market] || productionModels.lines;
+  return lines.map(line => {
     const over = poissonOver(mean, line);
     if (over === null) return '';
     return 'ТБ ' + line + ': ' + (over * 100).toFixed(1) + '% / ТМ: ' + ((1 - over) * 100).toFixed(1) + '%';
@@ -141,8 +142,8 @@ function makeModelRows(fixtures) {
     output.push({
       source: 'Модель', time: fixture.time, league: fixture.league,
       home: fixture.home, away: fixture.away,
-      corners: formatTotals(cornerMean),
-      yellowCards: formatTotals(cardMean),
+      corners: formatTotals(cornerMean, 'corners'),
+      yellowCards: formatTotals(cardMean, 'yellowCards'),
     });
   }
   return output;
