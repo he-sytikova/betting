@@ -145,6 +145,28 @@ def paired_bootstrap_ci(actual, p_poisson, p_nb, seed=20261031, samples=1000):
     }
 
 
+def calibration_probability_bands(y, mean, alpha, distribution):
+    output = []
+    y = np.asarray(y, dtype=float)
+    for line in LINES:
+        actual = (y > line).astype(float)
+        if distribution == "negative_binomial":
+            probability = negative_binomial_sf(line, mean, alpha)
+        else:
+            probability = poisson.sf(int(line), np.maximum(mean, 1e-8))
+        for lower, upper in ((0.6, 0.7), (0.7, 0.8), (0.8, 0.9), (0.9, 1.000001)):
+            mask = (probability >= lower) & (probability < upper)
+            if np.any(mask):
+                output.append({
+                    "line": line,
+                    "predictedRange": [lower, min(upper, 1.0)],
+                    "matches": int(mask.sum()),
+                    "meanPredicted": round(float(probability[mask].mean()), 5),
+                    "observedRate": round(float(actual[mask].mean()), 5),
+                })
+    return output
+
+
 def train_market(rows, target, eligible_flag, baseline_key):
     usable = [r for r in rows if r[eligible_flag] == "1" and r[target] != ""]
     train = [r for r in usable if date.fromisoformat(r["date"]) < HOLDOUT_START]
@@ -204,6 +226,10 @@ def train_market(rows, target, eligible_flag, baseline_key):
         "byLeague": grouped_metrics(test, y_test, pred, baseline, "league"),
         "bySeason": grouped_metrics(test, y_test, pred, baseline, "season"),
         "distributionComparison": {
+            "calibrationBands": {
+                "poisson": calibration_probability_bands(y_test, pred, pearson_alpha, "poisson"),
+                "negativeBinomial": calibration_probability_bands(y_test, pred, pearson_alpha, "negative_binomial"),
+            },
             "pairedBootstrapByLine": [
                 {
                     "line": line,
