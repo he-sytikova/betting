@@ -7,7 +7,6 @@ const SSTATS_BASE = 'https://api.sstats.net';
 const { fetchEuro365, getEuro365Diagnostics } = require('./euro365');
 let date = moscowDateKey(new Date());
 const errors = [];
-let apiFootballCache = null;
 const sourceStatus = {
   bsd: { ok: false, count: 0, message: '', diagnostic: '' },
   sstats: { ok: false, count: 0, message: '', diagnostic: '' },
@@ -442,151 +441,6 @@ function normalizeFootballData(match, history = []) {
   };
 }
 
-function normalizeApiFootball(item, fallbackFixture = null) {
-  const fixture = item.fixture || fallbackFixture?.fixture || {};
-  const teams = item.teams || {};
-  const league = item.league || {};
-  const prediction = item.predictions || {};
-  const percentValues = prediction.percent || {};
-  const homeProb = percent(String(percentValues.home ?? '').replace('%', ''));
-  const drawProb = percent(String(percentValues.draw ?? '').replace('%', ''));
-  const awayProb = percent(String(percentValues.away ?? '').replace('%', ''));
-  const hasProb = [percentValues.home, percentValues.draw, percentValues.away].some(value => value !== undefined && value !== null && Number.isFinite(Number(String(value).replace('%', ''))));
-  const outcomeValues = [['П1', Number(String(percentValues.home ?? '').replace('%', '')) || 0], ['X', Number(String(percentValues.draw ?? '').replace('%', '')) || 0], ['П2', Number(String(percentValues.away ?? '').replace('%', '')) || 0]];
-  const winner = prediction.winner?.name || prediction.advice || (hasProb ? outcomeValues.sort((a, b) => b[1] - a[1])[0][0] : '—');
-  const status = String(fixture.status?.short || '').toUpperCase();
-  const goals = item.goals || {};
-  const hasScore = goals.home !== null && goals.home !== undefined && goals.away !== null && goals.away !== undefined;
-  const actualResult = hasScore ? (['FT', 'AET', 'PEN'].includes(status) ? 'ФТ · ' : ['1H', '2H', 'HT', 'ET', 'LIVE'].includes(status) ? 'LIVE · ' : '') + goals.home + ':' + goals.away : ['1H', '2H', 'HT', 'ET', 'LIVE'].includes(status) ? 'Матч идёт' : '—';
-  return {
-    source: 'Api-Football', eventId: fixture.id ?? null, time: fixture.date || null,
-    league: league.name || '—', home: teams.home?.name || '—', away: teams.away?.name || '—',
-    actualResult, outcome: winner,
-    probabilityOutcome: hasProb ? 'П1 ' + (homeProb ?? '—') + ' / X ' + (drawProb ?? '—') + ' / П2 ' + (awayProb ?? '—') : '—',
-    totalGoals: prediction.under_over ? 'Тотал: ' + prediction.under_over : '—',
-    underGoals: '—',
-    individualTotals: prediction.goals ? 'Х ' + (prediction.goals.home ?? '—') + ' / Г ' + (prediction.goals.away ?? '—') : '—',
-    corners: '—', yellowCards: '—'
-  };
-}
-async function fetchApiFootball() {
-  const token = process.env.API_FOOTBALL_KEY || '';
-  if (!token) throw new Error('Не задан API_FOOTBALL_KEY в GitHub Actions Secrets');
-  let previous = null;
-  try { previous = JSON.parse(fs.readFileSync('data.json', 'utf8')); } catch { /* first run */ }
-  const cache = previous?.apiFootballCache;
-  if (cache?.date === date && Array.isArray(cache.rows) && cache.rows.length > 0 && cache.ok === true && Array.isArray(cache.fixtureMeta) &&
-      (!Array.isArray(cache.fixtureIds) || !cache.fixtureIds.some(id => !(cache.attemptedIds || []).map(String).includes(String(id))) || Number(cache.requestsMadeToday) >= 90)) {
-    apiFootballCache = cache;
-    sourceStatus.apifootball = { ok: true, count: cache.rows.length, message: '', diagnostic: 'Api-Football: использован дневной кэш; ' + (cache.diagnostic || 'дневная квота исчерпана или матчей для проверки больше нет') };
-    return cache.rows;
-  }
-
-  const base = 'https://v3.football.api-sports.io';
-  const headers = { 'x-apisports-key': token, Accept: 'application/json' };
-  const priorityLeagues = new Set([2, 3, 848, 39, 140, 135, 78, 61, 88, 94, 253, 71, 144, 203, 179, 13, 45, 143]);
-  let fixtureIds = cache?.date === date && Array.isArray(cache.fixtureIds) ? cache.fixtureIds : null;
-  let fixtureMeta = cache?.date === date && Array.isArray(cache.fixtureMeta) ? cache.fixtureMeta : null;
-  let attemptedIds = new Set(cache?.date === date && Array.isArray(cache.attemptedIds) ? cache.attemptedIds.map(String) : []);
-  let requestsMadeToday = Number(cache?.date === date ? cache.requestsMadeToday : 0) || 0;
-  let fixturesTotal = Number(cache?.date === date ? cache.fixturesTotal : 0) || 0;
-
-  if (!fixtureIds || !fixtureMeta) {
-    if (requestsMadeToday >= 90) {
-      const detail = 'Api-Football: дневной лимит запросов приложения исчерпан; прогнозы будут проверены при следующем обновлении даты.';
-      apiFootballCache = { date, rows: [], ok: false, message: detail, diagnostic: detail, fixtureIds: [], attemptedIds: [], requestsMadeToday, fixturesTotal: 0 };
-      sourceStatus.apifootball = { ok: false, count: 0, message: detail, diagnostic: detail };
-      throw new Error(detail);
-    }
-    const payload = await getJson(base + '/fixtures?date=' + encodeURIComponent(date) + '&timezone=Europe%2FMoscow', headers, 10000);
-    requestsMadeToday++;
-    if (payload.errors && (Array.isArray(payload.errors) ? payload.errors.length : Object.keys(payload.errors).length)) throw new Error('Api-Football: ' + JSON.stringify(payload.errors).slice(0, 180));
-    const responseRows = Array.isArray(payload.response) ? payload.response : arr(payload);
-    const allFixtures = responseRows.filter(item => item?.fixture?.id);
-    const upcoming = allFixtures.filter(item => ['NS', 'TBD'].includes(String(item.fixture?.status?.short || '').toUpperCase()));
-    if (!allFixtures.length) {
-      const detail = 'Api-Football: пустое расписание для ' + date + '; results=' + (payload.results ?? responseRows.length) + '; parameters=' + JSON.stringify(payload.parameters || {}).slice(0, 140) + '; errors=' + JSON.stringify(payload.errors || {}).slice(0, 140);
-      apiFootballCache = { date, rows: [], ok: false, message: detail, diagnostic: detail, fixtureIds: [], attemptedIds: [], requestsMadeToday, fixturesTotal: 0 };
-      sourceStatus.apifootball = { ok: false, count: 0, message: detail, diagnostic: detail };
-      throw new Error(detail);
-    }
-    // Prioritize major competitions, then spread the remaining checks across the day's schedule.
-    const sorted = upcoming.slice().sort((a, b) => {
-      const ap = priorityLeagues.has(Number(a.league?.id)) ? 0 : 1;
-      const bp = priorityLeagues.has(Number(b.league?.id)) ? 0 : 1;
-      return ap - bp || new Date(a.fixture?.date || 0) - new Date(b.fixture?.date || 0);
-    });
-    fixtureMeta = sorted;
-    if (!fixtureIds) {
-      fixtureIds = sorted.map(item => Number(item.fixture.id)).filter(Number.isFinite);
-      fixturesTotal = fixtureIds.length;
-    }
-  }
-
-  if (requestsMadeToday >= 90) {
-    const detail = 'Api-Football: дневной лимит приложения достигнут (' + requestsMadeToday + ' запросов); новые проверки остановлены до следующего дня.';
-    apiFootballCache = { date, rows: [], ok: false, message: detail, diagnostic: detail, fixtureIds, attemptedIds: [...attemptedIds], requestsMadeToday, fixturesTotal };
-    sourceStatus.apifootball = { ok: false, count: 0, message: detail, diagnostic: detail };
-    throw new Error(detail);
-  }
-
-  const selected = fixtureIds.filter(id => !attemptedIds.has(String(id))).slice(0, Math.min(10, 90 - requestsMadeToday));
-  const rows = cache?.date === date && Array.isArray(cache.rows) ? cache.rows.slice() : [];
-  const normalizeTeamKey = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('ru').replace(/[^a-zа-яё0-9]/gi, '');
-  const fixtureByTeams = new Map((fixtureMeta || []).map(item => [
-    normalizeTeamKey(item.teams?.home?.name) + '|' + normalizeTeamKey(item.teams?.away?.name), item
-  ]));
-  for (const row of rows) {
-    if (row.time && row.eventId !== null && row.eventId !== undefined) continue;
-    const fixture = fixtureByTeams.get(normalizeTeamKey(row.home) + '|' + normalizeTeamKey(row.away));
-    if (fixture?.fixture) {
-      row.eventId = fixture.fixture.id ?? row.eventId;
-      row.time = fixture.fixture.date || row.time;
-      row.league = fixture.league?.name || row.league;
-      row.home = fixture.teams?.home?.name || row.home;
-      row.away = fixture.teams?.away?.name || row.away;
-    }
-  }
-  const errorsFound = [];
-  let emptyResponses = 0;
-  for (const fixtureId of selected) {
-    if (requestsMadeToday > 1) await new Promise(resolve => setTimeout(resolve, 6500));
-    attemptedIds.add(String(fixtureId));
-    try {
-      const result = await getJson(base + '/predictions?fixture=' + encodeURIComponent(fixtureId), headers, 8000);
-      requestsMadeToday++;
-      if (result.errors && (Array.isArray(result.errors) ? result.errors.length : Object.keys(result.errors).length)) {
-        errorsFound.push('fixture ' + fixtureId + ': ' + JSON.stringify(result.errors).slice(0, 100));
-        continue;
-      }
-      const prediction = Array.isArray(result.response) ? result.response[0] : arr(result)[0];
-      const fixtureInfo = (fixtureMeta || []).find(item => String(item.fixture?.id) === String(fixtureId));
-      if (prediction) rows.push(normalizeApiFootball(prediction, fixtureInfo));
-      else emptyResponses++;
-    } catch (error) {
-      requestsMadeToday++;
-      errorsFound.push('fixture ' + fixtureId + ': ' + safeError(error));
-      if (/429|rate.?limit/i.test(String(error?.message || error))) break;
-    }
-  }
-
-  const diagnostic = 'расписание: ' + fixturesTotal + '; проверено прогнозов в этом запуске: ' + selected.length +
-    '; пустых ответов: ' + emptyResponses + '; накоплено запросов за день: ' + requestsMadeToday +
-    '; осталось проверить матчей: ' + fixtureIds.filter(id => !attemptedIds.has(String(id))).length +
-    (errorsFound.length ? '; ошибки: ' + errorsFound.slice(0, 2).join('; ') : '');
-  apiFootballCache = {
-    date, rows, ok: rows.length > 0, message: rows.length ? '' : 'Api-Football: прогнозы пока не найдены; следующие матчи будут проверены при следующем обновлении.',
-    diagnostic, fixtureIds, fixtureMeta: fixtureMeta || [], attemptedIds: [...attemptedIds], requestsMadeToday, fixturesTotal
-  };
-  sourceStatus.apifootball = {
-    ok: rows.length > 0, count: rows.length,
-    message: rows.length ? '' : apiFootballCache.message,
-    diagnostic
-  };
-  if (!rows.length) throw new Error(apiFootballCache.message + ' ' + diagnostic);
-  return rows;
-}
-
 async function fetchFootballData() {
   const token = process.env.FD_DATA_TOKEN || '';
   if (!token) throw new Error('Не задан FD_DATA_TOKEN в GitHub Actions Secrets');
@@ -900,7 +754,7 @@ async function fetchSStats() {
   return rows;
 }
 function sourceLabel(name) {
-  return ({ bsd: 'BSD', sstats: 'SStats', euro365: 'Euro365', fbdata: 'FB_DATA', apifootball: 'Api-Football', sportmonks: 'Sportmonks' })[name] || name;
+  return ({ bsd: 'BSD', sstats: 'SStats', euro365: 'Euro365', fbdata: 'FB_DATA', sportmonks: 'Sportmonks' })[name] || name;
 }
 async function runSource(name, fn) {
   try {
@@ -930,13 +784,11 @@ async function buildData() {
   sourceStatus.sstats = { ok: false, count: 0, message: '', diagnostic: '' };
   sourceStatus.euro365 = { ok: false, count: 0, message: '', diagnostic: '' };
   sourceStatus.fbdata = { ok: false, count: 0, message: '', diagnostic: '' };
-  apiFootballCache = null;
-  const [bsd, sstats, euro365, fbdata, apifootball] = await Promise.all([
+  const [bsd, sstats, euro365, fbdata] = await Promise.all([
     runSource('bsd', fetchBSD),
     runSource('sstats', fetchSStats),
     runSource('euro365', () => fetchEuro365(moscowDateKey(new Date()))),
-    runSource('fbdata', fetchFootballData),
-    runSource('apifootball', fetchApiFootball)
+    runSource('fbdata', fetchFootballData)
   ]);
   const teamKey = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
   const bsdProbabilities = new Map();
@@ -952,7 +804,7 @@ async function buildData() {
   const predictions = [...bsd, ...sstats, ...euro365, ...fbdata]
     .filter(row => row.time && (row.source === 'Euro365' ? moscowDateKey(row.time) === moscowDateKey(new Date()) : dateKey(row.time) === date))
     .sort((a, b) => new Date(a.time) - new Date(b.time));
-  return { date, generatedAt: new Date().toISOString(), sources: sourceStatus, errors, predictions, apiFootballCache };
+  return { date, generatedAt: new Date().toISOString(), sources: sourceStatus, errors, predictions };
 }
 
 if (require.main === module) {
