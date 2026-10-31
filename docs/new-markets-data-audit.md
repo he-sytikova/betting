@@ -77,3 +77,25 @@ The existing coverage figures are retained as reconnaissance metadata only. They
 3. Identify a licensed historical source for referee assignments and referee-level rolling statistics.
 4. Only then build a separate dataset for the new markets. Keep corners/cards training files and production exports unchanged.
 5. Apply market-specific eligibility thresholds and chronological walk-forward evaluation. Red-card event probabilities require rare-event calibration and confidence intervals; referee features require shrinkage for low match counts.
+
+
+## BSD API v2 reconnaissance (documentation review, 2026-10-31)
+
+BSD's current API documentation confirms that the match detail endpoint exposes referee identity, and each match has a `/stats/` sub-resource. The stats payload documents eight stable keys per side: `ball_possession`, `total_shots`, `shots_on_target`, `corner_kicks`, `fouls`, `yellow_cards`, `red_cards`, and `offsides`. Missing values are explicitly `null`, not zero. This supports the four requested statistical targets without inferring zeros.
+
+The event `/availability/` endpoint reports per-match stat keys, enabling coverage checks before fetching full match details. The referee API provides referee lists, profiles with per-match aggregates (cards, fouls, penalties), and referee match logs with date/league/season filters.
+
+Important limitations:
+- The docs do not establish how many historical seasons have complete stats. Coverage is per-match and can vary substantially; the provider measured a recent sample where many matches lacked at least one stat. Therefore no training eligibility is declared yet.
+- Commentary does not provide a complete foul log; fouls are available as aggregate team stats, not as a reliable event-by-event feed.
+- The provider says total shots from aggregate stats and shotmap can disagree; for shot counts the shotmap is recommended, with shootout attempts excluded. For the first model dataset we should preserve both values and apply a documented source-precedence rule rather than silently mixing them.
+- Red-card aggregates and incident events need reconciliation for rescinded cards and second-yellow dismissals. Define the target as match total red-card dismissals according to final settled stats, not naive count of every card timeline item.
+- Referee history is available as a distinct API resource, but referee assignment coverage by competition and season still needs measurement.
+
+The BSD license v4.0 (effective 2026-10-01) explicitly permits internal retention, historical snapshots, backtesting, model development/evaluation, ML training and display of derived outputs. It prohibits redistribution of substantial raw data and sharing API keys. The license does not warrant accuracy or fitness for wagering.
+
+## Automated bounded probe added
+
+Added `scripts/predictions/audit-bsd-new-markets.py` and manual workflow `.github/workflows/audit-bsd-new-markets.yml`. The workflow uses the existing `BSD_TOKEN` Actions secret, samples up to five recent finished matches in each of the two latest seasons for the 20 target competitions, checks availability keys and referee assignment, and uploads only an aggregate JSON report as a 30-day artifact. It does not commit raw match data, alter the current forecast pipeline, or touch production.
+
+Run it from GitHub Actions → **BSD historical coverage audit - new markets** → **Run workflow** on branch `model-development`. The workflow must complete before we can state actual BSD historical coverage. Its sample is reconnaissance, not the final training dataset or league whitelist.
