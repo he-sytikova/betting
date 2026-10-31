@@ -1,0 +1,1187 @@
+{
+  "generatedAt": "2026-10-31",
+  "datasetRows": 42851,
+  "method": "Expanding-window seasonal walk-forward; refit each fold using only earlier matches",
+  "markets": {
+    "corners": {
+      "status": "evaluated",
+      "evaluatedFolds": 3,
+      "pooledTestRows": 11825,
+      "folds": [
+        {
+          "seasonStart": "2023-07-01",
+          "seasonEndExclusive": "2024-07-01",
+          "status": "evaluated",
+          "trainRows": 31026,
+          "testRows": 3942,
+          "trainThrough": "2023-06-04",
+          "testFrom": "2023-08-04",
+          "testThrough": "2024-06-02",
+          "negativeBinomialAlpha": 0.01552784,
+          "pointMetrics": {
+            "poissonMae": 2.75173,
+            "poissonDeviance": 1.18756
+          }
+        },
+        {
+          "seasonStart": "2024-07-01",
+          "seasonEndExclusive": "2025-07-01",
+          "status": "evaluated",
+          "trainRows": 34968,
+          "testRows": 3941,
+          "trainThrough": "2024-06-02",
+          "testFrom": "2024-08-03",
+          "testThrough": "2025-05-25",
+          "negativeBinomialAlpha": 0.01560705,
+          "pointMetrics": {
+            "poissonMae": 2.69417,
+            "poissonDeviance": 1.17067
+          }
+        },
+        {
+          "seasonStart": "2025-07-01",
+          "seasonEndExclusive": "2026-07-01",
+          "status": "evaluated",
+          "trainRows": 38909,
+          "testRows": 3942,
+          "trainThrough": "2025-05-25",
+          "testFrom": "2025-08-01",
+          "testThrough": "2026-05-24",
+          "negativeBinomialAlpha": 0.01559693,
+          "pointMetrics": {
+            "poissonMae": 2.68257,
+            "poissonDeviance": 1.16819
+          }
+        },
+        {
+          "seasonStart": "2026-07-01",
+          "seasonEndExclusive": null,
+          "status": "skipped_insufficient_data",
+          "trainRows": 42851,
+          "testRows": 0,
+          "trainThrough": null,
+          "testFrom": null,
+          "testThrough": null,
+          "negativeBinomialAlpha": null,
+          "pointMetrics": null
+        }
+      ],
+      "pooledComparisons": [
+        {
+          "line": 7.5,
+          "matches": 11825,
+          "poisson": {
+            "brierScore": 0.18421,
+            "logLoss": 0.55439,
+            "calibrationBins": [
+              {
+                "range": [
+                  0.6,
+                  0.7
+                ],
+                "count": 347,
+                "meanPredicted": 0.6867,
+                "observedRate": 0.6599
+              },
+              {
+                "range": [
+                  0.7,
+                  0.8
+                ],
+                "count": 7991,
+                "meanPredicted": 0.7601,
+                "observedRate": 0.737
+              },
+              {
+                "range": [
+                  0.8,
+                  0.9
+                ],
+                "count": 3483,
+                "meanPredicted": 0.8235,
+                "observedRate": 0.8007
+              },
+              {
+                "range": [
+                  0.9,
+                  1.0
+                ],
+                "count": 4,
+                "meanPredicted": 0.9051,
+                "observedRate": 0.75
+              }
+            ]
+          },
+          "negativeBinomial": {
+            "brierScore": 0.1837,
+            "logLoss": 0.55299,
+            "calibrationBins": [
+              {
+                "range": [
+                  0.6,
+                  0.7
+                ],
+                "count": 840,
+                "meanPredicted": 0.6838,
+                "observedRate": 0.6607
+              },
+              {
+                "range": [
+                  0.7,
+                  0.8
+                ],
+                "count": 9314,
+                "meanPredicted": 0.7531,
+                "observedRate": 0.7516
+              },
+              {
+                "range": [
+                  0.8,
+                  0.9
+                ],
+                "count": 1671,
+                "meanPredicted": 0.8178,
+                "observedRate": 0.8109
+              }
+            ]
+          },
+          "pairedBootstrap": {
+            "brierDeltaNbMinusPoisson": -0.0005028,
+            "brierDelta95CI": [
+              -0.0007874,
+              -0.0002142
+            ],
+            "logLossDeltaNbMinusPoisson": -0.0013973,
+            "logLossDelta95CI": [
+              -0.00221,
+              -0.0005532
+            ],
+            "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference"
+          },
+          "brierPermutationP": 0.0025,
+          "logLossPermutationP": 0.0015,
+          "brierHolmAdjustedP": 0.015,
+          "logLossHolmAdjustedP": 0.009
+        },
+        {
+          "line": 8.5,
+          "matches": 11825,
+          "poisson": {
+            "brierScore": 0.22628,
+            "logLoss": 0.64463,
+            "calibrationBins": [
+              {
+                "range": [
+                  0.5,
+                  0.6
+                ],
+                "count": 1185,
+                "meanPredicted": 0.5789,
+                "observedRate": 0.5426
+              },
+              {
+                "range": [
+                  0.6,
+                  0.7
+                ],
+                "count": 7714,
+                "meanPredicted": 0.6531,
+                "observedRate": 0.6374
+              },
+              {
+                "range": [
+                  0.7,
+                  0.8
+                ],
+                "count": 2901,
+                "meanPredicted": 0.7281,
+                "observedRate": 0.7087
+              },
+              {
+                "range": [
+                  0.8,
+                  0.9
+                ],
+                "count": 25,
+                "meanPredicted": 0.814,
+                "observedRate": 0.8
+              }
+            ]
+          },
+          "negativeBinomial": {
+            "brierScore": 0.22597,
+            "logLoss": 0.64393,
+            "calibrationBins": [
+              {
+                "range": [
+                  0.4,
+                  0.5
+                ],
+                "count": 1,
+                "meanPredicted": 0.4994,
+                "observedRate": 0.0
+              },
+              {
+                "range": [
+                  0.5,
+                  0.6
+                ],
+                "count": 1869,
+                "meanPredicted": 0.5778,
+                "observedRate": 0.5522
+              },
+              {
+                "range": [
+                  0.6,
+                  0.7
+                ],
+                "count": 8254,
+                "meanPredicted": 0.6492,
+                "observedRate": 0.6522
+              },
+              {
+                "range": [
+                  0.7,
+                  0.8
+                ],
+                "count": 1696,
+                "meanPredicted": 0.7227,
+                "observedRate": 0.7176
+              },
+              {
+                "range": [
+                  0.8,
+                  0.9
+                ],
+                "count": 5,
+                "meanPredicted": 0.8124,
+                "observedRate": 0.8
+              }
+            ]
+          },
+          "pairedBootstrap": {
+            "brierDeltaNbMinusPoisson": -0.0003107,
+            "brierDelta95CI": [
+              -0.0005749,
+              -3.82e-05
+            ],
+            "logLossDeltaNbMinusPoisson": -0.0006992,
+            "logLossDelta95CI": [
+              -0.0013326,
+              -0.0001088
+            ],
+            "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference"
+          },
+          "brierPermutationP": 0.0195,
+          "logLossPermutationP": 0.033,
+          "brierHolmAdjustedP": 0.0975,
+          "logLossHolmAdjustedP": 0.165
+        },
+        {
+          "line": 9.5,
+          "matches": 11825,
+          "poisson": {
+            "brierScore": 0.24656,
+            "logLoss": 0.68626,
+            "calibrationBins": [
+              {
+                "range": [
+                  0.3,
+                  0.4
+                ],
+                "count": 16,
+                "meanPredicted": 0.3922,
+                "observedRate": 0.4375
+              },
+              {
+                "range": [
+                  0.4,
+                  0.5
+                ],
+                "count": 2908,
+                "meanPredicted": 0.4709,
+                "observedRate": 0.4608
+              },
+              {
+                "range": [
+                  0.5,
+                  0.6
+                ],
+                "count": 7148,
+                "meanPredicted": 0.547,
+                "observedRate": 0.5406
+              },
+              {
+                "range": [
+                  0.6,
+                  0.7
+                ],
+                "count": 1730,
+                "meanPredicted": 0.6275,
+                "observedRate": 0.604
+              },
+              {
+                "range": [
+                  0.7,
+                  0.8
+                ],
+                "count": 23,
+                "meanPredicted": 0.7187,
+                "observedRate": 0.6087
+              }
+            ]
+          },
+          "negativeBinomial": {
+            "brierScore": 0.24645,
+            "logLoss": 0.68601,
+            "calibrationBins": [
+              {
+                "range": [
+                  0.3,
+                  0.4
+                ],
+                "count": 14,
+                "meanPredicted": 0.3923,
+                "observedRate": 0.4286
+              },
+              {
+                "range": [
+                  0.4,
+                  0.5
+                ],
+                "count": 3366,
+                "meanPredicted": 0.4709,
+                "observedRate": 0.4652
+              },
+              {
+                "range": [
+                  0.5,
+                  0.6
+                ],
+                "count": 7275,
+                "meanPredicted": 0.5446,
+                "observedRate": 0.5482
+              },
+              {
+                "range": [
+                  0.6,
+                  0.7
+                ],
+                "count": 1162,
+                "meanPredicted": 0.6235,
+                "observedRate": 0.6067
+              },
+              {
+                "range": [
+                  0.7,
+                  0.8
+                ],
+                "count": 8,
+                "meanPredicted": 0.7149,
+                "observedRate": 0.625
+              }
+            ]
+          },
+          "pairedBootstrap": {
+            "brierDeltaNbMinusPoisson": -0.0001135,
+            "brierDelta95CI": [
+              -0.0002716,
+              6.31e-05
+            ],
+            "logLossDeltaNbMinusPoisson": -0.0002427,
+            "logLossDelta95CI": [
+              -0.000564,
+              0.0001181
+            ],
+            "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference"
+          },
+          "brierPermutationP": 0.185,
+          "logLossPermutationP": 0.173,
+          "brierHolmAdjustedP": 0.555,
+          "logLossHolmAdjustedP": 0.612
+        },
+        {
+          "line": 10.5,
+          "matches": 11825,
+          "poisson": {
+            "brierScore": 0.23954,
+            "logLoss": 0.67194,
+            "calibrationBins": [
+              {
+                "range": [
+                  0.2,
+                  0.3
+                ],
+                "count": 95,
+                "meanPredicted": 0.29,
+                "observedRate": 0.2632
+              },
+              {
+                "range": [
+                  0.3,
+                  0.4
+                ],
+                "count": 4703,
+                "meanPredicted": 0.365,
+                "observedRate": 0.3653
+              },
+              {
+                "range": [
+                  0.4,
+                  0.5
+                ],
+                "count": 6132,
+                "meanPredicted": 0.4416,
+                "observedRate": 0.4387
+              },
+              {
+                "range": [
+                  0.5,
+                  0.6
+                ],
+                "count": 882,
+                "meanPredicted": 0.5246,
+                "observedRate": 0.5227
+              },
+              {
+                "range": [
+                  0.6,
+                  0.7
+                ],
+                "count": 13,
+                "meanPredicted": 0.6186,
+                "observedRate": 0.6154
+              }
+            ]
+          },
+          "negativeBinomial": {
+            "brierScore": 0.23956,
+            "logLoss": 0.67198,
+            "calibrationBins": [
+              {
+                "range": [
+                  0.2,
+                  0.3
+                ],
+                "count": 48,
+                "meanPredicted": 0.2917,
+                "observedRate": 0.3542
+              },
+              {
+                "range": [
+                  0.3,
+                  0.4
+                ],
+                "count": 4665,
+                "meanPredicted": 0.367,
+                "observedRate": 0.3621
+              },
+              {
+                "range": [
+                  0.4,
+                  0.5
+                ],
+                "count": 6398,
+                "meanPredicted": 0.4407,
+                "observedRate": 0.4398
+              },
+              {
+                "range": [
+                  0.5,
+                  0.6
+                ],
+                "count": 709,
+                "meanPredicted": 0.5224,
+                "observedRate": 0.5346
+              },
+              {
+                "range": [
+                  0.6,
+                  0.7
+                ],
+                "count": 5,
+                "meanPredicted": 0.6208,
+                "observedRate": 0.6
+              }
+            ]
+          },
+          "pairedBootstrap": {
+            "brierDeltaNbMinusPoisson": 1.93e-05,
+            "brierDelta95CI": [
+              -4.74e-05,
+              9.28e-05
+            ],
+            "logLossDeltaNbMinusPoisson": 4.11e-05,
+            "logLossDelta95CI": [
+              -0.0001031,
+              0.0001814
+            ],
+            "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference"
+          },
+          "brierPermutationP": 0.5615,
+          "logLossPermutationP": 0.579,
+          "brierHolmAdjustedP": 1.0,
+          "logLossHolmAdjustedP": 1.0
+        },
+        {
+          "line": 11.5,
+          "matches": 11825,
+          "poisson": {
+            "brierScore": 0.21072,
+            "logLoss": 0.61166,
+            "calibrationBins": [
+              {
+                "range": [
+                  0.1,
+                  0.2
+                ],
+                "count": 79,
+                "meanPredicted": 0.1923,
+                "observedRate": 0.1772
+              },
+              {
+                "range": [
+                  0.2,
+                  0.3
+                ],
+                "count": 5871,
+                "meanPredicted": 0.2642,
+                "observedRate": 0.2669
+              },
+              {
+                "range": [
+                  0.3,
+                  0.4
+                ],
+                "count": 5428,
+                "meanPredicted": 0.3382,
+                "observedRate": 0.3454
+              },
+              {
+                "range": [
+                  0.4,
+                  0.5
+                ],
+                "count": 442,
+                "meanPredicted": 0.4231,
+                "observedRate": 0.4412
+              },
+              {
+                "range": [
+                  0.5,
+                  0.6
+                ],
+                "count": 5,
+                "meanPredicted": 0.5218,
+                "observedRate": 0.4
+              }
+            ]
+          },
+          "negativeBinomial": {
+            "brierScore": 0.21071,
+            "logLoss": 0.61167,
+            "calibrationBins": [
+              {
+                "range": [
+                  0.1,
+                  0.2
+                ],
+                "count": 14,
+                "meanPredicted": 0.1941,
+                "observedRate": 0.1429
+              },
+              {
+                "range": [
+                  0.2,
+                  0.3
+                ],
+                "count": 5139,
+                "meanPredicted": 0.2684,
+                "observedRate": 0.2594
+              },
+              {
+                "range": [
+                  0.3,
+                  0.4
+                ],
+                "count": 6200,
+                "meanPredicted": 0.3384,
+                "observedRate": 0.3413
+              },
+              {
+                "range": [
+                  0.4,
+                  0.5
+                ],
+                "count": 467,
+                "meanPredicted": 0.4215,
+                "observedRate": 0.4283
+              },
+              {
+                "range": [
+                  0.5,
+                  0.6
+                ],
+                "count": 5,
+                "meanPredicted": 0.5135,
+                "observedRate": 0.4
+              }
+            ]
+          },
+          "pairedBootstrap": {
+            "brierDeltaNbMinusPoisson": -4.1e-06,
+            "brierDelta95CI": [
+              -0.0001206,
+              0.0001216
+            ],
+            "logLossDeltaNbMinusPoisson": 1.35e-05,
+            "logLossDelta95CI": [
+              -0.0003046,
+              0.0002986
+            ],
+            "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference"
+          },
+          "brierPermutationP": 0.9475,
+          "logLossPermutationP": 0.94,
+          "brierHolmAdjustedP": 1.0,
+          "logLossHolmAdjustedP": 1.0
+        },
+        {
+          "line": 12.5,
+          "matches": 11825,
+          "poisson": {
+            "brierScore": 0.17121,
+            "logLoss": 0.52479,
+            "calibrationBins": [
+              {
+                "range": [
+                  0.1,
+                  0.2
+                ],
+                "count": 5291,
+                "meanPredicted": 0.1726,
+                "observedRate": 0.179
+              },
+              {
+                "range": [
+                  0.2,
+                  0.3
+                ],
+                "count": 6206,
+                "meanPredicted": 0.2356,
+                "observedRate": 0.2536
+              },
+              {
+                "range": [
+                  0.3,
+                  0.4
+                ],
+                "count": 324,
+                "meanPredicted": 0.3202,
+                "observedRate": 0.3426
+              },
+              {
+                "range": [
+                  0.4,
+                  0.5
+                ],
+                "count": 4,
+                "meanPredicted": 0.4104,
+                "observedRate": 0.5
+              }
+            ]
+          },
+          "negativeBinomial": {
+            "brierScore": 0.17105,
+            "logLoss": 0.52435,
+            "calibrationBins": [
+              {
+                "range": [
+                  0.1,
+                  0.2
+                ],
+                "count": 3736,
+                "meanPredicted": 0.1782,
+                "observedRate": 0.1668
+              },
+              {
+                "range": [
+                  0.2,
+                  0.3
+                ],
+                "count": 7610,
+                "meanPredicted": 0.2382,
+                "observedRate": 0.2436
+              },
+              {
+                "range": [
+                  0.3,
+                  0.4
+                ],
+                "count": 475,
+                "meanPredicted": 0.3203,
+                "observedRate": 0.3263
+              },
+              {
+                "range": [
+                  0.4,
+                  0.5
+                ],
+                "count": 4,
+                "meanPredicted": 0.4112,
+                "observedRate": 0.5
+              }
+            ]
+          },
+          "pairedBootstrap": {
+            "brierDeltaNbMinusPoisson": -0.0001575,
+            "brierDelta95CI": [
+              -0.0003554,
+              2.68e-05
+            ],
+            "logLossDeltaNbMinusPoisson": -0.0004398,
+            "logLossDelta95CI": [
+              -0.0010321,
+              0.0001344
+            ],
+            "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference"
+          },
+          "brierPermutationP": 0.105,
+          "logLossPermutationP": 0.153,
+          "brierHolmAdjustedP": 0.42,
+          "logLossHolmAdjustedP": 0.612
+        }
+      ],
+      "significanceLevel": 0.05,
+      "interpretation": "Negative NB2-minus-Poisson loss differences favor NB2. Holm-adjusted p below 0.05 indicates evidence of a difference after correcting the six line comparisons; confidence intervals crossing zero indicate uncertainty."
+    },
+    "yellowCards": {
+      "status": "evaluated",
+      "evaluatedFolds": 3,
+      "pooledTestRows": 11825,
+      "folds": [
+        {
+          "seasonStart": "2023-07-01",
+          "seasonEndExclusive": "2024-07-01",
+          "status": "evaluated",
+          "trainRows": 31026,
+          "testRows": 3942,
+          "trainThrough": "2023-06-04",
+          "testFrom": "2023-08-04",
+          "testThrough": "2024-06-02",
+          "negativeBinomialAlpha": 0.0102828,
+          "pointMetrics": {
+            "poissonMae": 1.62805,
+            "poissonDeviance": 1.17135
+          }
+        },
+        {
+          "seasonStart": "2024-07-01",
+          "seasonEndExclusive": "2025-07-01",
+          "status": "evaluated",
+          "trainRows": 34968,
+          "testRows": 3941,
+          "trainThrough": "2024-06-02",
+          "testFrom": "2024-08-03",
+          "testThrough": "2025-05-25",
+          "negativeBinomialAlpha": 0.01089708,
+          "pointMetrics": {
+            "poissonMae": 1.6107,
+            "poissonDeviance": 1.19605
+          }
+        },
+        {
+          "seasonStart": "2025-07-01",
+          "seasonEndExclusive": "2026-07-01",
+          "status": "evaluated",
+          "trainRows": 38909,
+          "testRows": 3942,
+          "trainThrough": "2025-05-25",
+          "testFrom": "2025-08-01",
+          "testThrough": "2026-05-24",
+          "negativeBinomialAlpha": 0.01193795,
+          "pointMetrics": {
+            "poissonMae": 1.55096,
+            "poissonDeviance": 1.10238
+          }
+        },
+        {
+          "seasonStart": "2026-07-01",
+          "seasonEndExclusive": null,
+          "status": "skipped_insufficient_data",
+          "trainRows": 42851,
+          "testRows": 0,
+          "trainThrough": null,
+          "testFrom": null,
+          "testThrough": null,
+          "negativeBinomialAlpha": null,
+          "pointMetrics": null
+        }
+      ],
+      "pooledComparisons": [
+        {
+          "line": 7.5,
+          "matches": 11825,
+          "poisson": {
+            "brierScore": 0.04512,
+            "logLoss": 0.18718,
+            "calibrationBins": [
+              {
+                "range": [
+                  0.0,
+                  0.1
+                ],
+                "count": 11328,
+                "meanPredicted": 0.0403,
+                "observedRate": 0.0439
+              },
+              {
+                "range": [
+                  0.1,
+                  0.2
+                ],
+                "count": 479,
+                "meanPredicted": 0.1275,
+                "observedRate": 0.1441
+              },
+              {
+                "range": [
+                  0.2,
+                  0.3
+                ],
+                "count": 18,
+                "meanPredicted": 0.2286,
+                "observedRate": 0.1667
+              }
+            ]
+          },
+          "negativeBinomial": {
+            "brierScore": 0.04511,
+            "logLoss": 0.18698,
+            "calibrationBins": [
+              {
+                "range": [
+                  0.0,
+                  0.1
+                ],
+                "count": 11228,
+                "meanPredicted": 0.043,
+                "observedRate": 0.0433
+              },
+              {
+                "range": [
+                  0.1,
+                  0.2
+                ],
+                "count": 573,
+                "meanPredicted": 0.1268,
+                "observedRate": 0.1396
+              },
+              {
+                "range": [
+                  0.2,
+                  0.3
+                ],
+                "count": 24,
+                "meanPredicted": 0.2257,
+                "observedRate": 0.125
+              }
+            ]
+          },
+          "pairedBootstrap": {
+            "brierDeltaNbMinusPoisson": -1.06e-05,
+            "brierDelta95CI": [
+              -4.13e-05,
+              1.87e-05
+            ],
+            "logLossDeltaNbMinusPoisson": -0.0002055,
+            "logLossDelta95CI": [
+              -0.0005219,
+              9.52e-05
+            ],
+            "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference"
+          },
+          "brierPermutationP": 0.4745,
+          "logLossPermutationP": 0.199,
+          "brierHolmAdjustedP": 1.0,
+          "logLossHolmAdjustedP": 1.0
+        },
+        {
+          "line": 8.5,
+          "matches": 11825,
+          "poisson": {
+            "brierScore": 0.01934,
+            "logLoss": 0.09499,
+            "calibrationBins": [
+              {
+                "range": [
+                  0.0,
+                  0.1
+                ],
+                "count": 11790,
+                "meanPredicted": 0.0183,
+                "observedRate": 0.0198
+              },
+              {
+                "range": [
+                  0.1,
+                  0.2
+                ],
+                "count": 35,
+                "meanPredicted": 0.1204,
+                "observedRate": 0.0571
+              }
+            ]
+          },
+          "negativeBinomial": {
+            "brierScore": 0.01935,
+            "logLoss": 0.09492,
+            "calibrationBins": [
+              {
+                "range": [
+                  0.0,
+                  0.1
+                ],
+                "count": 11782,
+                "meanPredicted": 0.0205,
+                "observedRate": 0.0198
+              },
+              {
+                "range": [
+                  0.1,
+                  0.2
+                ],
+                "count": 43,
+                "meanPredicted": 0.1221,
+                "observedRate": 0.0465
+              }
+            ]
+          },
+          "pairedBootstrap": {
+            "brierDeltaNbMinusPoisson": 4.1e-06,
+            "brierDelta95CI": [
+              -1.14e-05,
+              1.83e-05
+            ],
+            "logLossDeltaNbMinusPoisson": -7.45e-05,
+            "logLossDelta95CI": [
+              -0.0003713,
+              0.0002213
+            ],
+            "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference"
+          },
+          "brierPermutationP": 0.5905,
+          "logLossPermutationP": 0.636,
+          "brierHolmAdjustedP": 1.0,
+          "logLossHolmAdjustedP": 1.0
+        },
+        {
+          "line": 9.5,
+          "matches": 11825,
+          "poisson": {
+            "brierScore": 0.00843,
+            "logLoss": 0.04754,
+            "calibrationBins": [
+              {
+                "range": [
+                  0.0,
+                  0.1
+                ],
+                "count": 11825,
+                "meanPredicted": 0.0073,
+                "observedRate": 0.0085
+              }
+            ]
+          },
+          "negativeBinomial": {
+            "brierScore": 0.00843,
+            "logLoss": 0.04741,
+            "calibrationBins": [
+              {
+                "range": [
+                  0.0,
+                  0.1
+                ],
+                "count": 11825,
+                "meanPredicted": 0.0085,
+                "observedRate": 0.0085
+              }
+            ]
+          },
+          "pairedBootstrap": {
+            "brierDeltaNbMinusPoisson": -4e-07,
+            "brierDelta95CI": [
+              -8e-06,
+              6.6e-06
+            ],
+            "logLossDeltaNbMinusPoisson": -0.0001292,
+            "logLossDelta95CI": [
+              -0.0004094,
+              0.0001296
+            ],
+            "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference"
+          },
+          "brierPermutationP": 0.895,
+          "logLossPermutationP": 0.3675,
+          "brierHolmAdjustedP": 1.0,
+          "logLossHolmAdjustedP": 1.0
+        },
+        {
+          "line": 10.5,
+          "matches": 11825,
+          "poisson": {
+            "brierScore": 0.00269,
+            "logLoss": 0.01762,
+            "calibrationBins": [
+              {
+                "range": [
+                  0.0,
+                  0.1
+                ],
+                "count": 11825,
+                "meanPredicted": 0.0026,
+                "observedRate": 0.0027
+              }
+            ]
+          },
+          "negativeBinomial": {
+            "brierScore": 0.00269,
+            "logLoss": 0.01768,
+            "calibrationBins": [
+              {
+                "range": [
+                  0.0,
+                  0.1
+                ],
+                "count": 11825,
+                "meanPredicted": 0.0033,
+                "observedRate": 0.0027
+              }
+            ]
+          },
+          "pairedBootstrap": {
+            "brierDeltaNbMinusPoisson": 9e-07,
+            "brierDelta95CI": [
+              -1.9e-06,
+              3.2e-06
+            ],
+            "logLossDeltaNbMinusPoisson": 6.08e-05,
+            "logLossDelta95CI": [
+              -0.000149,
+              0.0002607
+            ],
+            "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference"
+          },
+          "brierPermutationP": 0.5065,
+          "logLossPermutationP": 0.5705,
+          "brierHolmAdjustedP": 1.0,
+          "logLossHolmAdjustedP": 1.0
+        },
+        {
+          "line": 11.5,
+          "matches": 11825,
+          "poisson": {
+            "brierScore": 0.00101,
+            "logLoss": 0.00759,
+            "calibrationBins": [
+              {
+                "range": [
+                  0.0,
+                  0.1
+                ],
+                "count": 11825,
+                "meanPredicted": 0.0009,
+                "observedRate": 0.001
+              }
+            ]
+          },
+          "negativeBinomial": {
+            "brierScore": 0.00101,
+            "logLoss": 0.00759,
+            "calibrationBins": [
+              {
+                "range": [
+                  0.0,
+                  0.1
+                ],
+                "count": 11825,
+                "meanPredicted": 0.0012,
+                "observedRate": 0.001
+              }
+            ]
+          },
+          "pairedBootstrap": {
+            "brierDeltaNbMinusPoisson": 3e-07,
+            "brierDelta95CI": [
+              -6e-07,
+              1e-06
+            ],
+            "logLossDeltaNbMinusPoisson": 2.7e-06,
+            "logLossDelta95CI": [
+              -0.0001779,
+              0.0001504
+            ],
+            "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference"
+          },
+          "brierPermutationP": 0.506,
+          "logLossPermutationP": 0.964,
+          "brierHolmAdjustedP": 1.0,
+          "logLossHolmAdjustedP": 1.0
+        },
+        {
+          "line": 12.5,
+          "matches": 11825,
+          "poisson": {
+            "brierScore": 0.00034,
+            "logLoss": 0.00273,
+            "calibrationBins": [
+              {
+                "range": [
+                  0.0,
+                  0.1
+                ],
+                "count": 11825,
+                "meanPredicted": 0.0003,
+                "observedRate": 0.0003
+              }
+            ]
+          },
+          "negativeBinomial": {
+            "brierScore": 0.00034,
+            "logLoss": 0.00274,
+            "calibrationBins": [
+              {
+                "range": [
+                  0.0,
+                  0.1
+                ],
+                "count": 11825,
+                "meanPredicted": 0.0004,
+                "observedRate": 0.0003
+              }
+            ]
+          },
+          "pairedBootstrap": {
+            "brierDeltaNbMinusPoisson": -0.0,
+            "brierDelta95CI": [
+              -5e-07,
+              2e-07
+            ],
+            "logLossDeltaNbMinusPoisson": 6.1e-06,
+            "logLossDelta95CI": [
+              -0.0001189,
+              9.86e-05
+            ],
+            "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference"
+          },
+          "brierPermutationP": 0.999,
+          "logLossPermutationP": 0.811,
+          "brierHolmAdjustedP": 1.0,
+          "logLossHolmAdjustedP": 1.0
+        }
+      ],
+      "significanceLevel": 0.05,
+      "interpretation": "Negative NB2-minus-Poisson loss differences favor NB2. Holm-adjusted p below 0.05 indicates evidence of a difference after correcting the six line comparisons; confidence intervals crossing zero indicate uncertainty."
+    }
+  }
+}
