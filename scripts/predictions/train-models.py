@@ -167,6 +167,158 @@ def calibration_probability_bands(y, mean, alpha, distribution):
     return output
 
 
+def paired_permutation_pvalue(actual, p_poisson, p_nb, loss="brier", seed=20261031, samples=5000):
+    """Two-sided paired sign-flip test for NB2-minus-Poisson per-match loss."""
+    y = np.asarray(actual, dtype=float)
+    p = np.clip(np.asarray(p_poisson, dtype=float), 1e-8, 1 - 1e-8)
+    q = np.clip(np.asarray(p_nb, dtype=float), 1e-8, 1 - 1e-8)
+    if loss == "brier":
+        differences = (q - y) ** 2 - (p - y) ** 2
+    else:
+        lp = -(y * np.log(p) + (1 - y) * np.log(1 - p))
+        lq = -(y * np.log(q) + (1 - y) * np.log(1 - q))
+        differences = lq - lp
+    observed = abs(float(np.mean(differences)))
+    rng = np.random.default_rng(seed)
+    extreme = 0
+    for start in range(0, samples, 250):
+        count = min(250, samples - start)
+        signs = rng.choice(np.array([-1.0, 1.0]), size=(count, len(differences)))
+        simulated = np.abs((signs * differences).mean(axis=1))
+        extreme += int(np.sum(simulated >= observed))
+    return float((extreme + 1) / (samples + 1))
+
+
+def holm_adjust(p_values):
+    """Holm-Bonferroni adjusted p-values, preserving the input order."""
+    values = np.asarray(p_values, dtype=float)
+    order = np.argsort(values)
+    adjusted = np.empty(len(values), dtype=float)
+    running = 0.0
+    total = len(values)
+    for rank, index in enumerate(order):
+        candidate = min(1.0, (total - rank) * values[index])
+        running = max(running, candidate)
+        adjusted[index] = running
+    return [float(x) for x in adjusted]
+
+
+def walk_forward_validation(rows, target, eligible_flag):
+    """Refit on all data before each season; test only on that season."""
+    usable = [r for r in rows if r[eligible_flag] == "1" and r[target] != ""]
+    fold_starts = [
+        date(2023, 7, 1), date(2024, 7, 1),
+        date(2025, 7, 1), date(2026, 7, 1),
+    ]
+    pooled = {line: {"actual": [], "poisson": [], "nb": []} for line in LINES}
+    folds = []
+    for fold_index, start_date in enumerate(fold_starts):
+        end_date = fold_starts[fold_index + 1] if fold_index + 1 < len(fold_starts) else None
+        train = [r for r in usable if date.fromisoformat(r["date"]) < start_date]
+        test = [
+            r for r in usable
+            if date.fromisoformat(r["date"]) >= start_date
+            and (end_date is None or date.fromisoformat(r["date"]) < end_date)
+        ]
+        if len(train) < 1000 or len(test) < 100:
+            folds.append({
+                "seasonStart": start_date.isoformat(),
+                "seasonEndExclusive": end_date.isoformat() if end_date else None,
+                "status": "skipped_insufficient_data",
+                "trainRows": len(train), "testRows": len(test),
+            })
+            continue
+        x_train = np.array([[float(r.get(k) or "nan") for k in FEATURES] for r in train])
+        x_test = np.array([[float(r.get(k) or "nan") for k in FEATURES] for r in test])
+        y_train = np.array([float(r[target]) for r in train])
+        y_test = np.array([float(r[target]) for r in test])
+        model = Pipeline([
+            ("imputer", SimpleImputer(strategy="median")),
+            ("scale", StandardScaler()),
+            ("poisson", PoissonRegressor(alpha=0.5, max_iter=1000)),
+        ])
+        model.fit(x_train, y_train)
+        pred = np.maximum(model.predict(x_test), 1e-8)
+        train_mean = np.maximum(model.predict(x_train), 1e-8)
+        alpha = max(
+            float(np.sum((y_train - train_mean) ** 2 - train_mean)
+                  / np.sum(train_mean ** 2)),
+            1e-6,
+        )
+        fold_line_scores = []
+        for line_index, line in enumerate(LINES):
+            actual = (y_test > line).astype(float)
+            p = poisson.sf(int(line), pred)
+            q = negative_binomial_sf(line, pred, alpha)
+            pooled[line]["actual"].extend(actual.tolist())
+            pooled[line]["poisson"].extend(p.tolist())
+            pooled[line]["nb"].extend(q.tolist())
+            fold_line_scores.append({
+                "line": line,
+                "poisson": probability_metrics(actual, p),
+                "negativeBinomial": probability_metrics(actual, q),
+            })
+        folds.append({
+            "seasonStart": start_date.isoformat(),
+            "seasonEndExclusive": end_date.isoformat() if end_date else None,
+            "status": "evaluated",
+            "trainRows": len(train), "testRows": len(test),
+            "trainThrough": max(r["date"] for r in train),
+            "testFrom": min(r["date"] for r in test),
+            "testThrough": max(r["date"] for r in test),
+            "negativeBinomialAlpha": round(float(alpha), 8),
+            "lineScores": fold_line_scores,
+            "pointMetrics": {
+                "poissonMae": round(float(np.mean(np.abs(y_test - pred))), 5),
+                "poissonDeviance": round(poisson_deviance(y_test, pred), 5),
+            },
+        })
+
+    evaluated_folds = sum(x["status"] == "evaluated" for x in folds)
+    if not evaluated_folds:
+        return {
+            "status": "insufficient_data",
+            "folds": folds,
+            "note": "No season fold met the minimum training and test sample sizes.",
+        }
+
+    comparisons = []
+    brier_p_values, log_p_values = [], []
+    for index, line in enumerate(LINES):
+        values = pooled[line]
+        actual = np.asarray(values["actual"], dtype=float)
+        p = np.asarray(values["poisson"], dtype=float)
+        q = np.asarray(values["nb"], dtype=float)
+        brier_p = paired_permutation_pvalue(actual, p, q, "brier", 20261031 + index)
+        log_p = paired_permutation_pvalue(actual, p, q, "logloss", 20262031 + index)
+        brier_p_values.append(brier_p)
+        log_p_values.append(log_p)
+        comparisons.append({
+            "line": line,
+            "matches": len(actual),
+            "poisson": probability_metrics(actual, p),
+            "negativeBinomial": probability_metrics(actual, q),
+            "pairedBootstrap": paired_bootstrap_ci(actual, p, q, seed=20263031 + index),
+            "brierPermutationP": round(brier_p, 7),
+            "logLossPermutationP": round(log_p, 7),
+        })
+    brier_adjusted = holm_adjust(brier_p_values)
+    log_adjusted = holm_adjust(log_p_values)
+    for index, item in enumerate(comparisons):
+        item["brierHolmAdjustedP"] = round(brier_adjusted[index], 7)
+        item["logLossHolmAdjustedP"] = round(log_adjusted[index], 7)
+    return {
+        "status": "evaluated",
+        "method": "Expanding-window seasonal walk-forward; refit each fold using only earlier matches; paired two-sided sign-flip permutation tests; Holm correction applied across six lines separately for Brier and Log Loss.",
+        "folds": folds,
+        "evaluatedFolds": evaluated_folds,
+        "pooledTestRows": len(pooled[LINES[0]]["actual"]),
+        "pooledComparisons": comparisons,
+        "significanceLevel": 0.05,
+        "interpretation": "Negative NB2-minus-Poisson loss differences favor NB2. Holm-adjusted p below 0.05 indicates evidence of a difference after correcting the six line comparisons; confidence intervals crossing zero indicate uncertainty.",
+    }
+
+
 def train_market(rows, target, eligible_flag, baseline_key):
     usable = [r for r in rows if r[eligible_flag] == "1" and r[target] != ""]
     train = [r for r in usable if date.fromisoformat(r["date"]) < HOLDOUT_START]
@@ -225,6 +377,7 @@ def train_market(rows, target, eligible_flag, baseline_key):
         },
         "byLeague": grouped_metrics(test, y_test, pred, baseline, "league"),
         "bySeason": grouped_metrics(test, y_test, pred, baseline, "season"),
+        "walkForward": walk_forward_validation(rows, target, eligible_flag),
         "distributionComparison": {
             "calibrationBands": {
                 "poisson": calibration_probability_bands(y_test, pred, pearson_alpha, "poisson"),
@@ -277,13 +430,13 @@ def main():
     report = {
         "generatedAt": date.today().isoformat(),
         "status": "calibration_and_line_backtest_only_not_for_public_predictions",
-        "method": "Poisson mean model with Poisson vs Negative Binomial count-distribution comparison on the same chronological holdout; Negative Binomial dispersion estimated from training-only Pearson residuals",
+        "method": "Poisson mean model with Poisson vs Negative Binomial comparison on a chronological holdout and expanding-window seasonal walk-forward folds; dispersion estimated from training-only Pearson residuals",
         "holdoutStart": HOLDOUT_START.isoformat(),
         "datasetRows": len(rows),
         "evaluatedLines": LINES,
         "corners": train_market(rows, "corners_total", "corners_model_eligible", "league_corners_avg"),
         "yellowCards": train_market(rows, "cards_total", "cards_model_eligible", "league_cards_avg"),
-        "note": "Calibration bins and Brier/Log Loss are descriptive holdout diagnostics, not proof of betting value. No ROI is calculated because historical bookmaker odds are unavailable. Production use requires odds-aware walk-forward validation and market-specific calibration.",
+        "note": "Calibration and line metrics are descriptive diagnostics, not proof of betting value. Walk-forward tests refit each season using only prior matches; Holm-adjusted paired tests correct six line comparisons separately for Brier and Log Loss. No ROI is calculated because historical bookmaker odds are unavailable. Production use requires odds-aware validation and market-specific calibration.",
     }
     OUT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     def line_score_summary(section):
