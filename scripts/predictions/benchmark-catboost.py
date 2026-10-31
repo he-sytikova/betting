@@ -141,9 +141,9 @@ def compare_probability_models(actual, baseline_probabilities, candidate_probabi
         brier_p_values = []
         logloss_p_values = []
         for index, line in enumerate(lines):
-            baseline_p = baseline_probabilities[str(line)][distribution]
-            candidate_p = candidate_probabilities[str(line)][distribution]
-            event = baseline_probabilities[str(line)]["actual"]
+            baseline_p = baseline_probabilities[distribution][str(line)]
+            candidate_p = candidate_probabilities[distribution][str(line)]
+            event = (np.asarray(actual, dtype=float) > line).astype(float)
             bootstrap = BASELINE.paired_bootstrap_ci(
                 event, baseline_p, candidate_p, seed=20264031 + index, samples=1000
             )
