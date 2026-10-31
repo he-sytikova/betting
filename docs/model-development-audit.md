@@ -16,7 +16,9 @@ Audit date: 2026-10-31
 2. **No current-season historical rows.** The latest historical training target date is 2026-05-24, so the 2026/27 walk-forward fold is skipped until eligible completed-match statistics enter the training source.
 3. **Limited feature set.** Current features are mostly rolling 5/10-match team statistics and league-level averages. Referee tendencies, fouls, shots, possession, attacking pressure, lineups, injuries, and bookmaker odds are not in the training dataset.
 4. **Constant home-advantage feature.** The dataset builder currently writes home_advantage = 1 for every row. It contains no information and should be removed from future candidate feature sets rather than treated as a meaningful signal.
-5. **No odds-aware backtest.** Historical bookmaker prices are not stored, so the current research report cannot establish ROI, closing-line value (CLV), or whether a model edge survives bookmaker margin.
+5. **Additional historical features are available.** The new coverage audit found that fouls, shots, shots on target, and red cards are present in the ten currently eligible leagues at 81.4%–100% match coverage. This is sufficient to test them as rolling pre-match features with missing-value handling.
+6. **Referee coverage is partial.** The Referee field is complete in the eligible English and Scottish leagues but absent in the eligible German, Italian, Spanish, French, and Dutch top divisions. Referee strictness must therefore be optional and accompanied by a coverage/missingness indicator; it cannot be a universal feature.
+7. **No odds-aware backtest.** Historical bookmaker prices for the corners/cards markets are not stored, so the current research report cannot establish ROI, closing-line value (CLV), or whether a model edge survives bookmaker margin.
 6. **Source constraints.** The open-matchday repository is marked non-commercial with attribution required in the audit metadata. Any future training use must respect its license terms.
 
 ## Corrected validation results
