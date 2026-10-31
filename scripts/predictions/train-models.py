@@ -83,6 +83,29 @@ def evaluate_lines(y, prediction):
         })
     return results
 
+def grouped_metrics(rows, y, pred, baseline, group_key, min_rows=100):
+    groups = {}
+    keys = sorted({r.get(group_key, "") for r in rows if r.get(group_key, "")})
+    for key in keys:
+        mask = np.array([r.get(group_key, "") == key for r in rows], dtype=bool)
+        count = int(np.sum(mask))
+        if count < min_rows:
+            continue
+        gy, gp, gb = y[mask], pred[mask], baseline[mask]
+        groups[key] = {
+            "matches": count,
+            "mae": round(float(np.mean(np.abs(gy - gp))), 4),
+            "baselineMae": round(float(np.mean(np.abs(gy - gb))), 4),
+            "poissonDeviance": round(poisson_deviance(gy, gp), 4),
+            "baselinePoissonDeviance": round(poisson_deviance(gy, gb), 4),
+            "totalLines": evaluate_lines(gy, gp),
+            "baselineTotalLines": evaluate_lines(gy, gb),
+            "actualMean": round(float(np.mean(gy)), 4),
+            "actualVariance": round(float(np.var(gy)), 4),
+            "varianceToMean": round(float(np.var(gy) / np.mean(gy)), 4) if np.mean(gy) > 0 else None,
+        }
+    return {"minimumGroupRows": min_rows, "groupsReported": len(groups), "groups": groups}
+
 def train_market(rows, target, eligible_flag, baseline_key):
     usable = [r for r in rows if r[eligible_flag] == "1" and r[target] != ""]
     train = [r for r in usable if date.fromisoformat(r["date"]) < HOLDOUT_START]
@@ -124,6 +147,13 @@ def train_market(rows, target, eligible_flag, baseline_key):
         },
         "totalLines": evaluate_lines(y_test, pred),
         "baselineTotalLines": evaluate_lines(y_test, baseline),
+        "dispersion": {
+            "actualMean": round(float(np.mean(y_test)), 4),
+            "actualVariance": round(float(np.var(y_test)), 4),
+            "varianceToMean": round(float(np.var(y_test) / np.mean(y_test)), 4) if np.mean(y_test) > 0 else None,
+        },
+        "byLeague": grouped_metrics(test, y_test, pred, baseline, "league"),
+        "bySeason": grouped_metrics(test, y_test, pred, baseline, "season"),
         "model": {
             "type": "PoissonRegressor",
             "alpha": 0.5,
