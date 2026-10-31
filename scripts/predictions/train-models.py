@@ -30,7 +30,26 @@ FEATURES = [
     "home_card_team_for_avg10", "home_card_team_against_avg10",
     "away_card_team_for_avg5", "away_card_team_against_avg5",
     "away_card_team_for_avg10", "away_card_team_against_avg10",
-    "league_corners_avg", "league_cards_avg", "home_advantage",
+    "home_foul_team_for_avg5", "home_foul_team_against_avg5",
+    "home_foul_team_for_avg10", "home_foul_team_against_avg10",
+    "away_foul_team_for_avg5", "away_foul_team_against_avg5",
+    "away_foul_team_for_avg10", "away_foul_team_against_avg10",
+    "home_shots_team_for_avg5", "home_shots_team_against_avg5",
+    "home_shots_team_for_avg10", "home_shots_team_against_avg10",
+    "away_shots_team_for_avg5", "away_shots_team_against_avg5",
+    "away_shots_team_for_avg10", "away_shots_team_against_avg10",
+    "home_shots_on_target_team_for_avg5", "home_shots_on_target_team_against_avg5",
+    "home_shots_on_target_team_for_avg10", "home_shots_on_target_team_against_avg10",
+    "away_shots_on_target_team_for_avg5", "away_shots_on_target_team_against_avg5",
+    "away_shots_on_target_team_for_avg10", "away_shots_on_target_team_against_avg10",
+    "home_red_card_team_for_avg5", "home_red_card_team_against_avg5",
+    "home_red_card_team_for_avg10", "home_red_card_team_against_avg10",
+    "away_red_card_team_for_avg5", "away_red_card_team_against_avg5",
+    "away_red_card_team_for_avg10", "away_red_card_team_against_avg10",
+    "league_corners_avg", "league_cards_avg", "league_fouls_avg",
+    "league_shots_avg", "league_shots_on_target_avg", "league_red_cards_avg",
+    "referee_yellows_avg10", "referee_red_cards_avg10",
+    "referee_fouls_avg10", "referee_matches_before", "referee_available",
 ]
 
 def poisson_deviance(y, pred):
@@ -458,20 +477,32 @@ def feature_ablation_diagnostics(x_train, x_test, y_train, y_test, lines=CORNERS
 def feature_variant_training(rows, target, eligible_flag, market):
     """Compare full, reduced and compact feature sets on chronological periods."""
     lines = LINES_BY_MARKET[market]
-    removable = {
-        "corners": {"home_team_for_avg5", "away_team_against_avg5", "away_team_for_avg5"},
-        "yellowCards": {"home_card_team_for_avg5", "home_team_against_avg10",
-                        "away_team_for_avg5", "home_card_team_against_avg5",
-                        "away_team_against_avg10"},
-    }[market]
     if market == "corners":
-        compact = ["home_team_for_avg10", "home_team_against_avg10",
-                   "away_team_for_avg10", "away_team_against_avg10",
-                   "league_corners_avg", "home_advantage"]
+        removable = {
+            feature for feature in FEATURES
+            if feature.startswith(("home_card_", "away_card_", "referee_"))
+        }
+        compact = [
+            "home_team_for_avg10", "home_team_against_avg10",
+            "away_team_for_avg10", "away_team_against_avg10",
+            "home_foul_team_for_avg10", "away_foul_team_for_avg10",
+            "home_shots_team_for_avg10", "away_shots_team_for_avg10",
+            "league_corners_avg", "league_fouls_avg", "league_shots_avg",
+        ]
     else:
-        compact = ["home_card_team_for_avg10", "home_card_team_against_avg10",
-                   "away_card_team_for_avg10", "away_card_team_against_avg10",
-                   "league_cards_avg", "home_advantage"]
+        removable = {
+            feature for feature in FEATURES
+            if feature.startswith(("home_team_", "away_team_"))
+        }
+        compact = [
+            "home_card_team_for_avg10", "home_card_team_against_avg10",
+            "away_card_team_for_avg10", "away_card_team_against_avg10",
+            "home_foul_team_for_avg10", "home_foul_team_against_avg10",
+            "away_foul_team_for_avg10", "away_foul_team_against_avg10",
+            "referee_yellows_avg10", "referee_red_cards_avg10",
+            "referee_matches_before", "referee_available",
+            "league_cards_avg", "league_fouls_avg", "league_red_cards_avg",
+        ]
     variants = {
         "full": list(FEATURES),
         "reduced": [f for f in FEATURES if f not in removable],
