@@ -375,7 +375,7 @@ def walk_forward_validation(rows, target, eligible_flag, lines=CORNERS_LINES):
         "method": "Expanding-window seasonal walk-forward; refit each fold using only earlier matches; paired two-sided sign-flip permutation tests; Holm correction applied across six lines separately for Brier and Log Loss.",
         "folds": folds,
         "evaluatedFolds": evaluated_folds,
-        "pooledTestRows": len(pooled[lines[0]]["actual"])
+        "pooledTestRows": len(pooled[lines[0]]["actual"]),
         "pooledComparisons": comparisons,
         "coefficientStability": coefficient_stability(fold_coefficients),
         "significanceLevel": 0.05,
