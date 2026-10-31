@@ -662,7 +662,7 @@ def main():
         "evaluatedLines": CORNERS_LINES,
         "evaluatedLinesByMarket": LINES_BY_MARKET,
         "corners": train_market(rows, "corners_total", "corners_model_eligible", "league_corners_avg", CORNERS_LINES),
-        "yellowCards": train_market(rows, "cards_total", "cards_model_eligible", "league_cards_avg", YELLOW_CARD_LINES)
+        "yellowCards": train_market(rows, "cards_total", "cards_model_eligible", "league_cards_avg", YELLOW_CARD_LINES),
         "note": "Calibration and line metrics are descriptive diagnostics, not proof of betting value. Walk-forward tests refit each season using only prior matches; Holm-adjusted paired tests correct six line comparisons separately for Brier and Log Loss. No ROI is calculated because historical bookmaker odds are unavailable. Production use requires odds-aware validation and market-specific calibration.",
     }
     OUT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
