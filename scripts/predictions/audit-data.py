@@ -89,7 +89,7 @@ def audit_open_matchday():
     text = fetch(index_url).decode("utf-8", errors="replace")
     folders = []
     for line in text.splitlines():
-        match = re.match(r"^\|\s*`([A-Z0-9_]+)`\s*\|\s*([^|]+)", line)
+        match = re.match(r"^\|\s*`([^`]+)`\s*\|\s*([^|]+)", line)
         if match:
             folders.append((match.group(1), match.group(2).strip()))
     results = []
@@ -125,14 +125,15 @@ def audit_open_matchday():
     return sorted(results, key=lambda x: x["league"].lower())
 
 def audit_football_data():
+    team_stats = {}
     aggregate = {
         code: {"league": league, "seasons_checked": 0, "matches": 0,
                "corners_complete": 0, "yellow_cards_complete": 0,
+               "seasonBreakdown": [], "teamCoverage": [],
                "source": "football-data.co.uk"}
         for code, league in FD_LEAGUES.items()
     }
     errors = []
-    # 2015/16 through 2025/26. Current-season files may not exist yet.
     seasons = [f"{str(y)[-2:]}{str(y + 1)[-2:]}" for y in range(2015, 2026)]
     for season in seasons:
         for code in FD_LEAGUES:
@@ -142,17 +143,64 @@ def audit_football_data():
                 played = [r for r in rows if parse_int(r.get("FTHG")) is not None and parse_int(r.get("FTAG")) is not None]
                 if not played:
                     continue
+                corners = match_stats(played, "HC", "AC")
+                cards = match_stats(played, "HY", "AY")
+                season_item = {
+                    "season": f"20{season[:2]}/20{season[2:]}",
+                    "matches": len(played),
+                    "corners_complete": corners,
+                    "yellow_cards_complete": cards,
+                    "corners_coverage": round(corners / len(played), 4),
+                    "cards_coverage": round(cards / len(played), 4)
+                }
                 item = aggregate[code]
                 item["seasons_checked"] += 1
                 item["matches"] += len(played)
-                item["corners_complete"] += match_stats(played, "HC", "AC")
-                item["yellow_cards_complete"] += match_stats(played, "HY", "AY")
+                item["corners_complete"] += corners
+                item["yellow_cards_complete"] += cards
+                item["seasonBreakdown"].append(season_item)
+                for row in played:
+                    home, away = (row.get("HomeTeam") or "").strip(), (row.get("AwayTeam") or "").strip()
+                    for team, stat_key in ((home, "HC"), (away, "AC")):
+                        if team:
+                            t = team_stats.setdefault((code, team), {"appearances": 0, "corners": 0, "cards": 0, "recent": []})
+                            t["appearances"] += 1
+                            if parse_int(row.get(stat_key)) is not None:
+                                t["corners"] += 1
+                            card_key = "HY" if team == home else "AY"
+                            if parse_int(row.get(card_key)) is not None:
+                                t["cards"] += 1
+                            date = (row.get("Date") or "").strip()
+                            t["recent"].append((date, parse_int(row.get(stat_key)) is not None, parse_int(row.get(card_key)) is not None))
             except (urllib.error.URLError, TimeoutError, OSError) as exc:
                 errors.append({"league_code": code, "season": season, "error": str(exc)[:120]})
             time.sleep(0.03)
     for item in aggregate.values():
         item["corners_coverage"] = round(item["corners_complete"] / item["matches"], 4) if item["matches"] else 0
         item["cards_coverage"] = round(item["yellow_cards_complete"] / item["matches"], 4) if item["matches"] else 0
+        code = next(k for k, v in aggregate.items() if v is item)
+        teams = []
+        for (team_code, team), stats in team_stats.items():
+            if team_code != code:
+                continue
+            recent = sorted(stats["recent"], key=lambda x: x[0])[-10:]
+            teams.append({
+                "team": team, "appearances": stats["appearances"],
+                "cornersAvailable": stats["corners"], "cardsAvailable": stats["cards"],
+                "recent10CornersCoverage": round(sum(x[1] for x in recent) / len(recent), 4) if recent else 0,
+                "recent10CardsCoverage": round(sum(x[2] for x in recent) / len(recent), 4) if recent else 0
+            })
+        item["teamCoverage"] = sorted(teams, key=lambda x: x["team"].lower())
+        item["cornersEligiblePreliminary"] = (
+            item["corners_complete"] >= MIN_MATCHES and
+            item["corners_coverage"] >= 0.80 and
+            bool(teams) and all(t["cornersAvailable"] >= MIN_TEAM_MATCHES for t in teams)
+        )
+        item["cardsEligiblePreliminary"] = (
+            item["yellow_cards_complete"] >= MIN_MATCHES and
+            item["cards_coverage"] >= 0.80 and
+            bool(teams) and all(t["cardsAvailable"] >= MIN_TEAM_MATCHES for t in teams)
+        )
     return list(aggregate.values()), errors
 
 def main():
