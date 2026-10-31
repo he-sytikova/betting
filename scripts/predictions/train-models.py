@@ -9,7 +9,6 @@ from pathlib import Path
 
 import numpy as np
 from scipy.stats import nbinom, poisson
-import statsmodels.api as sm
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import PoissonRegressor
 from sklearn.pipeline import Pipeline
@@ -134,22 +133,16 @@ def train_market(rows, target, eligible_flag, baseline_key):
     ])
     model.fit(x_train, y_train)
     pred = np.maximum(model.predict(x_test), 1e-8)
-    x_train_scaled = model[:-1].transform(x_train)
-    x_test_scaled = model[:-1].transform(x_test)
     poisson_train_mean = np.maximum(model.predict(x_train), 1e-8)
     pearson_alpha = max(
         float(np.sum((y_train - poisson_train_mean) ** 2 - poisson_train_mean)
               / np.sum(poisson_train_mean ** 2)),
         1e-6,
     )
-    nb_model = sm.GLM(
-        y_train,
-        sm.add_constant(x_train_scaled, has_constant="add"),
-        family=sm.families.NegativeBinomial(alpha=pearson_alpha),
-    ).fit(maxiter=200)
-    nb_pred = np.maximum(nb_model.predict(
-        sm.add_constant(x_test_scaled, has_constant="add")
-    ), 1e-8)
+    # Compare count distributions while holding the conditional mean fixed.
+    # This isolates the effect of overdispersion and avoids an unstable,
+    # rank-deficient unregularized NB coefficient fit on correlated features.
+    nb_pred = pred.copy()
     baseline = np.array([
         float(r[baseline_key]) if r.get(baseline_key) else float(np.mean(y_train))
         for r in test
@@ -183,6 +176,7 @@ def train_market(rows, target, eligible_flag, baseline_key):
         "bySeason": grouped_metrics(test, y_test, pred, baseline, "season"),
         "negativeBinomial": {
             "status": "evaluated",
+            "meanModel": "same PoissonRegressor conditional mean; NB2 distribution adds estimated overdispersion",
             "alpha": round(float(pearson_alpha), 8),
             "metrics": {
                 "mae": round(float(np.mean(np.abs(y_test - nb_pred))), 4),
@@ -214,7 +208,7 @@ def main():
     report = {
         "generatedAt": date.today().isoformat(),
         "status": "calibration_and_line_backtest_only_not_for_public_predictions",
-        "method": "Poisson and Negative Binomial GLM comparison with chronological holdout; Negative Binomial dispersion estimated from training-only Pearson residuals",
+        "method": "Poisson mean model with Poisson vs Negative Binomial count-distribution comparison on the same chronological holdout; Negative Binomial dispersion estimated from training-only Pearson residuals",
         "holdoutStart": HOLDOUT_START.isoformat(),
         "datasetRows": len(rows),
         "evaluatedLines": LINES,
@@ -227,8 +221,8 @@ def main():
         "generatedAt": report["generatedAt"],
         "datasetRows": report["datasetRows"],
         "evaluatedLines": report["evaluatedLines"],
-        "corners": report["corners"].get("metrics", report["corners"]),
-        "yellowCards": report["yellowCards"].get("metrics", report["yellowCards"]),
+        "corners": {"poisson": report["corners"].get("metrics", report["corners"]), "negativeBinomial": report["corners"].get("negativeBinomial", {}).get("metrics")},
+        "yellowCards": {"poisson": report["yellowCards"].get("metrics", report["yellowCards"]), "negativeBinomial": report["yellowCards"].get("negativeBinomial", {}).get("metrics")},
     }, ensure_ascii=False, indent=2))
 
 if __name__ == "__main__":
