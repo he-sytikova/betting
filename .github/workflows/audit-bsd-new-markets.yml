@@ -13,7 +13,7 @@ concurrency:
 jobs:
   audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v5
         with:
@@ -21,7 +21,7 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
-      - name: Probe BSD historical coverage
+      - name: Probe BSD historical coverage and actual team stats
         env:
           BSD_TOKEN: ${{ secrets.BSD_TOKEN }}
         run: python scripts/predictions/audit-bsd-new-markets.py
