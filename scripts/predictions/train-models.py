@@ -381,6 +381,77 @@ def walk_forward_validation(rows, target, eligible_flag):
     }
 
 
+
+def make_poisson_pipeline(feature_count=None):
+    return Pipeline([
+        ("imputer", SimpleImputer(strategy="median)),
+        ("scale", StandardScaler()),
+        ("poisson", PoissonRegressor(alpha=0.5, max_iter=1000)),
+    ])
+
+
+def feature_ablation_diagnostics(x_train, x_test, y_train, y_test):
+    """Drop-one refits and holdout permutation importance; all transforms fit on train only."""
+    def fit_score(train_x, test_x):
+        candidate = make_poisson_pipeline()
+        candidate.fit(train_x, y_train)
+        prediction = np.maximum(candidate.predict(test_x), 1e-8)
+        return candidate, {
+            "mae": float(np.mean(np.abs(y_test - prediction))),
+            "poissonDeviance": poisson_deviance(y_test, prediction),
+            "lineScores": [{
+                "line": line,
+                "overBrier": probability_metrics((y_test > line).astype(float), poisson.sf(int(line), prediction))["brierScore"],
+                "overLogLoss": probability_metrics((y_test > line).astype(float), poisson.sf(int(line), prediction))["logLoss"],
+            } for line in LINES],
+        }
+
+    full_model, full = fit_score(x_train, x_test)
+    ablations = []
+    for index, name in enumerate(FEATURES):
+        keep = [i for i in range(len(FEATURES)) if i != index]
+        _, dropped = fit_score(x_train[:, keep], x_test[:, keep])
+        ablations.append({
+            "feature": name,
+            "withoutFeature": {k: round(v, 6) for k, v in dropped.items() if k != "lineScores"},
+            "deltaMae": round(dropped["mae"] - full["mae"], 6),
+            "deltaPoissonDeviance": round(dropped["poissonDeviance"] - full["poissonDeviance"], 6),
+            "lineScoreDeltas": [{
+                "line": line["line"],
+                "deltaOverBrier": round(line["overBrier"] - base["overBrier"], 6),
+                "deltaOverLogLoss": round(line["overLogLoss"] - base["overLogLoss"], 6),
+            } for line, base in zip(dropped["lineScores"], full["lineScores"])],
+        })
+
+    rng = np.random.default_rng(20261031)
+    permutation = []
+    baseline_prediction = np.maximum(full_model.predict(x_test), 1e-8)
+    baseline_mae = float(np.mean(np.abs(y_test - baseline_prediction)))
+    baseline_deviance = poisson_deviance(y_test, baseline_prediction)
+    for index, name in enumerate(FEATURES):
+        mae_deltas, deviance_deltas = [], []
+        for _ in range(5):
+            permuted = x_test.copy()
+            permuted[:, index] = permuted[rng.permutation(len(permuted)), index]
+            prediction = np.maximum(full_model.predict(permuted), 1e-8)
+            mae_deltas.append(float(np.mean(np.abs(y_test - prediction))) - baseline_mae)
+            deviance_deltas.append(poisson_deviance(y_test, prediction) - baseline_deviance)
+        permutation.append({
+            "feature": name,
+            "maeIncrease": round(float(np.mean(mae_deltas)), 6),
+            "maeIncreaseStd": round(float(np.std(mae_deltas, ddof=1)), 6),
+            "devianceIncrease": round(float(np.mean(deviance_deltas)), 6),
+            "devianceIncreaseStd": round(float(np.std(deviance_deltas, ddof=1)), 6),
+        })
+    return {
+        "method": "Drop-one feature refits on chronological holdout; preprocessing refit inside each training fold. Permutation importance uses five holdout shuffles per feature.",
+        "fullModel": {"mae": round(full["mae"], 6), "poissonDeviance": round(full["poissonDeviance"], 6)},
+        "ablation": sorted(ablations, key=lambda x: x["deltaPoissonDeviance"]),
+        "permutationImportance": sorted(permutation, key=lambda x: x["devianceIncrease"], reverse=True),
+        "interpretation": "Positive drop-one deltas mean removing the feature worsened the model; negative deltas mean removal improved it. Permutation increases measure predictive reliance, not causal importance. Correlated features can mask one another.",
+    }
+
+
 def train_market(rows, target, eligible_flag, baseline_key):
     usable = [r for r in rows if r[eligible_flag] == "1" and r[target] != ""]
     train = [r for r in usable if date.fromisoformat(r["date"]) < HOLDOUT_START]
@@ -398,6 +469,7 @@ def train_market(rows, target, eligible_flag, baseline_key):
     ])
     model.fit(x_train, y_train)
     pred = np.maximum(model.predict(x_test), 1e-8)
+    feature_diagnostics = feature_ablation_diagnostics(x_train, x_test, y_train, y_test)
     poisson_train_mean = np.maximum(model.predict(x_train), 1e-8)
     pearson_alpha = max(
         float(np.sum((y_train - poisson_train_mean) ** 2 - poisson_train_mean)
@@ -440,6 +512,7 @@ def train_market(rows, target, eligible_flag, baseline_key):
         "byLeague": grouped_metrics(test, y_test, pred, baseline, "league"),
         "bySeason": grouped_metrics(test, y_test, pred, baseline, "season"),
         "walkForward": walk_forward_validation(rows, target, eligible_flag),
+        "featureDiagnostics": feature_diagnostics,
         "calibrationDiagnostics": {
             "poisson": [{"line": line, "over": calibration_diagnostics((y_test > line).astype(float), poisson.sf(int(line), pred)), "under": calibration_diagnostics((y_test <= line).astype(float), poisson.cdf(int(line), pred))} for line in LINES],
             "negativeBinomial": [{"line": line, "over": calibration_diagnostics((y_test > line).astype(float), negative_binomial_sf(line, pred, pearson_alpha)), "under": calibration_diagnostics((y_test <= line).astype(float), 1.0-negative_binomial_sf(line, pred, pearson_alpha))} for line in LINES],
