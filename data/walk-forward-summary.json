@@ -1006,6 +1006,930 @@
           }
         ]
       },
+      "featureDiagnostics": {
+        "method": "Drop-one feature refits on chronological holdout; preprocessing refit inside each training fold. Permutation importance uses five holdout shuffles per feature.",
+        "fullModel": {
+          "mae": 2.688845,
+          "poissonDeviance": 1.169596
+        },
+        "ablation": [
+          {
+            "feature": "home_team_for_avg5",
+            "withoutFeature": {
+              "mae": 2.687247,
+              "poissonDeviance": 1.168178
+            },
+            "deltaMae": -0.001598,
+            "deltaPoissonDeviance": -0.001418,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": -0.00019,
+                "deltaOverLogLoss": -0.00056
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": -0.00016,
+                "deltaOverLogLoss": -0.00038
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": -0.00019,
+                "deltaOverLogLoss": -0.00039
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": -0.00022,
+                "deltaOverLogLoss": -0.00044
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": -0.00012,
+                "deltaOverLogLoss": -0.0003
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": -7e-05,
+                "deltaOverLogLoss": -0.00022
+              }
+            ]
+          },
+          {
+            "feature": "away_team_against_avg5",
+            "withoutFeature": {
+              "mae": 2.687867,
+              "poissonDeviance": 1.169179
+            },
+            "deltaMae": -0.000977,
+            "deltaPoissonDeviance": -0.000417,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": -2e-05,
+                "deltaOverLogLoss": -9e-05
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": -4e-05,
+                "deltaOverLogLoss": -0.0001
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": -0.00015,
+                "deltaOverLogLoss": -0.00031
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": -0.0001,
+                "deltaOverLogLoss": -0.00021
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": -7e-05,
+                "deltaOverLogLoss": -0.00018
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": -2e-05,
+                "deltaOverLogLoss": -5e-05
+              }
+            ]
+          },
+          {
+            "feature": "away_team_for_avg5",
+            "withoutFeature": {
+              "mae": 2.688206,
+              "poissonDeviance": 1.169363
+            },
+            "deltaMae": -0.000639,
+            "deltaPoissonDeviance": -0.000233,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 1e-05,
+                "deltaOverLogLoss": 2e-05
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -2e-05
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": -5e-05,
+                "deltaOverLogLoss": -0.00011
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": -5e-05,
+                "deltaOverLogLoss": -0.0001
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": -7e-05,
+                "deltaOverLogLoss": -0.00017
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": -8e-05,
+                "deltaOverLogLoss": -0.00025
+              }
+            ]
+          },
+          {
+            "feature": "league_cards_avg",
+            "withoutFeature": {
+              "mae": 2.688733,
+              "poissonDeviance": 1.169364
+            },
+            "deltaMae": -0.000112,
+            "deltaPoissonDeviance": -0.000232,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 3e-05,
+                "deltaOverLogLoss": 8e-05
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": 3e-05,
+                "deltaOverLogLoss": 6e-05
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": 1e-05,
+                "deltaOverLogLoss": 3e-05
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": -4e-05,
+                "deltaOverLogLoss": -7e-05
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": -3e-05,
+                "deltaOverLogLoss": -8e-05
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": -6e-05,
+                "deltaOverLogLoss": -0.00019
+              }
+            ]
+          },
+          {
+            "feature": "home_card_team_against_avg10",
+            "withoutFeature": {
+              "mae": 2.688582,
+              "poissonDeviance": 1.169414
+            },
+            "deltaMae": -0.000263,
+            "deltaPoissonDeviance": -0.000182,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 1e-05
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": -4e-05,
+                "deltaOverLogLoss": -7e-05
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": -3e-05,
+                "deltaOverLogLoss": -5e-05
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": -1e-05,
+                "deltaOverLogLoss": -4e-05
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -1e-05
+              }
+            ]
+          },
+          {
+            "feature": "away_card_team_against_avg5",
+            "withoutFeature": {
+              "mae": 2.688715,
+              "poissonDeviance": 1.169562
+            },
+            "deltaMae": -0.00013,
+            "deltaPoissonDeviance": -3.4e-05,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -1e-05
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": -1e-05,
+                "deltaOverLogLoss": -2e-05
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": -2e-05,
+                "deltaOverLogLoss": -2e-05
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -1e-05
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -1e-05
+              }
+            ]
+          },
+          {
+            "feature": "away_card_team_against_avg10",
+            "withoutFeature": {
+              "mae": 2.688776,
+              "poissonDeviance": 1.169583
+            },
+            "deltaMae": -6.9e-05,
+            "deltaPoissonDeviance": -1.3e-05,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -1e-05
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": -1e-05,
+                "deltaOverLogLoss": -2e-05
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": -1e-05,
+                "deltaOverLogLoss": -1e-05
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -1e-05
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              }
+            ]
+          },
+          {
+            "feature": "home_card_team_against_avg5",
+            "withoutFeature": {
+              "mae": 2.688893,
+              "poissonDeviance": 1.169588
+            },
+            "deltaMae": 4.8e-05,
+            "deltaPoissonDeviance": -8e-06,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": -1e-05,
+                "deltaOverLogLoss": -2e-05
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": -1e-05,
+                "deltaOverLogLoss": -2e-05
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 1e-05
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": -1e-05,
+                "deltaOverLogLoss": -2e-05
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": -1e-05,
+                "deltaOverLogLoss": -3e-05
+              }
+            ]
+          },
+          {
+            "feature": "home_card_team_for_avg10",
+            "withoutFeature": {
+              "mae": 2.688663,
+              "poissonDeviance": 1.16959
+            },
+            "deltaMae": -0.000182,
+            "deltaPoissonDeviance": -6e-06,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": -1e-05,
+                "deltaOverLogLoss": -3e-05
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": -2e-05,
+                "deltaOverLogLoss": -5e-05
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": -3e-05,
+                "deltaOverLogLoss": -5e-05
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": -2e-05,
+                "deltaOverLogLoss": -4e-05
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 1e-05,
+                "deltaOverLogLoss": 1e-05
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 1e-05,
+                "deltaOverLogLoss": 5e-05
+              }
+            ]
+          },
+          {
+            "feature": "away_card_team_for_avg10",
+            "withoutFeature": {
+              "mae": 2.68885,
+              "poissonDeviance": 1.16959
+            },
+            "deltaMae": 5e-06,
+            "deltaPoissonDeviance": -5e-06,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 1e-05
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -1e-05
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              }
+            ]
+          },
+          {
+            "feature": "away_card_team_for_avg5",
+            "withoutFeature": {
+              "mae": 2.688851,
+              "poissonDeviance": 1.169595
+            },
+            "deltaMae": 6e-06,
+            "deltaPoissonDeviance": -0.0,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 1e-05
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -1e-05
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              }
+            ]
+          },
+          {
+            "feature": "home_advantage",
+            "withoutFeature": {
+              "mae": 2.688845,
+              "poissonDeviance": 1.169596
+            },
+            "deltaMae": 0.0,
+            "deltaPoissonDeviance": 0.0,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              }
+            ]
+          },
+          {
+            "feature": "home_card_team_for_avg5",
+            "withoutFeature": {
+              "mae": 2.688929,
+              "poissonDeviance": 1.169619
+            },
+            "deltaMae": 8.4e-05,
+            "deltaPoissonDeviance": 2.4e-05,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 1e-05,
+                "deltaOverLogLoss": 3e-05
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": 1e-05,
+                "deltaOverLogLoss": 1e-05
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": 1e-05,
+                "deltaOverLogLoss": 1e-05
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": 1e-05,
+                "deltaOverLogLoss": 2e-05
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 1e-05,
+                "deltaOverLogLoss": 1e-05
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              }
+            ]
+          },
+          {
+            "feature": "home_team_against_avg5",
+            "withoutFeature": {
+              "mae": 2.689125,
+              "poissonDeviance": 1.169724
+            },
+            "deltaMae": 0.000281,
+            "deltaPoissonDeviance": 0.000128,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 2e-05,
+                "deltaOverLogLoss": 4e-05
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": 2e-05,
+                "deltaOverLogLoss": 3e-05
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": 3e-05,
+                "deltaOverLogLoss": 5e-05
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": 2e-05,
+                "deltaOverLogLoss": 6e-05
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 2e-05,
+                "deltaOverLogLoss": 5e-05
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 1e-05,
+                "deltaOverLogLoss": 4e-05
+              }
+            ]
+          },
+          {
+            "feature": "home_team_against_avg10",
+            "withoutFeature": {
+              "mae": 2.689145,
+              "poissonDeviance": 1.169986
+            },
+            "deltaMae": 0.0003,
+            "deltaPoissonDeviance": 0.000391,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 2e-05,
+                "deltaOverLogLoss": 4e-05
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": 8e-05,
+                "deltaOverLogLoss": 0.00018
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": 3e-05,
+                "deltaOverLogLoss": 7e-05
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": 2e-05,
+                "deltaOverLogLoss": 3e-05
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 5e-05,
+                "deltaOverLogLoss": 7e-05
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 2e-05,
+                "deltaOverLogLoss": 2e-05
+              }
+            ]
+          },
+          {
+            "feature": "away_team_for_avg10",
+            "withoutFeature": {
+              "mae": 2.689576,
+              "poissonDeviance": 1.170175
+            },
+            "deltaMae": 0.000732,
+            "deltaPoissonDeviance": 0.000579,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 2e-05,
+                "deltaOverLogLoss": 5e-05
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": 4e-05,
+                "deltaOverLogLoss": 8e-05
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": 4e-05,
+                "deltaOverLogLoss": 9e-05
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": 0.00011,
+                "deltaOverLogLoss": 0.00023
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 0.00015,
+                "deltaOverLogLoss": 0.00035
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 0.00011,
+                "deltaOverLogLoss": 0.00032
+              }
+            ]
+          },
+          {
+            "feature": "away_team_against_avg10",
+            "withoutFeature": {
+              "mae": 2.691338,
+              "poissonDeviance": 1.171218
+            },
+            "deltaMae": 0.002493,
+            "deltaPoissonDeviance": 0.001622,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 0.00013,
+                "deltaOverLogLoss": 0.00035
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": 0.00014,
+                "deltaOverLogLoss": 0.0003
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": 0.00029,
+                "deltaOverLogLoss": 0.00058
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": 0.00026,
+                "deltaOverLogLoss": 0.00056
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 0.00024,
+                "deltaOverLogLoss": 0.00059
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 0.00011,
+                "deltaOverLogLoss": 0.00037
+              }
+            ]
+          },
+          {
+            "feature": "home_team_for_avg10",
+            "withoutFeature": {
+              "mae": 2.691972,
+              "poissonDeviance": 1.172156
+            },
+            "deltaMae": 0.003128,
+            "deltaPoissonDeviance": 0.00256,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 0.00023,
+                "deltaOverLogLoss": 0.00062
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": 0.00029,
+                "deltaOverLogLoss": 0.00064
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": 0.00034,
+                "deltaOverLogLoss": 0.00068
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": 0.00041,
+                "deltaOverLogLoss": 0.00085
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 0.0003,
+                "deltaOverLogLoss": 0.0007
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 0.00017,
+                "deltaOverLogLoss": 0.00053
+              }
+            ]
+          },
+          {
+            "feature": "league_corners_avg",
+            "withoutFeature": {
+              "mae": 2.693673,
+              "poissonDeviance": 1.172567
+            },
+            "deltaMae": 0.004829,
+            "deltaPoissonDeviance": 0.002971,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 0.0005,
+                "deltaOverLogLoss": 0.00144
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": 0.00063,
+                "deltaOverLogLoss": 0.00143
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": 0.00045,
+                "deltaOverLogLoss": 0.00093
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": 0.00033,
+                "deltaOverLogLoss": 0.00068
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 0.00013,
+                "deltaOverLogLoss": 0.00031
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 0.00015,
+                "deltaOverLogLoss": 0.00039
+              }
+            ]
+          }
+        ],
+        "permutationImportance": [
+          {
+            "feature": "league_corners_avg",
+            "maeIncrease": 0.006368,
+            "maeIncreaseStd": 0.002364,
+            "devianceIncrease": 0.0064,
+            "devianceIncreaseStd": 0.001199
+          },
+          {
+            "feature": "away_team_against_avg10",
+            "maeIncrease": 0.005108,
+            "maeIncreaseStd": 0.001436,
+            "devianceIncrease": 0.005067,
+            "devianceIncreaseStd": 0.000645
+          },
+          {
+            "feature": "home_team_for_avg10",
+            "maeIncrease": 0.005243,
+            "maeIncreaseStd": 0.001203,
+            "devianceIncrease": 0.004308,
+            "devianceIncreaseStd": 0.001283
+          },
+          {
+            "feature": "home_team_against_avg10",
+            "maeIncrease": 0.003836,
+            "maeIncreaseStd": 0.000955,
+            "devianceIncrease": 0.002716,
+            "devianceIncreaseStd": 0.000992
+          },
+          {
+            "feature": "home_team_for_avg5",
+            "maeIncrease": 0.003218,
+            "maeIncreaseStd": 0.001358,
+            "devianceIncrease": 0.002155,
+            "devianceIncreaseStd": 0.000885
+          },
+          {
+            "feature": "away_team_for_avg5",
+            "maeIncrease": 0.001112,
+            "maeIncreaseStd": 0.000542,
+            "devianceIncrease": 0.001305,
+            "devianceIncreaseStd": 0.000381
+          },
+          {
+            "feature": "away_team_for_avg10",
+            "maeIncrease": 0.000934,
+            "maeIncreaseStd": 0.001294,
+            "devianceIncrease": 0.001151,
+            "devianceIncreaseStd": 0.000326
+          },
+          {
+            "feature": "away_team_against_avg5",
+            "maeIncrease": 0.000906,
+            "maeIncreaseStd": 0.001031,
+            "devianceIncrease": 0.001012,
+            "devianceIncreaseStd": 0.000546
+          },
+          {
+            "feature": "home_team_against_avg5",
+            "maeIncrease": 0.001279,
+            "maeIncreaseStd": 0.000401,
+            "devianceIncrease": 0.000791,
+            "devianceIncreaseStd": 0.000369
+          },
+          {
+            "feature": "home_card_team_for_avg10",
+            "maeIncrease": 2e-05,
+            "maeIncreaseStd": 0.000319,
+            "devianceIncrease": 0.000193,
+            "devianceIncreaseStd": 6.8e-05
+          },
+          {
+            "feature": "league_cards_avg",
+            "maeIncrease": 0.000185,
+            "maeIncreaseStd": 0.000334,
+            "devianceIncrease": 0.000169,
+            "devianceIncreaseStd": 0.00047
+          },
+          {
+            "feature": "home_card_team_for_avg5",
+            "maeIncrease": 2.2e-05,
+            "maeIncreaseStd": 0.000158,
+            "devianceIncrease": 3.5e-05,
+            "devianceIncreaseStd": 5.4e-05
+          },
+          {
+            "feature": "away_card_team_against_avg10",
+            "maeIncrease": 2e-05,
+            "maeIncreaseStd": 3.6e-05,
+            "devianceIncrease": 3.4e-05,
+            "devianceIncreaseStd": 4e-05
+          },
+          {
+            "feature": "away_card_team_for_avg5",
+            "maeIncrease": 2.4e-05,
+            "maeIncreaseStd": 5.2e-05,
+            "devianceIncrease": 3.1e-05,
+            "devianceIncreaseStd": 2.2e-05
+          },
+          {
+            "feature": "home_advantage",
+            "maeIncrease": 0.0,
+            "maeIncreaseStd": 0.0,
+            "devianceIncrease": 0.0,
+            "devianceIncreaseStd": 0.0
+          },
+          {
+            "feature": "away_card_team_for_avg10",
+            "maeIncrease": 6e-06,
+            "maeIncreaseStd": 3.2e-05,
+            "devianceIncrease": -3e-06,
+            "devianceIncreaseStd": 3.1e-05
+          },
+          {
+            "feature": "away_card_team_against_avg5",
+            "maeIncrease": -0.000132,
+            "maeIncreaseStd": 0.00014,
+            "devianceIncrease": -9e-05,
+            "devianceIncreaseStd": 8.5e-05
+          },
+          {
+            "feature": "home_card_team_against_avg5",
+            "maeIncrease": -4.3e-05,
+            "maeIncreaseStd": 0.000154,
+            "devianceIncrease": -9.6e-05,
+            "devianceIncreaseStd": 7.2e-05
+          },
+          {
+            "feature": "home_card_team_against_avg10",
+            "maeIncrease": -7.1e-05,
+            "maeIncreaseStd": 0.000464,
+            "devianceIncrease": -0.00013,
+            "devianceIncreaseStd": 0.000278
+          }
+        ],
+        "interpretation": "Positive drop-one deltas mean removing the feature worsened the model; negative deltas mean removal improved it. Permutation increases measure predictive reliance, not causal importance. Correlated features can mask one another."
+      },
       "holdoutCalibration": {
         "poisson": [
           {
@@ -4297,6 +5221,930 @@
             "stableSign": false
           }
         ]
+      },
+      "featureDiagnostics": {
+        "method": "Drop-one feature refits on chronological holdout; preprocessing refit inside each training fold. Permutation importance uses five holdout shuffles per feature.",
+        "fullModel": {
+          "mae": 1.580804,
+          "poissonDeviance": 1.149217
+        },
+        "ablation": [
+          {
+            "feature": "home_card_team_for_avg5",
+            "withoutFeature": {
+              "mae": 1.580685,
+              "poissonDeviance": 1.149116
+            },
+            "deltaMae": -0.000119,
+            "deltaPoissonDeviance": -0.000101,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 1e-05,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 3e-05
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 2e-05
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 1e-05
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              }
+            ]
+          },
+          {
+            "feature": "home_team_against_avg10",
+            "withoutFeature": {
+              "mae": 1.580798,
+              "poissonDeviance": 1.149137
+            },
+            "deltaMae": -6e-06,
+            "deltaPoissonDeviance": -8e-05,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -1e-05
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": -1e-05,
+                "deltaOverLogLoss": -6e-05
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": -1e-05,
+                "deltaOverLogLoss": -3e-05
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -1e-05
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              }
+            ]
+          },
+          {
+            "feature": "away_team_for_avg5",
+            "withoutFeature": {
+              "mae": 1.580684,
+              "poissonDeviance": 1.149146
+            },
+            "deltaMae": -0.00012,
+            "deltaPoissonDeviance": -7.1e-05,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 1e-05
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 2e-05
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 1e-05
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 1e-05
+              }
+            ]
+          },
+          {
+            "feature": "home_card_team_against_avg5",
+            "withoutFeature": {
+              "mae": 1.580596,
+              "poissonDeviance": 1.149174
+            },
+            "deltaMae": -0.000207,
+            "deltaPoissonDeviance": -4.3e-05,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 2e-05,
+                "deltaOverLogLoss": 7e-05
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": 1e-05,
+                "deltaOverLogLoss": 0.00017
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0001
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 3e-05
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 1e-05
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 2e-05
+              }
+            ]
+          },
+          {
+            "feature": "away_team_against_avg10",
+            "withoutFeature": {
+              "mae": 1.580703,
+              "poissonDeviance": 1.149189
+            },
+            "deltaMae": -0.000101,
+            "deltaPoissonDeviance": -2.8e-05,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 1e-05,
+                "deltaOverLogLoss": 6e-05
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 1e-05
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -3e-05
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -4e-05
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -1e-05
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -1e-05
+              }
+            ]
+          },
+          {
+            "feature": "home_team_for_avg5",
+            "withoutFeature": {
+              "mae": 1.580802,
+              "poissonDeviance": 1.149216
+            },
+            "deltaMae": -2e-06,
+            "deltaPoissonDeviance": -1e-06,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              }
+            ]
+          },
+          {
+            "feature": "away_team_for_avg10",
+            "withoutFeature": {
+              "mae": 1.58081,
+              "poissonDeviance": 1.149217
+            },
+            "deltaMae": 6e-06,
+            "deltaPoissonDeviance": 0.0,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -1e-05
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 1e-05
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              }
+            ]
+          },
+          {
+            "feature": "home_advantage",
+            "withoutFeature": {
+              "mae": 1.580804,
+              "poissonDeviance": 1.149217
+            },
+            "deltaMae": -0.0,
+            "deltaPoissonDeviance": 0.0,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              }
+            ]
+          },
+          {
+            "feature": "away_card_team_for_avg5",
+            "withoutFeature": {
+              "mae": 1.580927,
+              "poissonDeviance": 1.149221
+            },
+            "deltaMae": 0.000123,
+            "deltaPoissonDeviance": 4e-06,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -6e-05
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": -1e-05,
+                "deltaOverLogLoss": -6e-05
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": -1e-05,
+                "deltaOverLogLoss": -4e-05
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -5e-05
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 2e-05
+              }
+            ]
+          },
+          {
+            "feature": "away_card_team_against_avg5",
+            "withoutFeature": {
+              "mae": 1.580884,
+              "poissonDeviance": 1.149227
+            },
+            "deltaMae": 8e-05,
+            "deltaPoissonDeviance": 1e-05,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 2e-05,
+                "deltaOverLogLoss": 9e-05
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 4e-05
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 3e-05
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 2e-05
+              }
+            ]
+          },
+          {
+            "feature": "league_corners_avg",
+            "withoutFeature": {
+              "mae": 1.580776,
+              "poissonDeviance": 1.149228
+            },
+            "deltaMae": -2.8e-05,
+            "deltaPoissonDeviance": 1.1e-05,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 1e-05,
+                "deltaOverLogLoss": 2e-05
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 3e-05
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 2e-05
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -1e-05
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              }
+            ]
+          },
+          {
+            "feature": "home_team_for_avg10",
+            "withoutFeature": {
+              "mae": 1.580791,
+              "poissonDeviance": 1.149324
+            },
+            "deltaMae": -1.2e-05,
+            "deltaPoissonDeviance": 0.000107,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -2e-05
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 1e-05
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -1e-05
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 1e-05
+              }
+            ]
+          },
+          {
+            "feature": "away_card_team_for_avg10",
+            "withoutFeature": {
+              "mae": 1.580576,
+              "poissonDeviance": 1.149352
+            },
+            "deltaMae": -0.000228,
+            "deltaPoissonDeviance": 0.000135,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 3e-05,
+                "deltaOverLogLoss": 0.00025
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": 2e-05,
+                "deltaOverLogLoss": 0.00024
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 9e-05
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 6e-05
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -2e-05
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -3e-05
+              }
+            ]
+          },
+          {
+            "feature": "away_team_against_avg5",
+            "withoutFeature": {
+              "mae": 1.581118,
+              "poissonDeviance": 1.149421
+            },
+            "deltaMae": 0.000315,
+            "deltaPoissonDeviance": 0.000204,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -4e-05
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -1e-05
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 5e-05
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 3e-05
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 1e-05
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 3e-05
+              }
+            ]
+          },
+          {
+            "feature": "home_team_against_avg5",
+            "withoutFeature": {
+              "mae": 1.580916,
+              "poissonDeviance": 1.149443
+            },
+            "deltaMae": 0.000112,
+            "deltaPoissonDeviance": 0.000227,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -1e-05
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -1e-05
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": -1e-05,
+                "deltaOverLogLoss": -2e-05
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 1e-05
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.0
+              }
+            ]
+          },
+          {
+            "feature": "away_card_team_against_avg10",
+            "withoutFeature": {
+              "mae": 1.581454,
+              "poissonDeviance": 1.150012
+            },
+            "deltaMae": 0.00065,
+            "deltaPoissonDeviance": 0.000796,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 2e-05,
+                "deltaOverLogLoss": 0.00017
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 8e-05
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": -1e-05,
+                "deltaOverLogLoss": -1e-05
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -5e-05
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -2e-05
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -2e-05
+              }
+            ]
+          },
+          {
+            "feature": "home_card_team_against_avg10",
+            "withoutFeature": {
+              "mae": 1.581655,
+              "poissonDeviance": 1.150043
+            },
+            "deltaMae": 0.000851,
+            "deltaPoissonDeviance": 0.000826,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": -2e-05,
+                "deltaOverLogLoss": -0.00014
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": -2e-05,
+                "deltaOverLogLoss": -0.0002
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": -1e-05,
+                "deltaOverLogLoss": -6e-05
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -4e-05
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -1e-05
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -2e-05
+              }
+            ]
+          },
+          {
+            "feature": "home_card_team_for_avg10",
+            "withoutFeature": {
+              "mae": 1.582487,
+              "poissonDeviance": 1.15097
+            },
+            "deltaMae": 0.001683,
+            "deltaPoissonDeviance": 0.001753,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 2e-05,
+                "deltaOverLogLoss": 0.00019
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": -1e-05,
+                "deltaOverLogLoss": -4e-05
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -9e-05
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -8e-05
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": -3e-05
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 1e-05
+              }
+            ]
+          },
+          {
+            "feature": "league_cards_avg",
+            "withoutFeature": {
+              "mae": 1.582917,
+              "poissonDeviance": 1.152394
+            },
+            "deltaMae": 0.002113,
+            "deltaPoissonDeviance": 0.003177,
+            "lineScoreDeltas": [
+              {
+                "line": 7.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.00023
+              },
+              {
+                "line": 8.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.00034
+              },
+              {
+                "line": 9.5,
+                "deltaOverBrier": 1e-05,
+                "deltaOverLogLoss": 0.00037
+              },
+              {
+                "line": 10.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.00027
+              },
+              {
+                "line": 11.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.00019
+              },
+              {
+                "line": 12.5,
+                "deltaOverBrier": 0.0,
+                "deltaOverLogLoss": 0.00014
+              }
+            ]
+          }
+        ],
+        "permutationImportance": [
+          {
+            "feature": "league_cards_avg",
+            "maeIncrease": 0.004355,
+            "maeIncreaseStd": 0.002277,
+            "devianceIncrease": 0.006667,
+            "devianceIncreaseStd": 0.002059
+          },
+          {
+            "feature": "home_card_team_for_avg10",
+            "maeIncrease": 0.0037,
+            "maeIncreaseStd": 0.000725,
+            "devianceIncrease": 0.004445,
+            "devianceIncreaseStd": 0.000805
+          },
+          {
+            "feature": "home_card_team_against_avg10",
+            "maeIncrease": 0.002117,
+            "maeIncreaseStd": 0.001254,
+            "devianceIncrease": 0.002898,
+            "devianceIncreaseStd": 0.00175
+          },
+          {
+            "feature": "away_card_team_against_avg10",
+            "maeIncrease": 0.001768,
+            "maeIncreaseStd": 0.000236,
+            "devianceIncrease": 0.002443,
+            "devianceIncreaseStd": 0.000226
+          },
+          {
+            "feature": "away_card_team_for_avg10",
+            "maeIncrease": 0.0007,
+            "maeIncreaseStd": 0.001222,
+            "devianceIncrease": 0.001288,
+            "devianceIncreaseStd": 0.001085
+          },
+          {
+            "feature": "home_team_against_avg5",
+            "maeIncrease": 0.000485,
+            "maeIncreaseStd": 0.00036,
+            "devianceIncrease": 0.000657,
+            "devianceIncreaseStd": 0.000379
+          },
+          {
+            "feature": "home_team_against_avg10",
+            "maeIncrease": 0.000291,
+            "maeIncreaseStd": 0.000227,
+            "devianceIncrease": 0.000513,
+            "devianceIncreaseStd": 0.000284
+          },
+          {
+            "feature": "away_card_team_for_avg5",
+            "maeIncrease": 0.000298,
+            "maeIncreaseStd": 0.000336,
+            "devianceIncrease": 0.000429,
+            "devianceIncreaseStd": 0.000321
+          },
+          {
+            "feature": "home_card_team_against_avg5",
+            "maeIncrease": -0.000171,
+            "maeIncreaseStd": 0.000295,
+            "devianceIncrease": 0.000393,
+            "devianceIncreaseStd": 0.000386
+          },
+          {
+            "feature": "away_team_against_avg5",
+            "maeIncrease": 0.000362,
+            "maeIncreaseStd": 0.000157,
+            "devianceIncrease": 0.000366,
+            "devianceIncreaseStd": 0.000215
+          },
+          {
+            "feature": "away_team_against_avg10",
+            "maeIncrease": 0.000179,
+            "maeIncreaseStd": 0.000213,
+            "devianceIncrease": 0.000269,
+            "devianceIncreaseStd": 0.000326
+          },
+          {
+            "feature": "home_team_for_avg10",
+            "maeIncrease": 2.4e-05,
+            "maeIncreaseStd": 0.000559,
+            "devianceIncrease": 9.5e-05,
+            "devianceIncreaseStd": 0.000522
+          },
+          {
+            "feature": "away_team_for_avg10",
+            "maeIncrease": -4e-06,
+            "maeIncreaseStd": 0.00019,
+            "devianceIncrease": 5.1e-05,
+            "devianceIncreaseStd": 0.000226
+          },
+          {
+            "feature": "home_card_team_for_avg5",
+            "maeIncrease": 3.8e-05,
+            "maeIncreaseStd": 0.000366,
+            "devianceIncrease": 4e-05,
+            "devianceIncreaseStd": 0.000488
+          },
+          {
+            "feature": "home_team_for_avg5",
+            "maeIncrease": -4e-06,
+            "maeIncreaseStd": 3.6e-05,
+            "devianceIncrease": 1.5e-05,
+            "devianceIncreaseStd": 3.3e-05
+          },
+          {
+            "feature": "league_corners_avg",
+            "maeIncrease": 0.000175,
+            "maeIncreaseStd": 9.8e-05,
+            "devianceIncrease": 6e-06,
+            "devianceIncreaseStd": 0.000116
+          },
+          {
+            "feature": "home_advantage",
+            "maeIncrease": 0.0,
+            "maeIncreaseStd": 0.0,
+            "devianceIncrease": 0.0,
+            "devianceIncreaseStd": 0.0
+          },
+          {
+            "feature": "away_team_for_avg5",
+            "maeIncrease": -0.000134,
+            "maeIncreaseStd": 0.000148,
+            "devianceIncrease": -2.6e-05,
+            "devianceIncreaseStd": 0.000121
+          },
+          {
+            "feature": "away_card_team_against_avg5",
+            "maeIncrease": -0.000169,
+            "maeIncreaseStd": 0.000178,
+            "devianceIncrease": -0.000256,
+            "devianceIncreaseStd": 0.000415
+          }
+        ],
+        "interpretation": "Positive drop-one deltas mean removing the feature worsened the model; negative deltas mean removal improved it. Permutation increases measure predictive reliance, not causal importance. Correlated features can mask one another."
       },
       "holdoutCalibration": {
         "poisson": [
