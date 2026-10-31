@@ -46,8 +46,10 @@ def get(path):
 def rows(payload):
     if isinstance(payload, list): return payload
     if isinstance(payload, dict):
-        for k in ("results", "data", "items"): 
+        for k in ("results", "data", "items", "seasons", "events", "matches"): 
             if isinstance(payload.get(k), list): return payload[k]
+    if isinstance(payload, dict) and payload.get("id") is not None and ("year" in payload or "start_date" in payload):
+        return [payload]
     return []
 
 def norm(s):
@@ -130,7 +132,8 @@ def main():
     report["summary"] = {
         "targetCompetitions": len(TARGETS), "matchedCompetitions": len(selected),
         "sampledMatches": sum(s["matchesSampled"] for c in report["competitions"] for s in c["seasons"]),
-        "errors": len(report["errors"])
+        "errors": len(report["errors"]),
+        "warning": "No match records sampled; check BSD seasons/events response shapes." if sum(s["matchesSampled"] for c in report["competitions"] for s in c["seasons"]) == 0 else None
     }
     OUT.parent.mkdir(exist_ok=True)
     OUT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
