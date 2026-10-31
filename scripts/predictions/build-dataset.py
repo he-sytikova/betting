@@ -124,6 +124,8 @@ def main():
                     "away_matches_before": len(histories[akey]["corners"]),
                     "league_matches_before": len(league_history["corners"]),
                     "home_advantage": 1,
+                    "corners_model_eligible": int(corner_ok),
+                    "cards_model_eligible": int(card_ok),
                 }
                 row.update({f"home_{k}": v for k, v in team_features(histories[hkey]["corners"], "team").items()})
                 row.update({f"away_{k}": v for k, v in team_features(histories[akey]["corners"], "team").items()})
