@@ -6,9 +6,10 @@ const root = process.cwd();
 const source = fs.readFileSync(root + '/model-v1.js', 'utf8');
 const html = fs.readFileSync(root + '/model-v1.html', 'utf8');
 const policy = JSON.parse(fs.readFileSync(root + '/data/corners_cards_distribution_v1.json', 'utf8'));
+const models = JSON.parse(fs.readFileSync(root + '/data/corners_cards_models.json', 'utf8'));
 const context = { document: { addEventListener() {} }, console, Math, Number, Date, Map, Set };
 vm.createContext(context);
-vm.runInContext(source + ';globalThis.__modelV1Test = { countOver, formatTotals, configure: (models, config) => { productionModels = models; distributionConfig = config; } };', context, { filename: 'model-v1.js' });
+vm.runInContext(source + ';globalThis.__modelV1Test = { countOver, formatTotals, makeModelRows, configure: (models, config) => { productionModels = models; distributionConfig = config; } };', context, { filename: 'model-v1.js' });
 test('page contains controls and loads v1 script', () => {
  for (const id of ['market-type','market-source','market-search','markets-body','markets-error','markets-empty','markets-count','markets-date','refresh-btn']) assert.ok(html.includes('id="'+id+'"'));
  assert.ok(html.includes('<script src="model-v1.js"></script>'));
@@ -39,4 +40,21 @@ test('formatted output labels each line with its selected distribution', () => {
  assert.ok(s.includes('(NB2)')); assert.ok(s.includes('(Poisson)'));
  assert.equal((s.match(/\(NB2\)/g)||[]).length,3);
  assert.equal((s.match(/\(Poisson\)/g)||[]).length,3);
+});
+
+test('feature model produces a hybrid v1 forecast for a supported fixture', () => {
+ const teams = Object.values(models.teams.E0);
+ assert.ok(teams.length >= 2);
+ context.__modelV1Test.configure(models, policy);
+ const rows = context.__modelV1Test.makeModelRows([{
+  time: '2099-01-01T15:00:00Z',
+  league: models.leagueNames.E0,
+  home: teams[0].name,
+  away: teams[1].name
+ }]);
+ assert.equal(rows.length, 1);
+ assert.match(rows[0].corners, /NB2/);
+ assert.match(rows[0].corners, /Poisson/);
+ assert.match(rows[0].yellowCards, /NB2/);
+ assert.match(rows[0].yellowCards, /Poisson/);
 });
