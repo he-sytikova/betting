@@ -9,6 +9,9 @@ on:
     paths:
       - 'index.html'
       - 'app.js'
+      - 'markets.html'
+      - 'markets.js'
+      - 'data/corners_cards_models.json'
       - 'styles.css'
       - 'scripts/**'
       - '.github/workflows/update-forecasts.yml'
@@ -37,6 +40,7 @@ jobs:
       - name: Check JavaScript syntax
         run: |
           node --check app.js
+          node --check markets.js
           node --check scripts/build-data.js
           node --check scripts/euro365.js
 
