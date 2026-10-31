@@ -51,6 +51,23 @@ class MarketSpecificLineTests(unittest.TestCase):
             train_models.YELLOW_CARD_LINES,
         )
 
+    def test_grouped_metrics_preserves_market_specific_lines(self):
+        rows = [{"league": "E0"}, {"league": "E0"}]
+        result = train_models.grouped_metrics(
+            rows,
+            np.array([1.0, 2.0]),
+            np.array([1.5, 1.5]),
+            np.array([1.5, 1.5]),
+            "league",
+            min_rows=1,
+            lines=train_models.YELLOW_CARD_LINES,
+        )
+        lines = result["groups"]["E0"]["totalLines"]
+        self.assertEqual(
+            [item["line"] for item in lines],
+            train_models.YELLOW_CARD_LINES,
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
