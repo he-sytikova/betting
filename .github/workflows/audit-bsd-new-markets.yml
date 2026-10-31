@@ -1,0 +1,34 @@
+name: BSD historical coverage audit - new markets
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bsd-new-markets-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: model-development
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Probe BSD historical coverage
+        env:
+          BSD_TOKEN: ${{ secrets.BSD_TOKEN }}
+        run: python scripts/predictions/audit-bsd-new-markets.py
+      - name: Upload audit report
+        uses: actions/upload-artifact@v4
+        with:
+          name: bsd-new-markets-historical-audit
+          path: data/bsd_new_markets_audit.json
+          if-no-files-found: error
+          retention-days: 30
