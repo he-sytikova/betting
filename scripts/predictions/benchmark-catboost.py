@@ -92,6 +92,22 @@ def predict_catboost(model, features):
     )
 
 
+def line_probabilities(actual, predicted_mean, alpha, lines):
+    actual = np.asarray(actual, dtype=float)
+    mean = np.maximum(np.asarray(predicted_mean, dtype=float), 1e-8)
+    result = {}
+    for line in lines:
+        event = (actual > line).astype(float)
+        p_poisson = BASELINE.poisson.sf(int(line), mean)
+        p_nb = BASELINE.negative_binomial_sf(line, mean, alpha)
+        result[str(line)] = {
+            "actual": event,
+            "poisson": p_poisson,
+            "negativeBinomial": p_nb,
+        }
+    return result
+
+
 def model_scores(actual, predicted_mean, alpha, lines):
     actual = np.asarray(actual, dtype=float)
     predicted_mean = np.maximum(np.asarray(predicted_mean, dtype=float), 1e-8)
@@ -104,17 +120,60 @@ def model_scores(actual, predicted_mean, alpha, lines):
         "negativeBinomialAlpha": round(float(alpha), 8),
         "lines": [],
     }
+    probabilities = line_probabilities(actual, predicted_mean, alpha, lines)
     for line in lines:
-        event = (actual > line).astype(float)
-        p_poisson = BASELINE.poisson.sf(int(line), predicted_mean)
-        p_nb = BASELINE.negative_binomial_sf(line, predicted_mean, alpha)
+        values = probabilities[str(line)]
         result["lines"].append({
             "line": line,
-            "poisson": BASELINE.probability_metrics(event, p_poisson),
-            "negativeBinomial": BASELINE.probability_metrics(event, p_nb),
-            "observedOverRate": round(float(np.mean(event)), 5),
+            "poisson": BASELINE.probability_metrics(values["actual"], values["poisson"]),
+            "negativeBinomial": BASELINE.probability_metrics(values["actual"], values["negativeBinomial"]),
+            "poissonCalibration": BASELINE.calibration_diagnostics(values["actual"], values["poisson"]),
+            "negativeBinomialCalibration": BASELINE.calibration_diagnostics(values["actual"], values["negativeBinomial"]),
+            "observedOverRate": round(float(np.mean(values["actual"])), 5),
         })
     return result
+
+
+def compare_probability_models(actual, baseline_probabilities, candidate_probabilities, lines):
+    output = {}
+    for distribution in ("poisson", "negativeBinomial"):
+        rows = []
+        brier_p_values = []
+        logloss_p_values = []
+        for index, line in enumerate(lines):
+            baseline_p = baseline_probabilities[str(line)][distribution]
+            candidate_p = candidate_probabilities[str(line)][distribution]
+            event = baseline_probabilities[str(line)]["actual"]
+            bootstrap = BASELINE.paired_bootstrap_ci(
+                event, baseline_p, candidate_p, seed=20264031 + index, samples=1000
+            )
+            brier_p = BASELINE.paired_permutation_pvalue(
+                event, baseline_p, candidate_p, "brier",
+                seed=20265031 + index, samples=999,
+            )
+            logloss_p = BASELINE.paired_permutation_pvalue(
+                event, baseline_p, candidate_p, "logloss",
+                seed=20266031 + index, samples=999,
+            )
+            brier_p_values.append(brier_p)
+            logloss_p_values.append(logloss_p)
+            rows.append({
+                "line": line,
+                "baselineBrier": round(BASELINE.probability_metrics(event, baseline_p)["brierScore"], 6),
+                "candidateBrier": round(BASELINE.probability_metrics(event, candidate_p)["brierScore"], 6),
+                "baselineLogLoss": round(BASELINE.probability_metrics(event, baseline_p)["logLoss"], 6),
+                "candidateLogLoss": round(BASELINE.probability_metrics(event, candidate_p)["logLoss"], 6),
+                **bootstrap,
+                "brierPermutationP": round(float(brier_p), 6),
+                "logLossPermutationP": round(float(logloss_p), 6),
+            })
+        adjusted_brier = BASELINE.holm_adjust(brier_p_values)
+        adjusted_logloss = BASELINE.holm_adjust(logloss_p_values)
+        for index, row in enumerate(rows):
+            row["brierHolmAdjustedP"] = round(adjusted_brier[index], 6)
+            row["logLossHolmAdjustedP"] = round(adjusted_logloss[index], 6)
+        output[distribution] = rows
+    return output
 
 
 def run_market(rows, market_name, target, eligible_flag, lines):
@@ -123,9 +182,13 @@ def run_market(rows, market_name, target, eligible_flag, lines):
         if row.get(eligible_flag) == "1" and row.get(target, "") != ""
     ]
     pooled = {
-        "poissonBaseline": {"actual": [], "mean": [], "alpha": [], "folds": []},
-        "catboost": {"actual": [], "mean": [], "alpha": [], "folds": []},
+        "poissonBaseline": {"actual": [], "mean": [], "alphas": [], "probabilities": {"poisson": {}, "negativeBinomial": {}}, "folds": []},
+        "catboost": {"actual": [], "mean": [], "alphas": [], "probabilities": {"poisson": {}, "negativeBinomial": {}}, "folds": []},
     }
+    for model_data in pooled.values():
+        for distribution in ("poisson", "negativeBinomial"):
+            model_data["probabilities"][distribution] = {str(line): [] for line in lines}
+
     fold_reports = []
 
     for fold_start, fold_end in FOLDS:
@@ -180,26 +243,62 @@ def run_market(rows, market_name, target, eligible_flag, lines):
             ("poissonBaseline", baseline_test_mean, baseline_alpha),
             ("catboost", cat_test_mean, cat_alpha),
         ):
-            pooled[key]["actual"].extend(y_test.tolist())
-            pooled[key]["mean"].extend(mean.tolist())
-            pooled[key]["alpha"].append(alpha)
-            pooled[key]["folds"].append(fold_start.isoformat())
+            values = pooled[key]
+            values["actual"].extend(y_test.tolist())
+            values["mean"].extend(mean.tolist())
+            values["alphas"].append(alpha)
+            values["folds"].append(fold_start.isoformat())
+            probabilities = line_probabilities(y_test, mean, alpha, lines)
+            for line in lines:
+                line_key = str(line)
+                values["probabilities"]["poisson"][line_key].extend(
+                    probabilities[line_key]["poisson"].tolist()
+                )
+                values["probabilities"]["negativeBinomial"][line_key].extend(
+                    probabilities[line_key]["negativeBinomial"].tolist()
+                )
 
     pooled_reports = {}
     for key, values in pooled.items():
         if not values["actual"]:
             pooled_reports[key] = {"status": "insufficient_data"}
             continue
-        # Fold-specific dispersion is retained in fold reports. The pooled
-        # NB2 score uses the row-weighted mean alpha as a descriptive summary.
-        pooled_reports[key] = model_scores(
-            values["actual"],
-            values["mean"],
-            float(np.mean(values["alpha"])),
-            lines,
-        )
-        pooled_reports[key]["evaluatedFolds"] = len(values["folds"])
-        pooled_reports[key]["folds"] = values["folds"]
+        actual = np.asarray(values["actual"], dtype=float)
+        mean = np.asarray(values["mean"], dtype=float)
+        summary = model_scores(actual, mean, float(np.mean(values["alphas"])), lines)
+        summary["evaluatedFolds"] = len(values["folds"])
+        summary["folds"] = values["folds"]
+        # Re-score probability distributions using each fold's training-only alpha.
+        for line_result in summary["lines"]:
+            line_key = str(line_result["line"])
+            event = (actual > line_result["line"]).astype(float)
+            for distribution in ("poisson", "negativeBinomial"):
+                probability = np.asarray(values["probabilities"][distribution][line_key], dtype=float)
+                line_result[distribution] = BASELINE.probability_metrics(event, probability)
+                line_result[f"{distribution}Calibration"] = BASELINE.calibration_diagnostics(event, probability)
+        pooled_reports[key] = summary
+
+    if pooled["poissonBaseline"]["actual"] and pooled["catboost"]["actual"]:
+        actual = np.asarray(pooled["poissonBaseline"]["actual"], dtype=float)
+        baseline_mean = np.asarray(pooled["poissonBaseline"]["mean"], dtype=float)
+        candidate_mean = np.asarray(pooled["catboost"]["mean"], dtype=float)
+        baseline_probabilities = pooled["poissonBaseline"]["probabilities"]
+        candidate_probabilities = pooled["catboost"]["probabilities"]
+        candidate_comparison = {
+            "maeDeltaCatBoostMinusPoisson": round(
+                float(np.mean(np.abs(actual - candidate_mean)) - np.mean(np.abs(actual - baseline_mean))), 7
+            ),
+            "poissonDevianceDeltaCatBoostMinusPoisson": round(
+                BASELINE.poisson_deviance(actual, candidate_mean)
+                - BASELINE.poisson_deviance(actual, baseline_mean), 7
+            ),
+            "probabilityTests": compare_probability_models(
+                actual, baseline_probabilities, candidate_probabilities, lines
+            ),
+            "interpretation": "Negative loss deltas favor CatBoost. Holm-adjusted p below 0.05 is evidence of a difference across the six market lines; confidence intervals crossing zero indicate uncertainty.",
+        }
+    else:
+        candidate_comparison = {"status": "insufficient_data"}
 
     return {
         "status": "evaluated" if any(f["status"] == "evaluated" for f in fold_reports) else "insufficient_data",
@@ -209,6 +308,7 @@ def run_market(rows, market_name, target, eligible_flag, lines):
         "categoricalFeatures": ["league"],
         "folds": fold_reports,
         "pooled": pooled_reports,
+        "candidateVsBaseline": candidate_comparison,
         "interpretation": "Research-only chronological benchmark. Compare CatBoost with the same-fold Poisson baseline; do not export this candidate to public predictions unless it improves held-out probability and count metrics and passes calibration review.",
     }
 
@@ -223,7 +323,7 @@ def main():
         "generatedAt": datetime.now(timezone.utc).isoformat(),
         "status": "research_candidate_not_for_production",
         "datasetRows": len(rows),
-        "method": "CatBoost Poisson objective with league categorical feature; same chronological walk-forward folds and numeric feature set as current Poisson baseline. Dispersion is estimated on training rows only.",
+        "method": "CatBoost Poisson objective with league categorical feature; same chronological walk-forward folds and numeric feature set as current Poisson baseline. Dispersion is estimated on training rows only; pooled NB2 probabilities retain fold-specific training-only dispersion estimates.",
         "catboostParameters": {
             "lossFunction": "Poisson",
             "iterations": 650,
