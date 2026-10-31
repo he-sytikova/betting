@@ -154,7 +154,7 @@ def main():
         "generatedAt": date.today().isoformat(),
         "status": "experimental_research_model",
         "disclaimer": "Experimental model estimates, not betting advice. Only use fixtures matched to a supported league and both teams with historical features.",
-        "lines": LINES,
+        "lines": LINES,  # Backward-compatible default: corner totals\n        "marketLines": {\n            "corners": LINES,\n            "yellowCards": [0.5, 1.5, 2.5, 3.5, 4.5, 5.5],\n        },
         "leagueNames": league_names,
         "leagueAliases": league_aliases,
         "models": {
