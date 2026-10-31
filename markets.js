@@ -8,8 +8,32 @@ function fmtTime(v) {
   return Number.isNaN(d.getTime()) ? '—' : d.toLocaleString('ru-RU', {timeZone:'Europe/Moscow',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
 }
 function normalize(value) {
-  return String(value || '').normalize('NFKC').toLocaleLowerCase('ru')
+  return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .normalize('NFKC').toLocaleLowerCase('ru')
+    .replace(/\b(fc|afc|cf|sc|sv|fk|sk|club|the)\b/g, ' ')
     .replace(/[^\p{L}\p{N}]+/gu, ' ').trim().replace(/\s+/g, ' ');
+}
+const TEAM_ALIASES = {
+  I1: {
+    'ac milan': 'milan',
+    'internazionale milano': 'inter',
+  },
+  SP1: {
+    'deportivo alaves': 'alaves',
+  },
+  N1: {
+    'cambuur leeuwarden': 'cambuur',
+    'az': 'az alkmaar',
+  },
+};
+function findTeam(leagueCode, leagueTeams, fixtureName) {
+  const normalized = normalize(fixtureName);
+  const target = TEAM_ALIASES[leagueCode]?.[normalized] || normalized;
+  const matches = Object.keys(leagueTeams || {}).filter(key =>
+    normalize(key) === target || normalize(leagueTeams[key]?.name) === target
+  );
+  if (matches.length !== 1) return null;
+  return { key: matches[0], team: leagueTeams[matches[0]] };
 }
 function setSourceStatus(id, name, status) {
   const el = $(id);
@@ -53,20 +77,42 @@ function formatTotals(mean) {
 function makeModelRows(fixtures) {
   if (!productionModels?.models || !productionModels?.teams || !productionModels?.leagueNames) return [];
   const leagueCodeByName = new Map(Object.entries(productionModels.leagueAliases || {})
-    .map(([name, code]) => [name, code]));
+    .map(([name, code]) => [normalize(name), code]));
   for (const [code, name] of Object.entries(productionModels.leagueNames || {})) {
     leagueCodeByName.set(normalize(name), code);
+  }
+  // Fixture feeds often prefix the same competition with its country.
+  const leagueAliases = {
+    'germany bundesliga': 'D1',
+    'germany 2 bundesliga': 'D2',
+    'italy serie a': 'I1',
+    'italy serie b': 'I2',
+    'spain la liga': 'SP1',
+    'spain segunda': 'SP2',
+    'france ligue 1': 'F1',
+    'france ligue 2': 'F2',
+    'netherlands eredivisie': 'N1',
+    'england premier league': 'E0',
+    'england championship': 'E1',
+    'england league one': 'E2',
+    'england league two': 'E3',
+  };
+  for (const [name, code] of Object.entries(leagueAliases)) {
+    if (!leagueCodeByName.has(name)) leagueCodeByName.set(name, code);
   }
   const seen = new Set(), output = [];
   for (const fixture of fixtures) {
     const leagueCode = leagueCodeByName.get(normalize(fixture.league));
     if (!leagueCode) continue;
     const leagueTeams = productionModels.teams[leagueCode];
-    const home = leagueTeams?.[normalize(fixture.home)];
-    const away = leagueTeams?.[normalize(fixture.away)];
+    const homeMatch = findTeam(leagueCode, leagueTeams, fixture.home);
+    const awayMatch = findTeam(leagueCode, leagueTeams, fixture.away);
+    const home = homeMatch?.team;
+    const away = awayMatch?.team;
     const league = productionModels.leagueStats?.[leagueCode];
     if (!home || !away || !league) continue;
-    const key = [fixture.time, leagueCode, normalize(fixture.home), normalize(fixture.away)].join('|');
+    // Deduplicate by the matched historical team IDs, not by provider display names.
+    const key = [fixture.time, leagueCode, homeMatch.key, awayMatch.key].join('|');
     if (seen.has(key)) continue;
     seen.add(key);
     const features = {
