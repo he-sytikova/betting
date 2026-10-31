@@ -752,6 +752,2870 @@
           "logLossHolmAdjustedP": 0.612
         }
       ],
+      "coefficientStability": {
+        "status": "evaluated",
+        "foldsWithCoefficients": 3,
+        "coefficientScale": "Original feature units; coefficients from separately refit Poisson means",
+        "features": [
+          {
+            "feature": "home_team_for_avg5",
+            "foldCoefficients": [
+              0.00883121,
+              0.00830235,
+              0.0069828
+            ],
+            "meanCoefficient": 0.00803879,
+            "stdCoefficient": 0.00095197,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "home_team_against_avg5",
+            "foldCoefficients": [
+              0.00279378,
+              0.00248892,
+              0.00290797
+            ],
+            "meanCoefficient": 0.00273022,
+            "stdCoefficient": 0.00021664,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "home_team_for_avg10",
+            "foldCoefficients": [
+              0.009554,
+              0.01054836,
+              0.01223434
+            ],
+            "meanCoefficient": 0.0107789,
+            "stdCoefficient": 0.00135496,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "home_team_against_avg10",
+            "foldCoefficients": [
+              0.00967268,
+              0.00932136,
+              0.0092109
+            ],
+            "meanCoefficient": 0.00940165,
+            "stdCoefficient": 0.00024113,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "away_team_for_avg5",
+            "foldCoefficients": [
+              0.00459566,
+              0.00532529,
+              0.00429327
+            ],
+            "meanCoefficient": 0.00473808,
+            "stdCoefficient": 0.00053054,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "away_team_against_avg5",
+            "foldCoefficients": [
+              0.00721706,
+              0.00642279,
+              0.00635025
+            ],
+            "meanCoefficient": 0.00666337,
+            "stdCoefficient": 0.00048088,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "away_team_for_avg10",
+            "foldCoefficients": [
+              0.00714621,
+              0.00737329,
+              0.00798148
+            ],
+            "meanCoefficient": 0.00750033,
+            "stdCoefficient": 0.00043188,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "away_team_against_avg10",
+            "foldCoefficients": [
+              0.01006815,
+              0.01207203,
+              0.01243343
+            ],
+            "meanCoefficient": 0.01152454,
+            "stdCoefficient": 0.00127415,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "home_card_team_for_avg5",
+            "foldCoefficients": [
+              -0.00273583,
+              -0.00167203,
+              -0.00265427
+            ],
+            "meanCoefficient": -0.00235404,
+            "stdCoefficient": 0.00059205,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "home_card_team_against_avg5",
+            "foldCoefficients": [
+              0.00207163,
+              0.00222652,
+              0.00088432
+            ],
+            "meanCoefficient": 0.00172749,
+            "stdCoefficient": 0.0007343,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "home_card_team_for_avg10",
+            "foldCoefficients": [
+              -0.00538035,
+              -0.00471965,
+              -0.00498276
+            ],
+            "meanCoefficient": -0.00502759,
+            "stdCoefficient": 0.00033262,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "home_card_team_against_avg10",
+            "foldCoefficients": [
+              0.00695357,
+              0.00649898,
+              0.0064845
+            ],
+            "meanCoefficient": 0.00664568,
+            "stdCoefficient": 0.00026673,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "away_card_team_for_avg5",
+            "foldCoefficients": [
+              0.00369925,
+              0.00074666,
+              0.00212732
+            ],
+            "meanCoefficient": 0.00219108,
+            "stdCoefficient": 0.00147733,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "away_card_team_against_avg5",
+            "foldCoefficients": [
+              -0.00079564,
+              0.00187341,
+              0.00185898
+            ],
+            "meanCoefficient": 0.00097892,
+            "stdCoefficient": 0.00153683,
+            "signAgreement": 0.6667,
+            "signFlips": 1,
+            "stableSign": false
+          },
+          {
+            "feature": "away_card_team_for_avg10",
+            "foldCoefficients": [
+              -0.00402199,
+              -0.00076649,
+              -0.00206769
+            ],
+            "meanCoefficient": -0.00228539,
+            "stdCoefficient": 0.00163863,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "away_card_team_against_avg10",
+            "foldCoefficients": [
+              -0.0004533,
+              -0.00148869,
+              -0.00139009
+            ],
+            "meanCoefficient": -0.0011107,
+            "stdCoefficient": 0.00057146,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "league_corners_avg",
+            "foldCoefficients": [
+              0.02971949,
+              0.02987842,
+              0.03076731
+            ],
+            "meanCoefficient": 0.03012174,
+            "stdCoefficient": 0.0005647,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "league_cards_avg",
+            "foldCoefficients": [
+              -0.00762803,
+              -0.00922342,
+              -0.00719718
+            ],
+            "meanCoefficient": -0.00801621,
+            "stdCoefficient": 0.00106744,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "home_advantage",
+            "foldCoefficients": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "meanCoefficient": 0.0,
+            "stdCoefficient": 0.0,
+            "signAgreement": 0.0,
+            "signFlips": 0,
+            "stableSign": false
+          }
+        ]
+      },
+      "holdoutCalibration": {
+        "poisson": [
+          {
+            "line": 7.5,
+            "over": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.70362,
+                  "observedRate": 0.65399,
+                  "absoluteGap": 0.04963,
+                  "observedRateWilson95CI": [
+                    0.62013,
+                    0.68637
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.73037,
+                  "observedRate": 0.72243,
+                  "absoluteGap": 0.00794,
+                  "observedRateWilson95CI": [
+                    0.69017,
+                    0.75254
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.74454,
+                  "observedRate": 0.70342,
+                  "absoluteGap": 0.04112,
+                  "observedRateWilson95CI": [
+                    0.67063,
+                    0.73424
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.75638,
+                  "observedRate": 0.72462,
+                  "absoluteGap": 0.03177,
+                  "observedRateWilson95CI": [
+                    0.6924,
+                    0.75466
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.76686,
+                  "observedRate": 0.73858,
+                  "absoluteGap": 0.02828,
+                  "observedRateWilson95CI": [
+                    0.70679,
+                    0.76805
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.77618,
+                  "observedRate": 0.76142,
+                  "absoluteGap": 0.01476,
+                  "observedRateWilson95CI": [
+                    0.73044,
+                    0.78987
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.78621,
+                  "observedRate": 0.77284,
+                  "absoluteGap": 0.01336,
+                  "observedRateWilson95CI": [
+                    0.74231,
+                    0.80073
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.79817,
+                  "observedRate": 0.78807,
+                  "absoluteGap": 0.01009,
+                  "observedRateWilson95CI": [
+                    0.75817,
+                    0.81517
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.81341,
+                  "observedRate": 0.78553,
+                  "absoluteGap": 0.02787,
+                  "observedRateWilson95CI": [
+                    0.75553,
+                    0.81277
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.84036,
+                  "observedRate": 0.78807,
+                  "absoluteGap": 0.05229,
+                  "observedRateWilson95CI": [
+                    0.75817,
+                    0.81517
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.02771,
+              "maximumCalibrationError": 0.05229,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            },
+            "under": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.15966,
+                  "observedRate": 0.21166,
+                  "absoluteGap": 0.052,
+                  "observedRateWilson95CI": [
+                    0.18459,
+                    0.24153
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.18663,
+                  "observedRate": 0.2142,
+                  "absoluteGap": 0.02757,
+                  "observedRateWilson95CI": [
+                    0.18699,
+                    0.24417
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.20188,
+                  "observedRate": 0.21293,
+                  "absoluteGap": 0.01105,
+                  "observedRateWilson95CI": [
+                    0.18579,
+                    0.24285
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.21383,
+                  "observedRate": 0.22716,
+                  "absoluteGap": 0.01333,
+                  "observedRateWilson95CI": [
+                    0.19927,
+                    0.25769
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.22386,
+                  "observedRate": 0.23985,
+                  "absoluteGap": 0.01599,
+                  "observedRateWilson95CI": [
+                    0.21134,
+                    0.27088
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.23318,
+                  "observedRate": 0.26015,
+                  "absoluteGap": 0.02697,
+                  "observedRateWilson95CI": [
+                    0.23074,
+                    0.2919
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.24366,
+                  "observedRate": 0.27411,
+                  "absoluteGap": 0.03045,
+                  "observedRateWilson95CI": [
+                    0.24412,
+                    0.3063
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.2555,
+                  "observedRate": 0.29695,
+                  "absoluteGap": 0.04145,
+                  "observedRateWilson95CI": [
+                    0.2661,
+                    0.32978
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.26966,
+                  "observedRate": 0.27792,
+                  "absoluteGap": 0.00826,
+                  "observedRateWilson95CI": [
+                    0.24778,
+                    0.31022
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.2964,
+                  "observedRate": 0.34645,
+                  "absoluteGap": 0.05004,
+                  "observedRateWilson95CI": [
+                    0.31404,
+                    0.38034
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.02771,
+              "maximumCalibrationError": 0.052,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            }
+          },
+          {
+            "line": 8.5,
+            "over": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.57583,
+                  "observedRate": 0.53866,
+                  "absoluteGap": 0.03718,
+                  "observedRateWilson95CI": [
+                    0.50377,
+                    0.57317
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.60705,
+                  "observedRate": 0.59189,
+                  "absoluteGap": 0.01516,
+                  "observedRateWilson95CI": [
+                    0.55723,
+                    0.62566
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.62397,
+                  "observedRate": 0.60203,
+                  "absoluteGap": 0.02194,
+                  "observedRateWilson95CI": [
+                    0.56746,
+                    0.63561
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.63831,
+                  "observedRate": 0.61421,
+                  "absoluteGap": 0.0241,
+                  "observedRateWilson95CI": [
+                    0.57975,
+                    0.64757
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.65114,
+                  "observedRate": 0.62056,
+                  "absoluteGap": 0.03059,
+                  "observedRateWilson95CI": [
+                    0.58617,
+                    0.65378
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.6627,
+                  "observedRate": 0.62437,
+                  "absoluteGap": 0.03833,
+                  "observedRateWilson95CI": [
+                    0.59003,
+                    0.6575
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.67525,
+                  "observedRate": 0.64848,
+                  "absoluteGap": 0.02677,
+                  "observedRateWilson95CI": [
+                    0.61449,
+                    0.68102
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.69041,
+                  "observedRate": 0.68147,
+                  "absoluteGap": 0.00894,
+                  "observedRateWilson95CI": [
+                    0.64813,
+                    0.71305
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.71005,
+                  "observedRate": 0.69924,
+                  "absoluteGap": 0.01081,
+                  "observedRateWilson95CI": [
+                    0.66632,
+                    0.73023
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.74582,
+                  "observedRate": 0.70558,
+                  "absoluteGap": 0.04023,
+                  "observedRateWilson95CI": [
+                    0.67283,
+                    0.73635
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.0254,
+              "maximumCalibrationError": 0.04023,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            },
+            "under": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.25421,
+                  "observedRate": 0.29404,
+                  "absoluteGap": 0.03983,
+                  "observedRateWilson95CI": [
+                    0.26331,
+                    0.32677
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.28999,
+                  "observedRate": 0.30038,
+                  "absoluteGap": 0.01039,
+                  "observedRateWilson95CI": [
+                    0.26942,
+                    0.33327
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.30964,
+                  "observedRate": 0.31939,
+                  "absoluteGap": 0.00975,
+                  "observedRateWilson95CI": [
+                    0.2878,
+                    0.35273
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.3248,
+                  "observedRate": 0.35152,
+                  "absoluteGap": 0.02672,
+                  "observedRateWilson95CI": [
+                    0.31898,
+                    0.38551
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.33735,
+                  "observedRate": 0.3769,
+                  "absoluteGap": 0.03955,
+                  "observedRateWilson95CI": [
+                    0.34374,
+                    0.41126
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.3489,
+                  "observedRate": 0.37817,
+                  "absoluteGap": 0.02927,
+                  "observedRateWilson95CI": [
+                    0.34498,
+                    0.41254
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.36174,
+                  "observedRate": 0.38452,
+                  "absoluteGap": 0.02278,
+                  "observedRateWilson95CI": [
+                    0.35119,
+                    0.41897
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.37608,
+                  "observedRate": 0.39975,
+                  "absoluteGap": 0.02367,
+                  "observedRateWilson95CI": [
+                    0.36611,
+                    0.43435
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.39299,
+                  "observedRate": 0.40736,
+                  "absoluteGap": 0.01437,
+                  "observedRateWilson95CI": [
+                    0.37358,
+                    0.44204
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.42419,
+                  "observedRate": 0.46193,
+                  "absoluteGap": 0.03774,
+                  "observedRateWilson95CI": [
+                    0.42739,
+                    0.49684
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.0254,
+              "maximumCalibrationError": 0.03983,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            }
+          },
+          {
+            "line": 9.5,
+            "over": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.44462,
+                  "observedRate": 0.44613,
+                  "absoluteGap": 0.00152,
+                  "observedRateWilson95CI": [
+                    0.41179,
+                    0.481
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.477,
+                  "observedRate": 0.47148,
+                  "absoluteGap": 0.00551,
+                  "observedRateWilson95CI": [
+                    0.43687,
+                    0.50637
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.49496,
+                  "observedRate": 0.47148,
+                  "absoluteGap": 0.02348,
+                  "observedRateWilson95CI": [
+                    0.43687,
+                    0.50637
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.51041,
+                  "observedRate": 0.51142,
+                  "absoluteGap": 0.00101,
+                  "observedRateWilson95CI": [
+                    0.47655,
+                    0.54618
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.52438,
+                  "observedRate": 0.51777,
+                  "absoluteGap": 0.00662,
+                  "observedRateWilson95CI": [
+                    0.48288,
+                    0.55248
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.5371,
+                  "observedRate": 0.49619,
+                  "absoluteGap": 0.04091,
+                  "observedRateWilson95CI": [
+                    0.46139,
+                    0.53104
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.55108,
+                  "observedRate": 0.53299,
+                  "absoluteGap": 0.01808,
+                  "observedRateWilson95CI": [
+                    0.49808,
+                    0.56758
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.56817,
+                  "observedRate": 0.56345,
+                  "absoluteGap": 0.00472,
+                  "observedRateWilson95CI": [
+                    0.5286,
+                    0.59769
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.59066,
+                  "observedRate": 0.58883,
+                  "absoluteGap": 0.00183,
+                  "observedRateWilson95CI": [
+                    0.55413,
+                    0.62268
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.63286,
+                  "observedRate": 0.59137,
+                  "absoluteGap": 0.04149,
+                  "observedRateWilson95CI": [
+                    0.55669,
+                    0.62517
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.01452,
+              "maximumCalibrationError": 0.04149,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            },
+            "under": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.36717,
+                  "observedRate": 0.40811,
+                  "absoluteGap": 0.04094,
+                  "observedRateWilson95CI": [
+                    0.37434,
+                    0.44277
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.40939,
+                  "observedRate": 0.41065,
+                  "absoluteGap": 0.00126,
+                  "observedRateWilson95CI": [
+                    0.37683,
+                    0.44533
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.43189,
+                  "observedRate": 0.43726,
+                  "absoluteGap": 0.00537,
+                  "observedRateWilson95CI": [
+                    0.40304,
+                    0.4721
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.44898,
+                  "observedRate": 0.46701,
+                  "absoluteGap": 0.01803,
+                  "observedRateWilson95CI": [
+                    0.43242,
+                    0.50192
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.46295,
+                  "observedRate": 0.50508,
+                  "absoluteGap": 0.04213,
+                  "observedRateWilson95CI": [
+                    0.47023,
+                    0.53988
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.47566,
+                  "observedRate": 0.48096,
+                  "absoluteGap": 0.0053,
+                  "observedRateWilson95CI": [
+                    0.44626,
+                    0.51586
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.48965,
+                  "observedRate": 0.48858,
+                  "absoluteGap": 0.00107,
+                  "observedRateWilson95CI": [
+                    0.45382,
+                    0.52345
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.50509,
+                  "observedRate": 0.52919,
+                  "absoluteGap": 0.0241,
+                  "observedRateWilson95CI": [
+                    0.49428,
+                    0.56381
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.52304,
+                  "observedRate": 0.52792,
+                  "absoluteGap": 0.00488,
+                  "observedRateWilson95CI": [
+                    0.49301,
+                    0.56255
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.55541,
+                  "observedRate": 0.55457,
+                  "absoluteGap": 0.00084,
+                  "observedRateWilson95CI": [
+                    0.51969,
+                    0.58892
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.01439,
+              "maximumCalibrationError": 0.04213,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            }
+          },
+          {
+            "line": 10.5,
+            "over": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.32334,
+                  "observedRate": 0.33587,
+                  "absoluteGap": 0.01253,
+                  "observedRateWilson95CI": [
+                    0.30378,
+                    0.36955
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.35357,
+                  "observedRate": 0.34347,
+                  "absoluteGap": 0.01009,
+                  "observedRateWilson95CI": [
+                    0.31117,
+                    0.37729
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.37074,
+                  "observedRate": 0.34601,
+                  "absoluteGap": 0.02473,
+                  "observedRateWilson95CI": [
+                    0.31363,
+                    0.37987
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.38571,
+                  "observedRate": 0.38325,
+                  "absoluteGap": 0.00246,
+                  "observedRateWilson95CI": [
+                    0.34995,
+                    0.41768
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.3994,
+                  "observedRate": 0.39721,
+                  "absoluteGap": 0.0022,
+                  "observedRateWilson95CI": [
+                    0.36362,
+                    0.43179
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.41201,
+                  "observedRate": 0.36675,
+                  "absoluteGap": 0.04526,
+                  "observedRateWilson95CI": [
+                    0.33383,
+                    0.40097
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.42601,
+                  "observedRate": 0.41497,
+                  "absoluteGap": 0.01103,
+                  "observedRateWilson95CI": [
+                    0.38107,
+                    0.44971
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.44335,
+                  "observedRate": 0.45558,
+                  "absoluteGap": 0.01224,
+                  "observedRateWilson95CI": [
+                    0.42111,
+                    0.49049
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.46654,
+                  "observedRate": 0.46827,
+                  "absoluteGap": 0.00174,
+                  "observedRateWilson95CI": [
+                    0.43367,
+                    0.50318
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.51137,
+                  "observedRate": 0.48985,
+                  "absoluteGap": 0.02152,
+                  "observedRateWilson95CI": [
+                    0.45508,
+                    0.52472
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.01438,
+              "maximumCalibrationError": 0.04526,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            },
+            "under": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.48867,
+                  "observedRate": 0.51077,
+                  "absoluteGap": 0.0221,
+                  "observedRateWilson95CI": [
+                    0.47593,
+                    0.54552
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.53352,
+                  "observedRate": 0.52978,
+                  "absoluteGap": 0.00373,
+                  "observedRateWilson95CI": [
+                    0.4949,
+                    0.56438
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.55672,
+                  "observedRate": 0.54626,
+                  "absoluteGap": 0.01046,
+                  "observedRateWilson95CI": [
+                    0.51138,
+                    0.58069
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.57405,
+                  "observedRate": 0.58503,
+                  "absoluteGap": 0.01098,
+                  "observedRateWilson95CI": [
+                    0.55029,
+                    0.61893
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.58804,
+                  "observedRate": 0.63325,
+                  "absoluteGap": 0.04521,
+                  "observedRateWilson95CI": [
+                    0.59903,
+                    0.66617
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.60064,
+                  "observedRate": 0.60279,
+                  "absoluteGap": 0.00215,
+                  "observedRateWilson95CI": [
+                    0.56821,
+                    0.63638
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.61435,
+                  "observedRate": 0.61675,
+                  "absoluteGap": 0.0024,
+                  "observedRateWilson95CI": [
+                    0.58232,
+                    0.65005
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.62931,
+                  "observedRate": 0.65355,
+                  "absoluteGap": 0.02424,
+                  "observedRateWilson95CI": [
+                    0.61966,
+                    0.68596
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.64647,
+                  "observedRate": 0.65609,
+                  "absoluteGap": 0.00962,
+                  "observedRateWilson95CI": [
+                    0.62224,
+                    0.68843
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.67669,
+                  "observedRate": 0.66497,
+                  "absoluteGap": 0.01171,
+                  "observedRateWilson95CI": [
+                    0.63129,
+                    0.69706
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.01426,
+              "maximumCalibrationError": 0.04521,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            }
+          },
+          {
+            "line": 11.5,
+            "over": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.2214,
+                  "observedRate": 0.2142,
+                  "absoluteGap": 0.00721,
+                  "observedRateWilson95CI": [
+                    0.18699,
+                    0.24417
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.24707,
+                  "observedRate": 0.24081,
+                  "absoluteGap": 0.00626,
+                  "observedRateWilson95CI": [
+                    0.21228,
+                    0.27186
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.26199,
+                  "observedRate": 0.25475,
+                  "absoluteGap": 0.00723,
+                  "observedRateWilson95CI": [
+                    0.22559,
+                    0.28629
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.27517,
+                  "observedRate": 0.28553,
+                  "absoluteGap": 0.01036,
+                  "observedRateWilson95CI": [
+                    0.2551,
+                    0.31805
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.28738,
+                  "observedRate": 0.30076,
+                  "absoluteGap": 0.01338,
+                  "observedRateWilson95CI": [
+                    0.26977,
+                    0.33368
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.29874,
+                  "observedRate": 0.2703,
+                  "absoluteGap": 0.02843,
+                  "observedRateWilson95CI": [
+                    0.24047,
+                    0.30237
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.31148,
+                  "observedRate": 0.32614,
+                  "absoluteGap": 0.01466,
+                  "observedRateWilson95CI": [
+                    0.29432,
+                    0.35965
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.32748,
+                  "observedRate": 0.34137,
+                  "absoluteGap": 0.01389,
+                  "observedRateWilson95CI": [
+                    0.3091,
+                    0.37518
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.34921,
+                  "observedRate": 0.32995,
+                  "absoluteGap": 0.01926,
+                  "observedRateWilson95CI": [
+                    0.29801,
+                    0.36353
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.39252,
+                  "observedRate": 0.38706,
+                  "absoluteGap": 0.00546,
+                  "observedRateWilson95CI": [
+                    0.35367,
+                    0.42153
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.01261,
+              "maximumCalibrationError": 0.02843,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            },
+            "under": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.60752,
+                  "observedRate": 0.61343,
+                  "absoluteGap": 0.00592,
+                  "observedRateWilson95CI": [
+                    0.57898,
+                    0.64679
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.65084,
+                  "observedRate": 0.66793,
+                  "absoluteGap": 0.0171,
+                  "observedRateWilson95CI": [
+                    0.63433,
+                    0.69991
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.67258,
+                  "observedRate": 0.66033,
+                  "absoluteGap": 0.01225,
+                  "observedRateWilson95CI": [
+                    0.62658,
+                    0.69253
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.68857,
+                  "observedRate": 0.67386,
+                  "absoluteGap": 0.01471,
+                  "observedRateWilson95CI": [
+                    0.64035,
+                    0.70568
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.70131,
+                  "observedRate": 0.73096,
+                  "absoluteGap": 0.02966,
+                  "observedRateWilson95CI": [
+                    0.69894,
+                    0.76075
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.71266,
+                  "observedRate": 0.69797,
+                  "absoluteGap": 0.01469,
+                  "observedRateWilson95CI": [
+                    0.66502,
+                    0.729
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.72488,
+                  "observedRate": 0.71574,
+                  "absoluteGap": 0.00914,
+                  "observedRateWilson95CI": [
+                    0.68325,
+                    0.74612
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.73805,
+                  "observedRate": 0.74365,
+                  "absoluteGap": 0.0056,
+                  "observedRateWilson95CI": [
+                    0.71204,
+                    0.77291
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.75296,
+                  "observedRate": 0.75888,
+                  "absoluteGap": 0.00592,
+                  "observedRateWilson95CI": [
+                    0.72781,
+                    0.78745
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.77862,
+                  "observedRate": 0.7868,
+                  "absoluteGap": 0.00818,
+                  "observedRateWilson95CI": [
+                    0.75685,
+                    0.81397
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.01232,
+              "maximumCalibrationError": 0.02966,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            }
+          },
+          {
+            "line": 12.5,
+            "over": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.14286,
+                  "observedRate": 0.15082,
+                  "absoluteGap": 0.00797,
+                  "observedRateWilson95CI": [
+                    0.12755,
+                    0.17748
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.16283,
+                  "observedRate": 0.1673,
+                  "absoluteGap": 0.00447,
+                  "observedRateWilson95CI": [
+                    0.14288,
+                    0.19494
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.17472,
+                  "observedRate": 0.16477,
+                  "absoluteGap": 0.00995,
+                  "observedRateWilson95CI": [
+                    0.14052,
+                    0.19226
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.18536,
+                  "observedRate": 0.1967,
+                  "absoluteGap": 0.01134,
+                  "observedRateWilson95CI": [
+                    0.17045,
+                    0.2259
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.19534,
+                  "observedRate": 0.20812,
+                  "absoluteGap": 0.01278,
+                  "observedRateWilson95CI": [
+                    0.18123,
+                    0.23785
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.20472,
+                  "observedRate": 0.20558,
+                  "absoluteGap": 0.00087,
+                  "observedRateWilson95CI": [
+                    0.17883,
+                    0.2352
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.21536,
+                  "observedRate": 0.23604,
+                  "absoluteGap": 0.02068,
+                  "observedRateWilson95CI": [
+                    0.20772,
+                    0.26693
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.22888,
+                  "observedRate": 0.24239,
+                  "absoluteGap": 0.01351,
+                  "observedRateWilson95CI": [
+                    0.21376,
+                    0.27351
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.24755,
+                  "observedRate": 0.24365,
+                  "absoluteGap": 0.0039,
+                  "observedRateWilson95CI": [
+                    0.21497,
+                    0.27482
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.28592,
+                  "observedRate": 0.29061,
+                  "absoluteGap": 0.00469,
+                  "observedRateWilson95CI": [
+                    0.25998,
+                    0.32327
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.00901,
+              "maximumCalibrationError": 0.02068,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            },
+            "under": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.71411,
+                  "observedRate": 0.70976,
+                  "absoluteGap": 0.00436,
+                  "observedRateWilson95CI": [
+                    0.67713,
+                    0.74035
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.75249,
+                  "observedRate": 0.75412,
+                  "absoluteGap": 0.00163,
+                  "observedRateWilson95CI": [
+                    0.72289,
+                    0.78289
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.77117,
+                  "observedRate": 0.75919,
+                  "absoluteGap": 0.01198,
+                  "observedRateWilson95CI": [
+                    0.72814,
+                    0.78772
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.78469,
+                  "observedRate": 0.76396,
+                  "absoluteGap": 0.02073,
+                  "observedRateWilson95CI": [
+                    0.73307,
+                    0.79228
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.79532,
+                  "observedRate": 0.79569,
+                  "absoluteGap": 0.00036,
+                  "observedRateWilson95CI": [
+                    0.76613,
+                    0.82237
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.8047,
+                  "observedRate": 0.79061,
+                  "absoluteGap": 0.01409,
+                  "observedRateWilson95CI": [
+                    0.76082,
+                    0.81757
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.81468,
+                  "observedRate": 0.80457,
+                  "absoluteGap": 0.01011,
+                  "observedRateWilson95CI": [
+                    0.77543,
+                    0.83075
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.82532,
+                  "observedRate": 0.83503,
+                  "absoluteGap": 0.00971,
+                  "observedRateWilson95CI": [
+                    0.8075,
+                    0.8593
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.83719,
+                  "observedRate": 0.83122,
+                  "absoluteGap": 0.00597,
+                  "observedRateWilson95CI": [
+                    0.80347,
+                    0.85575
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.85716,
+                  "observedRate": 0.85025,
+                  "absoluteGap": 0.00691,
+                  "observedRateWilson95CI": [
+                    0.82364,
+                    0.87347
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.00858,
+              "maximumCalibrationError": 0.02073,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            }
+          }
+        ],
+        "negativeBinomial": [
+          {
+            "line": 7.5,
+            "over": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.687,
+                  "observedRate": 0.65399,
+                  "absoluteGap": 0.03301,
+                  "observedRateWilson95CI": [
+                    0.62013,
+                    0.68637
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.71254,
+                  "observedRate": 0.72243,
+                  "absoluteGap": 0.00989,
+                  "observedRateWilson95CI": [
+                    0.69017,
+                    0.75254
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.72612,
+                  "observedRate": 0.70342,
+                  "absoluteGap": 0.02269,
+                  "observedRateWilson95CI": [
+                    0.67063,
+                    0.73424
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.7375,
+                  "observedRate": 0.72462,
+                  "absoluteGap": 0.01289,
+                  "observedRateWilson95CI": [
+                    0.6924,
+                    0.75466
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.7476,
+                  "observedRate": 0.73858,
+                  "absoluteGap": 0.00902,
+                  "observedRateWilson95CI": [
+                    0.70679,
+                    0.76805
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.75661,
+                  "observedRate": 0.76142,
+                  "absoluteGap": 0.00481,
+                  "observedRateWilson95CI": [
+                    0.73044,
+                    0.78987
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.76633,
+                  "observedRate": 0.77284,
+                  "absoluteGap": 0.00651,
+                  "observedRateWilson95CI": [
+                    0.74231,
+                    0.80073
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.77796,
+                  "observedRate": 0.78807,
+                  "absoluteGap": 0.01011,
+                  "observedRateWilson95CI": [
+                    0.75817,
+                    0.81517
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.79286,
+                  "observedRate": 0.78553,
+                  "absoluteGap": 0.00732,
+                  "observedRateWilson95CI": [
+                    0.75553,
+                    0.81277
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.81948,
+                  "observedRate": 0.78807,
+                  "absoluteGap": 0.03141,
+                  "observedRateWilson95CI": [
+                    0.75817,
+                    0.81517
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.01477,
+              "maximumCalibrationError": 0.03301,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            },
+            "under": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.18054,
+                  "observedRate": 0.21166,
+                  "absoluteGap": 0.03112,
+                  "observedRateWilson95CI": [
+                    0.18459,
+                    0.24153
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.20718,
+                  "observedRate": 0.2142,
+                  "absoluteGap": 0.00702,
+                  "observedRateWilson95CI": [
+                    0.18699,
+                    0.24417
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.22208,
+                  "observedRate": 0.21293,
+                  "absoluteGap": 0.00915,
+                  "observedRateWilson95CI": [
+                    0.18579,
+                    0.24285
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.23371,
+                  "observedRate": 0.22716,
+                  "absoluteGap": 0.00655,
+                  "observedRateWilson95CI": [
+                    0.19927,
+                    0.25769
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.24343,
+                  "observedRate": 0.23985,
+                  "absoluteGap": 0.00358,
+                  "observedRateWilson95CI": [
+                    0.21134,
+                    0.27088
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.25244,
+                  "observedRate": 0.26015,
+                  "absoluteGap": 0.00771,
+                  "observedRateWilson95CI": [
+                    0.23074,
+                    0.2919
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.26254,
+                  "observedRate": 0.27411,
+                  "absoluteGap": 0.01157,
+                  "observedRateWilson95CI": [
+                    0.24412,
+                    0.3063
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.27392,
+                  "observedRate": 0.29695,
+                  "absoluteGap": 0.02303,
+                  "observedRateWilson95CI": [
+                    0.2661,
+                    0.32978
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.28749,
+                  "observedRate": 0.27792,
+                  "absoluteGap": 0.00957,
+                  "observedRateWilson95CI": [
+                    0.24778,
+                    0.31022
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.31302,
+                  "observedRate": 0.34645,
+                  "absoluteGap": 0.03343,
+                  "observedRateWilson95CI": [
+                    0.31404,
+                    0.38034
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.01428,
+              "maximumCalibrationError": 0.03343,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            }
+          },
+          {
+            "line": 8.5,
+            "over": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.56524,
+                  "observedRate": 0.53866,
+                  "absoluteGap": 0.02659,
+                  "observedRateWilson95CI": [
+                    0.50377,
+                    0.57317
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.59449,
+                  "observedRate": 0.59189,
+                  "absoluteGap": 0.0026,
+                  "observedRateWilson95CI": [
+                    0.55723,
+                    0.62566
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.61037,
+                  "observedRate": 0.60203,
+                  "absoluteGap": 0.00834,
+                  "observedRateWilson95CI": [
+                    0.56746,
+                    0.63561
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.62384,
+                  "observedRate": 0.61421,
+                  "absoluteGap": 0.00963,
+                  "observedRateWilson95CI": [
+                    0.57975,
+                    0.64757
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.63591,
+                  "observedRate": 0.62056,
+                  "absoluteGap": 0.01535,
+                  "observedRateWilson95CI": [
+                    0.58617,
+                    0.65378
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.64678,
+                  "observedRate": 0.62437,
+                  "absoluteGap": 0.02242,
+                  "observedRateWilson95CI": [
+                    0.59003,
+                    0.6575
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.65862,
+                  "observedRate": 0.64848,
+                  "absoluteGap": 0.01014,
+                  "observedRateWilson95CI": [
+                    0.61449,
+                    0.68102
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.67295,
+                  "observedRate": 0.68147,
+                  "absoluteGap": 0.00853,
+                  "observedRateWilson95CI": [
+                    0.64813,
+                    0.71305
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.69155,
+                  "observedRate": 0.69924,
+                  "absoluteGap": 0.00769,
+                  "observedRateWilson95CI": [
+                    0.66632,
+                    0.73023
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.72564,
+                  "observedRate": 0.70558,
+                  "absoluteGap": 0.02005,
+                  "observedRateWilson95CI": [
+                    0.67283,
+                    0.73635
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.01313,
+              "maximumCalibrationError": 0.02659,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            },
+            "under": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.27439,
+                  "observedRate": 0.29404,
+                  "absoluteGap": 0.01965,
+                  "observedRateWilson95CI": [
+                    0.26331,
+                    0.32677
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.30849,
+                  "observedRate": 0.30038,
+                  "absoluteGap": 0.00811,
+                  "observedRateWilson95CI": [
+                    0.26942,
+                    0.33327
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.32711,
+                  "observedRate": 0.31939,
+                  "absoluteGap": 0.00771,
+                  "observedRateWilson95CI": [
+                    0.2878,
+                    0.35273
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.34142,
+                  "observedRate": 0.35152,
+                  "absoluteGap": 0.0101,
+                  "observedRateWilson95CI": [
+                    0.31898,
+                    0.38551
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.35326,
+                  "observedRate": 0.3769,
+                  "absoluteGap": 0.02364,
+                  "observedRateWilson95CI": [
+                    0.34374,
+                    0.41126
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.36413,
+                  "observedRate": 0.37817,
+                  "absoluteGap": 0.01404,
+                  "observedRateWilson95CI": [
+                    0.34498,
+                    0.41254
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.37621,
+                  "observedRate": 0.38452,
+                  "absoluteGap": 0.00831,
+                  "observedRateWilson95CI": [
+                    0.35119,
+                    0.41897
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.38968,
+                  "observedRate": 0.39975,
+                  "absoluteGap": 0.01007,
+                  "observedRateWilson95CI": [
+                    0.36611,
+                    0.43435
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.40554,
+                  "observedRate": 0.40736,
+                  "absoluteGap": 0.00182,
+                  "observedRateWilson95CI": [
+                    0.37358,
+                    0.44204
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.43478,
+                  "observedRate": 0.46193,
+                  "absoluteGap": 0.02715,
+                  "observedRateWilson95CI": [
+                    0.42739,
+                    0.49684
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.01306,
+              "maximumCalibrationError": 0.02715,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            }
+          },
+          {
+            "line": 9.5,
+            "over": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.44233,
+                  "observedRate": 0.44613,
+                  "absoluteGap": 0.0038,
+                  "observedRateWilson95CI": [
+                    0.41179,
+                    0.481
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.47253,
+                  "observedRate": 0.47148,
+                  "absoluteGap": 0.00105,
+                  "observedRateWilson95CI": [
+                    0.43687,
+                    0.50637
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.48926,
+                  "observedRate": 0.47148,
+                  "absoluteGap": 0.01778,
+                  "observedRateWilson95CI": [
+                    0.43687,
+                    0.50637
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.50363,
+                  "observedRate": 0.51142,
+                  "absoluteGap": 0.00779,
+                  "observedRateWilson95CI": [
+                    0.47655,
+                    0.54618
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.51663,
+                  "observedRate": 0.51777,
+                  "absoluteGap": 0.00113,
+                  "observedRateWilson95CI": [
+                    0.48288,
+                    0.55248
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.52846,
+                  "observedRate": 0.49619,
+                  "absoluteGap": 0.03227,
+                  "observedRateWilson95CI": [
+                    0.46139,
+                    0.53104
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.54145,
+                  "observedRate": 0.53299,
+                  "absoluteGap": 0.00846,
+                  "observedRateWilson95CI": [
+                    0.49808,
+                    0.56758
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.55735,
+                  "observedRate": 0.56345,
+                  "absoluteGap": 0.0061,
+                  "observedRateWilson95CI": [
+                    0.5286,
+                    0.59769
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.57828,
+                  "observedRate": 0.58883,
+                  "absoluteGap": 0.01055,
+                  "observedRateWilson95CI": [
+                    0.55413,
+                    0.62268
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.61764,
+                  "observedRate": 0.59137,
+                  "absoluteGap": 0.02627,
+                  "observedRateWilson95CI": [
+                    0.55669,
+                    0.62517
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.01152,
+              "maximumCalibrationError": 0.03227,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            },
+            "under": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.3824,
+                  "observedRate": 0.40811,
+                  "absoluteGap": 0.02571,
+                  "observedRateWilson95CI": [
+                    0.37434,
+                    0.44277
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.42177,
+                  "observedRate": 0.41065,
+                  "absoluteGap": 0.01112,
+                  "observedRateWilson95CI": [
+                    0.37683,
+                    0.44533
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.44271,
+                  "observedRate": 0.43726,
+                  "absoluteGap": 0.00544,
+                  "observedRateWilson95CI": [
+                    0.40304,
+                    0.4721
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.4586,
+                  "observedRate": 0.46701,
+                  "absoluteGap": 0.00841,
+                  "observedRateWilson95CI": [
+                    0.43242,
+                    0.50192
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.47159,
+                  "observedRate": 0.50508,
+                  "absoluteGap": 0.03349,
+                  "observedRateWilson95CI": [
+                    0.47023,
+                    0.53988
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.48341,
+                  "observedRate": 0.48096,
+                  "absoluteGap": 0.00245,
+                  "observedRateWilson95CI": [
+                    0.44626,
+                    0.51586
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.49642,
+                  "observedRate": 0.48858,
+                  "absoluteGap": 0.00784,
+                  "observedRateWilson95CI": [
+                    0.45382,
+                    0.52345
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.51079,
+                  "observedRate": 0.52919,
+                  "absoluteGap": 0.0184,
+                  "observedRateWilson95CI": [
+                    0.49428,
+                    0.56381
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.52751,
+                  "observedRate": 0.52792,
+                  "absoluteGap": 0.00041,
+                  "observedRateWilson95CI": [
+                    0.49301,
+                    0.56255
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.55769,
+                  "observedRate": 0.55457,
+                  "absoluteGap": 0.00313,
+                  "observedRateWilson95CI": [
+                    0.51969,
+                    0.58892
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.01164,
+              "maximumCalibrationError": 0.03349,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            }
+          },
+          {
+            "line": 10.5,
+            "over": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.3291,
+                  "observedRate": 0.33587,
+                  "absoluteGap": 0.00677,
+                  "observedRateWilson95CI": [
+                    0.30378,
+                    0.36955
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.35755,
+                  "observedRate": 0.34347,
+                  "absoluteGap": 0.01408,
+                  "observedRateWilson95CI": [
+                    0.31117,
+                    0.37729
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.37364,
+                  "observedRate": 0.34601,
+                  "absoluteGap": 0.02763,
+                  "observedRateWilson95CI": [
+                    0.31363,
+                    0.37987
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.38762,
+                  "observedRate": 0.38325,
+                  "absoluteGap": 0.00437,
+                  "observedRateWilson95CI": [
+                    0.34995,
+                    0.41768
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.4004,
+                  "observedRate": 0.39721,
+                  "absoluteGap": 0.00319,
+                  "observedRateWilson95CI": [
+                    0.36362,
+                    0.43179
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.41213,
+                  "observedRate": 0.36675,
+                  "absoluteGap": 0.04538,
+                  "observedRateWilson95CI": [
+                    0.33383,
+                    0.40097
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.42515,
+                  "observedRate": 0.41497,
+                  "absoluteGap": 0.01017,
+                  "observedRateWilson95CI": [
+                    0.38107,
+                    0.44971
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.44124,
+                  "observedRate": 0.45558,
+                  "absoluteGap": 0.01434,
+                  "observedRateWilson95CI": [
+                    0.42111,
+                    0.49049
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.46273,
+                  "observedRate": 0.46827,
+                  "absoluteGap": 0.00554,
+                  "observedRateWilson95CI": [
+                    0.43367,
+                    0.50318
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.50419,
+                  "observedRate": 0.48985,
+                  "absoluteGap": 0.01434,
+                  "observedRateWilson95CI": [
+                    0.45508,
+                    0.52472
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.01458,
+              "maximumCalibrationError": 0.04538,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            },
+            "under": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.49585,
+                  "observedRate": 0.51077,
+                  "absoluteGap": 0.01493,
+                  "observedRateWilson95CI": [
+                    0.47593,
+                    0.54552
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.53732,
+                  "observedRate": 0.52978,
+                  "absoluteGap": 0.00753,
+                  "observedRateWilson95CI": [
+                    0.4949,
+                    0.56438
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.55882,
+                  "observedRate": 0.54626,
+                  "absoluteGap": 0.01255,
+                  "observedRateWilson95CI": [
+                    0.51138,
+                    0.58069
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.5749,
+                  "observedRate": 0.58503,
+                  "absoluteGap": 0.01012,
+                  "observedRateWilson95CI": [
+                    0.55029,
+                    0.61893
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.58791,
+                  "observedRate": 0.63325,
+                  "absoluteGap": 0.04534,
+                  "observedRateWilson95CI": [
+                    0.59903,
+                    0.66617
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.59965,
+                  "observedRate": 0.60279,
+                  "absoluteGap": 0.00315,
+                  "observedRateWilson95CI": [
+                    0.56821,
+                    0.63638
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.61243,
+                  "observedRate": 0.61675,
+                  "absoluteGap": 0.00432,
+                  "observedRateWilson95CI": [
+                    0.58232,
+                    0.65005
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.62641,
+                  "observedRate": 0.65355,
+                  "absoluteGap": 0.02715,
+                  "observedRateWilson95CI": [
+                    0.61966,
+                    0.68596
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.64248,
+                  "observedRate": 0.65609,
+                  "absoluteGap": 0.01361,
+                  "observedRateWilson95CI": [
+                    0.62224,
+                    0.68843
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.67092,
+                  "observedRate": 0.66497,
+                  "absoluteGap": 0.00595,
+                  "observedRateWilson95CI": [
+                    0.63129,
+                    0.69706
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.01446,
+              "maximumCalibrationError": 0.04534,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            }
+          },
+          {
+            "line": 11.5,
+            "over": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.23296,
+                  "observedRate": 0.2142,
+                  "absoluteGap": 0.01876,
+                  "observedRateWilson95CI": [
+                    0.18699,
+                    0.24417
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.25766,
+                  "observedRate": 0.24081,
+                  "absoluteGap": 0.01685,
+                  "observedRateWilson95CI": [
+                    0.21228,
+                    0.27186
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.27191,
+                  "observedRate": 0.25475,
+                  "absoluteGap": 0.01715,
+                  "observedRateWilson95CI": [
+                    0.22559,
+                    0.28629
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.28445,
+                  "observedRate": 0.28553,
+                  "absoluteGap": 0.00109,
+                  "observedRateWilson95CI": [
+                    0.2551,
+                    0.31805
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.29602,
+                  "observedRate": 0.30076,
+                  "absoluteGap": 0.00474,
+                  "observedRateWilson95CI": [
+                    0.26977,
+                    0.33368
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.30675,
+                  "observedRate": 0.2703,
+                  "absoluteGap": 0.03644,
+                  "observedRateWilson95CI": [
+                    0.24047,
+                    0.30237
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.31875,
+                  "observedRate": 0.32614,
+                  "absoluteGap": 0.00739,
+                  "observedRateWilson95CI": [
+                    0.29432,
+                    0.35965
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.33377,
+                  "observedRate": 0.34137,
+                  "absoluteGap": 0.0076,
+                  "observedRateWilson95CI": [
+                    0.3091,
+                    0.37518
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.3541,
+                  "observedRate": 0.32995,
+                  "absoluteGap": 0.02415,
+                  "observedRateWilson95CI": [
+                    0.29801,
+                    0.36353
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.39434,
+                  "observedRate": 0.38706,
+                  "absoluteGap": 0.00729,
+                  "observedRateWilson95CI": [
+                    0.35367,
+                    0.42153
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.01415,
+              "maximumCalibrationError": 0.03644,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            },
+            "under": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.60569,
+                  "observedRate": 0.61343,
+                  "absoluteGap": 0.00775,
+                  "observedRateWilson95CI": [
+                    0.57898,
+                    0.64679
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.64595,
+                  "observedRate": 0.66793,
+                  "absoluteGap": 0.02198,
+                  "observedRateWilson95CI": [
+                    0.63433,
+                    0.69991
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.66629,
+                  "observedRate": 0.66033,
+                  "absoluteGap": 0.00596,
+                  "observedRateWilson95CI": [
+                    0.62658,
+                    0.69253
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.68129,
+                  "observedRate": 0.67386,
+                  "absoluteGap": 0.00744,
+                  "observedRateWilson95CI": [
+                    0.64035,
+                    0.70568
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.6933,
+                  "observedRate": 0.73096,
+                  "absoluteGap": 0.03767,
+                  "observedRateWilson95CI": [
+                    0.69894,
+                    0.76075
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.70402,
+                  "observedRate": 0.69797,
+                  "absoluteGap": 0.00605,
+                  "observedRateWilson95CI": [
+                    0.66502,
+                    0.729
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.7156,
+                  "observedRate": 0.71574,
+                  "absoluteGap": 0.00013,
+                  "observedRateWilson95CI": [
+                    0.68325,
+                    0.74612
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.72813,
+                  "observedRate": 0.74365,
+                  "absoluteGap": 0.01552,
+                  "observedRateWilson95CI": [
+                    0.71204,
+                    0.77291
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.74237,
+                  "observedRate": 0.75888,
+                  "absoluteGap": 0.01651,
+                  "observedRateWilson95CI": [
+                    0.72781,
+                    0.78745
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.76706,
+                  "observedRate": 0.7868,
+                  "absoluteGap": 0.01974,
+                  "observedRateWilson95CI": [
+                    0.75685,
+                    0.81397
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.01387,
+              "maximumCalibrationError": 0.03767,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            }
+          },
+          {
+            "line": 12.5,
+            "over": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.15711,
+                  "observedRate": 0.15082,
+                  "absoluteGap": 0.00628,
+                  "observedRateWilson95CI": [
+                    0.12755,
+                    0.17748
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.17703,
+                  "observedRate": 0.1673,
+                  "absoluteGap": 0.00973,
+                  "observedRateWilson95CI": [
+                    0.14288,
+                    0.19494
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.18875,
+                  "observedRate": 0.16477,
+                  "absoluteGap": 0.02399,
+                  "observedRateWilson95CI": [
+                    0.14052,
+                    0.19226
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.1992,
+                  "observedRate": 0.1967,
+                  "absoluteGap": 0.0025,
+                  "observedRateWilson95CI": [
+                    0.17045,
+                    0.2259
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.20893,
+                  "observedRate": 0.20812,
+                  "absoluteGap": 0.00081,
+                  "observedRateWilson95CI": [
+                    0.18123,
+                    0.23785
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.21804,
+                  "observedRate": 0.20558,
+                  "absoluteGap": 0.01246,
+                  "observedRateWilson95CI": [
+                    0.17883,
+                    0.2352
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.22833,
+                  "observedRate": 0.23604,
+                  "absoluteGap": 0.00771,
+                  "observedRateWilson95CI": [
+                    0.20772,
+                    0.26693
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.24135,
+                  "observedRate": 0.24239,
+                  "absoluteGap": 0.00104,
+                  "observedRateWilson95CI": [
+                    0.21376,
+                    0.27351
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.25921,
+                  "observedRate": 0.24365,
+                  "absoluteGap": 0.01555,
+                  "observedRateWilson95CI": [
+                    0.21497,
+                    0.27482
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.29551,
+                  "observedRate": 0.29061,
+                  "absoluteGap": 0.0049,
+                  "observedRateWilson95CI": [
+                    0.25998,
+                    0.32327
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.0085,
+              "maximumCalibrationError": 0.02399,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            },
+            "under": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.70452,
+                  "observedRate": 0.70976,
+                  "absoluteGap": 0.00524,
+                  "observedRateWilson95CI": [
+                    0.67713,
+                    0.74035
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.74083,
+                  "observedRate": 0.75412,
+                  "absoluteGap": 0.01329,
+                  "observedRateWilson95CI": [
+                    0.72289,
+                    0.78289
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.7587,
+                  "observedRate": 0.75919,
+                  "absoluteGap": 0.00049,
+                  "observedRateWilson95CI": [
+                    0.72814,
+                    0.78772
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.77171,
+                  "observedRate": 0.76396,
+                  "absoluteGap": 0.00775,
+                  "observedRateWilson95CI": [
+                    0.73307,
+                    0.79228
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.782,
+                  "observedRate": 0.79569,
+                  "absoluteGap": 0.01369,
+                  "observedRateWilson95CI": [
+                    0.76613,
+                    0.82237
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.7911,
+                  "observedRate": 0.79061,
+                  "absoluteGap": 0.0005,
+                  "observedRateWilson95CI": [
+                    0.76082,
+                    0.81757
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.80084,
+                  "observedRate": 0.80457,
+                  "absoluteGap": 0.00372,
+                  "observedRateWilson95CI": [
+                    0.77543,
+                    0.83075
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.81128,
+                  "observedRate": 0.83503,
+                  "absoluteGap": 0.02375,
+                  "observedRateWilson95CI": [
+                    0.8075,
+                    0.8593
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.823,
+                  "observedRate": 0.83122,
+                  "absoluteGap": 0.00822,
+                  "observedRateWilson95CI": [
+                    0.80347,
+                    0.85575
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.84291,
+                  "observedRate": 0.85025,
+                  "absoluteGap": 0.00735,
+                  "observedRateWilson95CI": [
+                    0.82364,
+                    0.87347
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.0084,
+              "maximumCalibrationError": 0.02375,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            }
+          }
+        ]
+      },
       "significanceLevel": 0.05,
       "interpretation": "Negative NB2-minus-Poisson loss differences favor NB2. Holm-adjusted p below 0.05 indicates evidence of a difference after correcting the six line comparisons; confidence intervals crossing zero indicate uncertainty."
     },
@@ -1180,6 +4044,2870 @@
           "logLossHolmAdjustedP": 1.0
         }
       ],
+      "coefficientStability": {
+        "status": "evaluated",
+        "foldsWithCoefficients": 3,
+        "coefficientScale": "Original feature units; coefficients from separately refit Poisson means",
+        "features": [
+          {
+            "feature": "home_team_for_avg5",
+            "foldCoefficients": [
+              -0.00034484,
+              0.00048438,
+              0.00072726
+            ],
+            "meanCoefficient": 0.00028894,
+            "stdCoefficient": 0.00056214,
+            "signAgreement": 0.6667,
+            "signFlips": 1,
+            "stableSign": false
+          },
+          {
+            "feature": "home_team_against_avg5",
+            "foldCoefficients": [
+              -0.00519929,
+              -0.00546912,
+              -0.00535235
+            ],
+            "meanCoefficient": -0.00534025,
+            "stdCoefficient": 0.00013532,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "home_team_for_avg10",
+            "foldCoefficients": [
+              -0.00684799,
+              -0.00663208,
+              -0.00603894
+            ],
+            "meanCoefficient": -0.00650633,
+            "stdCoefficient": 0.00041893,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "home_team_against_avg10",
+            "foldCoefficients": [
+              0.01023594,
+              0.00996637,
+              0.0091459
+            ],
+            "meanCoefficient": 0.00978274,
+            "stdCoefficient": 0.00056775,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "away_team_for_avg5",
+            "foldCoefficients": [
+              0.00365766,
+              0.00190373,
+              0.00093376
+            ],
+            "meanCoefficient": 0.00216505,
+            "stdCoefficient": 0.00138063,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "away_team_against_avg5",
+            "foldCoefficients": [
+              -0.00372801,
+              -0.00400378,
+              -0.00498933
+            ],
+            "meanCoefficient": -0.00424037,
+            "stdCoefficient": 0.00066311,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "away_team_for_avg10",
+            "foldCoefficients": [
+              0.00399798,
+              0.00316002,
+              0.00240983
+            ],
+            "meanCoefficient": 0.00318928,
+            "stdCoefficient": 0.00079448,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "away_team_against_avg10",
+            "foldCoefficients": [
+              -0.00412746,
+              -0.00472241,
+              -0.00358942
+            ],
+            "meanCoefficient": -0.00414643,
+            "stdCoefficient": 0.00056673,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "home_card_team_for_avg5",
+            "foldCoefficients": [
+              0.00937759,
+              0.00885399,
+              0.00875706
+            ],
+            "meanCoefficient": 0.00899621,
+            "stdCoefficient": 0.00033382,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "home_card_team_against_avg5",
+            "foldCoefficients": [
+              0.0201581,
+              0.01881478,
+              0.01881063
+            ],
+            "meanCoefficient": 0.01926117,
+            "stdCoefficient": 0.00077677,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "home_card_team_for_avg10",
+            "foldCoefficients": [
+              0.0460241,
+              0.04843331,
+              0.04925332
+            ],
+            "meanCoefficient": 0.04790358,
+            "stdCoefficient": 0.00167852,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "home_card_team_against_avg10",
+            "foldCoefficients": [
+              0.04766146,
+              0.04788239,
+              0.04763923
+            ],
+            "meanCoefficient": 0.04772769,
+            "stdCoefficient": 0.00013444,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "away_card_team_for_avg5",
+            "foldCoefficients": [
+              0.0158338,
+              0.0172131,
+              0.01703458
+            ],
+            "meanCoefficient": 0.01669383,
+            "stdCoefficient": 0.00075013,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "away_card_team_against_avg5",
+            "foldCoefficients": [
+              0.01257958,
+              0.01452398,
+              0.01588413
+            ],
+            "meanCoefficient": 0.01432923,
+            "stdCoefficient": 0.00166086,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "away_card_team_for_avg10",
+            "foldCoefficients": [
+              0.0482424,
+              0.04733696,
+              0.04505408
+            ],
+            "meanCoefficient": 0.04687781,
+            "stdCoefficient": 0.001643,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "away_card_team_against_avg10",
+            "foldCoefficients": [
+              0.04963256,
+              0.0436554,
+              0.04293665
+            ],
+            "meanCoefficient": 0.0454082,
+            "stdCoefficient": 0.00367601,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "league_corners_avg",
+            "foldCoefficients": [
+              -0.0066485,
+              -0.00619933,
+              -0.00560529
+            ],
+            "meanCoefficient": -0.00615104,
+            "stdCoefficient": 0.00052328,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "league_cards_avg",
+            "foldCoefficients": [
+              0.09143075,
+              0.09148231,
+              0.09033542
+            ],
+            "meanCoefficient": 0.09108283,
+            "stdCoefficient": 0.00064778,
+            "signAgreement": 1.0,
+            "signFlips": 0,
+            "stableSign": true
+          },
+          {
+            "feature": "home_advantage",
+            "foldCoefficients": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "meanCoefficient": 0.0,
+            "stdCoefficient": 0.0,
+            "signAgreement": 0.0,
+            "signFlips": 0,
+            "stableSign": false
+          }
+        ]
+      },
+      "holdoutCalibration": {
+        "poisson": [
+          {
+            "line": 7.5,
+            "over": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.01465,
+                  "observedRate": 0.02155,
+                  "absoluteGap": 0.0069,
+                  "observedRateWilson95CI": [
+                    0.0135,
+                    0.03423
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.02157,
+                  "observedRate": 0.02155,
+                  "absoluteGap": 2e-05,
+                  "observedRateWilson95CI": [
+                    0.0135,
+                    0.03423
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.02571,
+                  "observedRate": 0.03042,
+                  "absoluteGap": 0.00471,
+                  "observedRateWilson95CI": [
+                    0.02052,
+                    0.04486
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.02941,
+                  "observedRate": 0.03807,
+                  "absoluteGap": 0.00866,
+                  "observedRateWilson95CI": [
+                    0.0268,
+                    0.05383
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.03314,
+                  "observedRate": 0.02284,
+                  "absoluteGap": 0.01029,
+                  "observedRateWilson95CI": [
+                    0.0145,
+                    0.03582
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.03715,
+                  "observedRate": 0.04188,
+                  "absoluteGap": 0.00472,
+                  "observedRateWilson95CI": [
+                    0.02997,
+                    0.05823
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.04202,
+                  "observedRate": 0.04315,
+                  "absoluteGap": 0.00113,
+                  "observedRateWilson95CI": [
+                    0.03104,
+                    0.05969
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.04835,
+                  "observedRate": 0.04315,
+                  "absoluteGap": 0.0052,
+                  "observedRateWilson95CI": [
+                    0.03104,
+                    0.05969
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.05881,
+                  "observedRate": 0.05457,
+                  "absoluteGap": 0.00424,
+                  "observedRateWilson95CI": [
+                    0.04076,
+                    0.0727
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.09563,
+                  "observedRate": 0.10152,
+                  "absoluteGap": 0.00589,
+                  "observedRateWilson95CI": [
+                    0.08233,
+                    0.12458
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.00518,
+              "maximumCalibrationError": 0.01029,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            },
+            "under": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.90441,
+                  "observedRate": 0.89861,
+                  "absoluteGap": 0.0058,
+                  "observedRateWilson95CI": [
+                    0.87557,
+                    0.91777
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.94122,
+                  "observedRate": 0.9455,
+                  "absoluteGap": 0.00428,
+                  "observedRateWilson95CI": [
+                    0.92739,
+                    0.95929
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.95168,
+                  "observedRate": 0.95691,
+                  "absoluteGap": 0.00523,
+                  "observedRateWilson95CI": [
+                    0.94039,
+                    0.969
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.958,
+                  "observedRate": 0.95685,
+                  "absoluteGap": 0.00115,
+                  "observedRateWilson95CI": [
+                    0.94031,
+                    0.96896
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.96286,
+                  "observedRate": 0.95812,
+                  "absoluteGap": 0.00474,
+                  "observedRateWilson95CI": [
+                    0.94177,
+                    0.97003
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.96688,
+                  "observedRate": 0.97716,
+                  "absoluteGap": 0.01028,
+                  "observedRateWilson95CI": [
+                    0.96418,
+                    0.9855
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.9706,
+                  "observedRate": 0.96193,
+                  "absoluteGap": 0.00867,
+                  "observedRateWilson95CI": [
+                    0.94617,
+                    0.9732
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.97431,
+                  "observedRate": 0.96954,
+                  "absoluteGap": 0.00476,
+                  "observedRateWilson95CI": [
+                    0.95508,
+                    0.97945
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.97844,
+                  "observedRate": 0.97843,
+                  "absoluteGap": 1e-05,
+                  "observedRateWilson95CI": [
+                    0.96572,
+                    0.98649
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.98536,
+                  "observedRate": 0.97843,
+                  "absoluteGap": 0.00693,
+                  "observedRateWilson95CI": [
+                    0.96572,
+                    0.98649
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.00519,
+              "maximumCalibrationError": 0.01028,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            }
+          },
+          {
+            "line": 8.5,
+            "over": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.00488,
+                  "observedRate": 0.00634,
+                  "absoluteGap": 0.00146,
+                  "observedRateWilson95CI": [
+                    0.00271,
+                    0.01475
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.00766,
+                  "observedRate": 0.00887,
+                  "absoluteGap": 0.00121,
+                  "observedRateWilson95CI": [
+                    0.0043,
+                    0.0182
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.00943,
+                  "observedRate": 0.01774,
+                  "absoluteGap": 0.00832,
+                  "observedRateWilson95CI": [
+                    0.0106,
+                    0.02956
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.01106,
+                  "observedRate": 0.01269,
+                  "absoluteGap": 0.00163,
+                  "observedRateWilson95CI": [
+                    0.00691,
+                    0.0232
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.01274,
+                  "observedRate": 0.01269,
+                  "absoluteGap": 5e-05,
+                  "observedRateWilson95CI": [
+                    0.00691,
+                    0.0232
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.01459,
+                  "observedRate": 0.0165,
+                  "absoluteGap": 0.0019,
+                  "observedRateWilson95CI": [
+                    0.00967,
+                    0.02802
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.0169,
+                  "observedRate": 0.01523,
+                  "absoluteGap": 0.00167,
+                  "observedRateWilson95CI": [
+                    0.00873,
+                    0.02643
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.01998,
+                  "observedRate": 0.0165,
+                  "absoluteGap": 0.00349,
+                  "observedRateWilson95CI": [
+                    0.00967,
+                    0.02802
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.02528,
+                  "observedRate": 0.02411,
+                  "absoluteGap": 0.00117,
+                  "observedRateWilson95CI": [
+                    0.01549,
+                    0.03735
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.04599,
+                  "observedRate": 0.05457,
+                  "absoluteGap": 0.00858,
+                  "observedRateWilson95CI": [
+                    0.04076,
+                    0.0727
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.00295,
+              "maximumCalibrationError": 0.00858,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            },
+            "under": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.95403,
+                  "observedRate": 0.9455,
+                  "absoluteGap": 0.00853,
+                  "observedRateWilson95CI": [
+                    0.92739,
+                    0.95929
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.97474,
+                  "observedRate": 0.97592,
+                  "absoluteGap": 0.00118,
+                  "observedRateWilson95CI": [
+                    0.9627,
+                    0.98453
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.98003,
+                  "observedRate": 0.98352,
+                  "absoluteGap": 0.0035,
+                  "observedRateWilson95CI": [
+                    0.97202,
+                    0.99035
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.98311,
+                  "observedRate": 0.98477,
+                  "absoluteGap": 0.00166,
+                  "observedRateWilson95CI": [
+                    0.97357,
+                    0.99127
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.98541,
+                  "observedRate": 0.9835,
+                  "absoluteGap": 0.00191,
+                  "observedRateWilson95CI": [
+                    0.97198,
+                    0.99033
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.98727,
+                  "observedRate": 0.98731,
+                  "absoluteGap": 4e-05,
+                  "observedRateWilson95CI": [
+                    0.9768,
+                    0.99309
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.98895,
+                  "observedRate": 0.98731,
+                  "absoluteGap": 0.00164,
+                  "observedRateWilson95CI": [
+                    0.9768,
+                    0.99309
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99058,
+                  "observedRate": 0.98223,
+                  "absoluteGap": 0.00835,
+                  "observedRateWilson95CI": [
+                    0.9704,
+                    0.98939
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99234,
+                  "observedRate": 0.99112,
+                  "absoluteGap": 0.00123,
+                  "observedRateWilson95CI": [
+                    0.98178,
+                    0.99569
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99512,
+                  "observedRate": 0.99365,
+                  "absoluteGap": 0.00147,
+                  "observedRateWilson95CI": [
+                    0.98523,
+                    0.99729
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.00295,
+              "maximumCalibrationError": 0.00853,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            }
+          },
+          {
+            "line": 9.5,
+            "over": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.00148,
+                  "observedRate": 0.0,
+                  "absoluteGap": 0.00148,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.00247,
+                  "observedRate": 0.00253,
+                  "absoluteGap": 6e-05,
+                  "observedRateWilson95CI": [
+                    0.0007,
+                    0.00919
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.00314,
+                  "observedRate": 0.00634,
+                  "absoluteGap": 0.00319,
+                  "observedRateWilson95CI": [
+                    0.00271,
+                    0.01475
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00378,
+                  "observedRate": 0.00381,
+                  "absoluteGap": 3e-05,
+                  "observedRateWilson95CI": [
+                    0.0013,
+                    0.01113
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00445,
+                  "observedRate": 0.00254,
+                  "absoluteGap": 0.00192,
+                  "observedRateWilson95CI": [
+                    0.0007,
+                    0.00921
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00522,
+                  "observedRate": 0.00761,
+                  "absoluteGap": 0.0024,
+                  "observedRateWilson95CI": [
+                    0.00349,
+                    0.01651
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00619,
+                  "observedRate": 0.01015,
+                  "absoluteGap": 0.00396,
+                  "observedRateWilson95CI": [
+                    0.00515,
+                    0.0199
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00752,
+                  "observedRate": 0.00761,
+                  "absoluteGap": 9e-05,
+                  "observedRateWilson95CI": [
+                    0.00349,
+                    0.01651
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00991,
+                  "observedRate": 0.01015,
+                  "absoluteGap": 0.00024,
+                  "observedRateWilson95CI": [
+                    0.00515,
+                    0.0199
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.02032,
+                  "observedRate": 0.02284,
+                  "absoluteGap": 0.00252,
+                  "observedRateWilson95CI": [
+                    0.0145,
+                    0.03582
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.00159,
+              "maximumCalibrationError": 0.00396,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            },
+            "under": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.97969,
+                  "observedRate": 0.97719,
+                  "absoluteGap": 0.00251,
+                  "observedRateWilson95CI": [
+                    0.96423,
+                    0.98552
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.9901,
+                  "observedRate": 0.98986,
+                  "absoluteGap": 0.00024,
+                  "observedRateWilson95CI": [
+                    0.98012,
+                    0.99485
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.99248,
+                  "observedRate": 0.9924,
+                  "absoluteGap": 8e-05,
+                  "observedRateWilson95CI": [
+                    0.98351,
+                    0.99651
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99381,
+                  "observedRate": 0.98985,
+                  "absoluteGap": 0.00397,
+                  "observedRateWilson95CI": [
+                    0.9801,
+                    0.99485
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99479,
+                  "observedRate": 0.99239,
+                  "absoluteGap": 0.0024,
+                  "observedRateWilson95CI": [
+                    0.98349,
+                    0.99651
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99555,
+                  "observedRate": 0.99746,
+                  "absoluteGap": 0.00191,
+                  "observedRateWilson95CI": [
+                    0.99079,
+                    0.9993
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99622,
+                  "observedRate": 0.99619,
+                  "absoluteGap": 3e-05,
+                  "observedRateWilson95CI": [
+                    0.98887,
+                    0.9987
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99686,
+                  "observedRate": 0.99365,
+                  "absoluteGap": 0.00321,
+                  "observedRateWilson95CI": [
+                    0.98523,
+                    0.99729
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99753,
+                  "observedRate": 0.99746,
+                  "absoluteGap": 7e-05,
+                  "observedRateWilson95CI": [
+                    0.99079,
+                    0.9993
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99852,
+                  "observedRate": 1.0,
+                  "absoluteGap": 0.00148,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.00159,
+              "maximumCalibrationError": 0.00397,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            }
+          },
+          {
+            "line": 10.5,
+            "over": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.00041,
+                  "observedRate": 0.0,
+                  "absoluteGap": 0.00041,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.00073,
+                  "observedRate": 0.00127,
+                  "absoluteGap": 0.00054,
+                  "observedRateWilson95CI": [
+                    0.00022,
+                    0.00714
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.00096,
+                  "observedRate": 0.0,
+                  "absoluteGap": 0.00096,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00118,
+                  "observedRate": 0.0,
+                  "absoluteGap": 0.00118,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00143,
+                  "observedRate": 0.00127,
+                  "absoluteGap": 0.00016,
+                  "observedRateWilson95CI": [
+                    0.00022,
+                    0.00715
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00171,
+                  "observedRate": 0.00254,
+                  "absoluteGap": 0.00083,
+                  "observedRateWilson95CI": [
+                    0.0007,
+                    0.00921
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00208,
+                  "observedRate": 0.00254,
+                  "absoluteGap": 0.00046,
+                  "observedRateWilson95CI": [
+                    0.0007,
+                    0.00921
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.0026,
+                  "observedRate": 0.00381,
+                  "absoluteGap": 0.00121,
+                  "observedRateWilson95CI": [
+                    0.0013,
+                    0.01113
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00356,
+                  "observedRate": 0.00254,
+                  "absoluteGap": 0.00103,
+                  "observedRateWilson95CI": [
+                    0.0007,
+                    0.00921
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.0083,
+                  "observedRate": 0.00761,
+                  "absoluteGap": 0.00069,
+                  "observedRateWilson95CI": [
+                    0.00349,
+                    0.01651
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.00075,
+              "maximumCalibrationError": 0.00121,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            },
+            "under": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.9917,
+                  "observedRate": 0.9924,
+                  "absoluteGap": 0.00069,
+                  "observedRateWilson95CI": [
+                    0.98351,
+                    0.99651
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.99644,
+                  "observedRate": 0.99747,
+                  "absoluteGap": 0.00103,
+                  "observedRateWilson95CI": [
+                    0.99081,
+                    0.9993
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.9974,
+                  "observedRate": 0.9962,
+                  "absoluteGap": 0.00121,
+                  "observedRateWilson95CI": [
+                    0.98888,
+                    0.99871
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99792,
+                  "observedRate": 0.99746,
+                  "absoluteGap": 0.00046,
+                  "observedRateWilson95CI": [
+                    0.99079,
+                    0.9993
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99829,
+                  "observedRate": 0.99746,
+                  "absoluteGap": 0.00083,
+                  "observedRateWilson95CI": [
+                    0.99079,
+                    0.9993
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99857,
+                  "observedRate": 0.99873,
+                  "absoluteGap": 0.00016,
+                  "observedRateWilson95CI": [
+                    0.99285,
+                    0.99978
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99882,
+                  "observedRate": 1.0,
+                  "absoluteGap": 0.00118,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99904,
+                  "observedRate": 1.0,
+                  "absoluteGap": 0.00096,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99927,
+                  "observedRate": 0.99873,
+                  "absoluteGap": 0.00054,
+                  "observedRateWilson95CI": [
+                    0.99285,
+                    0.99978
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99959,
+                  "observedRate": 1.0,
+                  "absoluteGap": 0.00041,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.00075,
+              "maximumCalibrationError": 0.00121,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            }
+          },
+          {
+            "line": 11.5,
+            "over": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.0001,
+                  "observedRate": 0.0,
+                  "absoluteGap": 0.0001,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.0002,
+                  "observedRate": 0.0,
+                  "absoluteGap": 0.0002,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.00027,
+                  "observedRate": 0.0,
+                  "absoluteGap": 0.00027,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00034,
+                  "observedRate": 0.0,
+                  "absoluteGap": 0.00034,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00042,
+                  "observedRate": 0.0,
+                  "absoluteGap": 0.00042,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00052,
+                  "observedRate": 0.0,
+                  "absoluteGap": 0.00052,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00064,
+                  "observedRate": 0.00127,
+                  "absoluteGap": 0.00063,
+                  "observedRateWilson95CI": [
+                    0.00022,
+                    0.00715
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00083,
+                  "observedRate": 0.00381,
+                  "absoluteGap": 0.00298,
+                  "observedRateWilson95CI": [
+                    0.0013,
+                    0.01113
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00118,
+                  "observedRate": 0.00127,
+                  "absoluteGap": 8e-05,
+                  "observedRateWilson95CI": [
+                    0.00022,
+                    0.00715
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00315,
+                  "observedRate": 0.00381,
+                  "absoluteGap": 0.00065,
+                  "observedRateWilson95CI": [
+                    0.0013,
+                    0.01113
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.00062,
+              "maximumCalibrationError": 0.00298,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            },
+            "under": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.99685,
+                  "observedRate": 0.9962,
+                  "absoluteGap": 0.00065,
+                  "observedRateWilson95CI": [
+                    0.98888,
+                    0.99871
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.99882,
+                  "observedRate": 0.99873,
+                  "absoluteGap": 8e-05,
+                  "observedRateWilson95CI": [
+                    0.99286,
+                    0.99978
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.99917,
+                  "observedRate": 0.9962,
+                  "absoluteGap": 0.00297,
+                  "observedRateWilson95CI": [
+                    0.98888,
+                    0.99871
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99936,
+                  "observedRate": 0.99873,
+                  "absoluteGap": 0.00063,
+                  "observedRateWilson95CI": [
+                    0.99285,
+                    0.99978
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99948,
+                  "observedRate": 1.0,
+                  "absoluteGap": 0.00052,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99958,
+                  "observedRate": 1.0,
+                  "absoluteGap": 0.00042,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99966,
+                  "observedRate": 1.0,
+                  "absoluteGap": 0.00034,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99973,
+                  "observedRate": 1.0,
+                  "absoluteGap": 0.00027,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.9998,
+                  "observedRate": 1.0,
+                  "absoluteGap": 0.0002,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.9999,
+                  "observedRate": 1.0,
+                  "absoluteGap": 0.0001,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.00062,
+              "maximumCalibrationError": 0.00297,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            }
+          },
+          {
+            "line": 12.5,
+            "over": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 2e-05,
+                  "observedRate": 0.0,
+                  "absoluteGap": 2e-05,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 5e-05,
+                  "observedRate": 0.0,
+                  "absoluteGap": 5e-05,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 7e-05,
+                  "observedRate": 0.0,
+                  "absoluteGap": 7e-05,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 9e-05,
+                  "observedRate": 0.0,
+                  "absoluteGap": 9e-05,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00012,
+                  "observedRate": 0.0,
+                  "absoluteGap": 0.00012,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00014,
+                  "observedRate": 0.0,
+                  "absoluteGap": 0.00014,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00019,
+                  "observedRate": 0.0,
+                  "absoluteGap": 0.00019,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00025,
+                  "observedRate": 0.00127,
+                  "absoluteGap": 0.00102,
+                  "observedRateWilson95CI": [
+                    0.00022,
+                    0.00715
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00037,
+                  "observedRate": 0.00127,
+                  "absoluteGap": 0.0009,
+                  "observedRateWilson95CI": [
+                    0.00022,
+                    0.00715
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00112,
+                  "observedRate": 0.00254,
+                  "absoluteGap": 0.00142,
+                  "observedRateWilson95CI": [
+                    0.0007,
+                    0.00921
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.0004,
+              "maximumCalibrationError": 0.00142,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            },
+            "under": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.99888,
+                  "observedRate": 0.99747,
+                  "absoluteGap": 0.00141,
+                  "observedRateWilson95CI": [
+                    0.99081,
+                    0.9993
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.99963,
+                  "observedRate": 0.99873,
+                  "absoluteGap": 0.0009,
+                  "observedRateWilson95CI": [
+                    0.99286,
+                    0.99978
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.99976,
+                  "observedRate": 0.99873,
+                  "absoluteGap": 0.00102,
+                  "observedRateWilson95CI": [
+                    0.99286,
+                    0.99978
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99982,
+                  "observedRate": 1.0,
+                  "absoluteGap": 0.00018,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99986,
+                  "observedRate": 1.0,
+                  "absoluteGap": 0.00014,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99988,
+                  "observedRate": 1.0,
+                  "absoluteGap": 0.00012,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99991,
+                  "observedRate": 1.0,
+                  "absoluteGap": 9e-05,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99993,
+                  "observedRate": 1.0,
+                  "absoluteGap": 7e-05,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99995,
+                  "observedRate": 1.0,
+                  "absoluteGap": 5e-05,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99998,
+                  "observedRate": 1.0,
+                  "absoluteGap": 2e-05,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.0004,
+              "maximumCalibrationError": 0.00141,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            }
+          }
+        ],
+        "negativeBinomial": [
+          {
+            "line": 7.5,
+            "over": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.01631,
+                  "observedRate": 0.02155,
+                  "absoluteGap": 0.00524,
+                  "observedRateWilson95CI": [
+                    0.0135,
+                    0.03423
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.02378,
+                  "observedRate": 0.02155,
+                  "absoluteGap": 0.00223,
+                  "observedRateWilson95CI": [
+                    0.0135,
+                    0.03423
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.0282,
+                  "observedRate": 0.03042,
+                  "absoluteGap": 0.00221,
+                  "observedRateWilson95CI": [
+                    0.02052,
+                    0.04486
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.03214,
+                  "observedRate": 0.03807,
+                  "absoluteGap": 0.00593,
+                  "observedRateWilson95CI": [
+                    0.0268,
+                    0.05383
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.03609,
+                  "observedRate": 0.02284,
+                  "absoluteGap": 0.01325,
+                  "observedRateWilson95CI": [
+                    0.0145,
+                    0.03582
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.04033,
+                  "observedRate": 0.04188,
+                  "absoluteGap": 0.00155,
+                  "observedRateWilson95CI": [
+                    0.02997,
+                    0.05823
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.04545,
+                  "observedRate": 0.04315,
+                  "absoluteGap": 0.0023,
+                  "observedRateWilson95CI": [
+                    0.03104,
+                    0.05969
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.05206,
+                  "observedRate": 0.04315,
+                  "absoluteGap": 0.00891,
+                  "observedRateWilson95CI": [
+                    0.03104,
+                    0.05969
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.06293,
+                  "observedRate": 0.05457,
+                  "absoluteGap": 0.00836,
+                  "observedRateWilson95CI": [
+                    0.04076,
+                    0.0727
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.10056,
+                  "observedRate": 0.10152,
+                  "absoluteGap": 0.00096,
+                  "observedRateWilson95CI": [
+                    0.08233,
+                    0.12458
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.00509,
+              "maximumCalibrationError": 0.01325,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            },
+            "under": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.89948,
+                  "observedRate": 0.89861,
+                  "absoluteGap": 0.00087,
+                  "observedRateWilson95CI": [
+                    0.87557,
+                    0.91777
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.9371,
+                  "observedRate": 0.9455,
+                  "absoluteGap": 0.00841,
+                  "observedRateWilson95CI": [
+                    0.92739,
+                    0.95929
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.94796,
+                  "observedRate": 0.95691,
+                  "absoluteGap": 0.00894,
+                  "observedRateWilson95CI": [
+                    0.94039,
+                    0.969
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.95458,
+                  "observedRate": 0.95685,
+                  "absoluteGap": 0.00228,
+                  "observedRateWilson95CI": [
+                    0.94031,
+                    0.96896
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.95969,
+                  "observedRate": 0.95812,
+                  "absoluteGap": 0.00156,
+                  "observedRateWilson95CI": [
+                    0.94177,
+                    0.97003
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.96392,
+                  "observedRate": 0.97716,
+                  "absoluteGap": 0.01323,
+                  "observedRateWilson95CI": [
+                    0.96418,
+                    0.9855
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.96787,
+                  "observedRate": 0.96193,
+                  "absoluteGap": 0.00594,
+                  "observedRateWilson95CI": [
+                    0.94617,
+                    0.9732
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.97181,
+                  "observedRate": 0.96954,
+                  "absoluteGap": 0.00227,
+                  "observedRateWilson95CI": [
+                    0.95508,
+                    0.97945
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.97623,
+                  "observedRate": 0.97843,
+                  "absoluteGap": 0.0022,
+                  "observedRateWilson95CI": [
+                    0.96572,
+                    0.98649
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.9837,
+                  "observedRate": 0.97843,
+                  "absoluteGap": 0.00527,
+                  "observedRateWilson95CI": [
+                    0.96572,
+                    0.98649
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.0051,
+              "maximumCalibrationError": 0.01323,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            }
+          },
+          {
+            "line": 8.5,
+            "over": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.00571,
+                  "observedRate": 0.00634,
+                  "absoluteGap": 0.00062,
+                  "observedRateWilson95CI": [
+                    0.00271,
+                    0.01475
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.00887,
+                  "observedRate": 0.00887,
+                  "absoluteGap": 0.0,
+                  "observedRateWilson95CI": [
+                    0.0043,
+                    0.0182
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.01085,
+                  "observedRate": 0.01774,
+                  "absoluteGap": 0.0069,
+                  "observedRateWilson95CI": [
+                    0.0106,
+                    0.02956
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.01266,
+                  "observedRate": 0.01269,
+                  "absoluteGap": 3e-05,
+                  "observedRateWilson95CI": [
+                    0.00691,
+                    0.0232
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.01453,
+                  "observedRate": 0.01269,
+                  "absoluteGap": 0.00183,
+                  "observedRateWilson95CI": [
+                    0.00691,
+                    0.0232
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.01657,
+                  "observedRate": 0.0165,
+                  "absoluteGap": 8e-05,
+                  "observedRateWilson95CI": [
+                    0.00967,
+                    0.02802
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.0191,
+                  "observedRate": 0.01523,
+                  "absoluteGap": 0.00388,
+                  "observedRateWilson95CI": [
+                    0.00873,
+                    0.02643
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.02247,
+                  "observedRate": 0.0165,
+                  "absoluteGap": 0.00597,
+                  "observedRateWilson95CI": [
+                    0.00967,
+                    0.02802
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.0282,
+                  "observedRate": 0.02411,
+                  "absoluteGap": 0.00408,
+                  "observedRateWilson95CI": [
+                    0.01549,
+                    0.03735
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.05011,
+                  "observedRate": 0.05457,
+                  "absoluteGap": 0.00446,
+                  "observedRateWilson95CI": [
+                    0.04076,
+                    0.0727
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.00279,
+              "maximumCalibrationError": 0.0069,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            },
+            "under": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.94991,
+                  "observedRate": 0.9455,
+                  "absoluteGap": 0.00441,
+                  "observedRateWilson95CI": [
+                    0.92739,
+                    0.95929
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.97182,
+                  "observedRate": 0.97592,
+                  "absoluteGap": 0.0041,
+                  "observedRateWilson95CI": [
+                    0.9627,
+                    0.98453
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.97755,
+                  "observedRate": 0.98352,
+                  "absoluteGap": 0.00598,
+                  "observedRateWilson95CI": [
+                    0.97202,
+                    0.99035
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.98091,
+                  "observedRate": 0.98477,
+                  "absoluteGap": 0.00386,
+                  "observedRateWilson95CI": [
+                    0.97357,
+                    0.99127
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.98344,
+                  "observedRate": 0.9835,
+                  "absoluteGap": 7e-05,
+                  "observedRateWilson95CI": [
+                    0.97198,
+                    0.99033
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.98548,
+                  "observedRate": 0.98731,
+                  "absoluteGap": 0.00183,
+                  "observedRateWilson95CI": [
+                    0.9768,
+                    0.99309
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.98734,
+                  "observedRate": 0.98731,
+                  "absoluteGap": 4e-05,
+                  "observedRateWilson95CI": [
+                    0.9768,
+                    0.99309
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.98916,
+                  "observedRate": 0.98223,
+                  "absoluteGap": 0.00693,
+                  "observedRateWilson95CI": [
+                    0.9704,
+                    0.98939
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99114,
+                  "observedRate": 0.99112,
+                  "absoluteGap": 2e-05,
+                  "observedRateWilson95CI": [
+                    0.98178,
+                    0.99569
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99429,
+                  "observedRate": 0.99365,
+                  "absoluteGap": 0.00063,
+                  "observedRateWilson95CI": [
+                    0.98523,
+                    0.99729
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.00279,
+              "maximumCalibrationError": 0.00693,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            }
+          },
+          {
+            "line": 9.5,
+            "over": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.00184,
+                  "observedRate": 0.0,
+                  "absoluteGap": 0.00184,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.00303,
+                  "observedRate": 0.00253,
+                  "absoluteGap": 0.0005,
+                  "observedRateWilson95CI": [
+                    0.0007,
+                    0.00919
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.00383,
+                  "observedRate": 0.00634,
+                  "absoluteGap": 0.00251,
+                  "observedRateWilson95CI": [
+                    0.00271,
+                    0.01475
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00458,
+                  "observedRate": 0.00381,
+                  "absoluteGap": 0.00077,
+                  "observedRateWilson95CI": [
+                    0.0013,
+                    0.01113
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00537,
+                  "observedRate": 0.00254,
+                  "absoluteGap": 0.00283,
+                  "observedRateWilson95CI": [
+                    0.0007,
+                    0.00921
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00626,
+                  "observedRate": 0.00761,
+                  "absoluteGap": 0.00136,
+                  "observedRateWilson95CI": [
+                    0.00349,
+                    0.01651
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00738,
+                  "observedRate": 0.01015,
+                  "absoluteGap": 0.00277,
+                  "observedRateWilson95CI": [
+                    0.00515,
+                    0.0199
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00892,
+                  "observedRate": 0.00761,
+                  "absoluteGap": 0.0013,
+                  "observedRateWilson95CI": [
+                    0.00349,
+                    0.01651
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.01163,
+                  "observedRate": 0.01015,
+                  "absoluteGap": 0.00148,
+                  "observedRateWilson95CI": [
+                    0.00515,
+                    0.0199
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.02314,
+                  "observedRate": 0.02284,
+                  "absoluteGap": 0.0003,
+                  "observedRateWilson95CI": [
+                    0.0145,
+                    0.03582
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.00157,
+              "maximumCalibrationError": 0.00283,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            },
+            "under": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.97687,
+                  "observedRate": 0.97719,
+                  "absoluteGap": 0.00031,
+                  "observedRateWilson95CI": [
+                    0.96423,
+                    0.98552
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.98838,
+                  "observedRate": 0.98986,
+                  "absoluteGap": 0.00148,
+                  "observedRateWilson95CI": [
+                    0.98012,
+                    0.99485
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.99109,
+                  "observedRate": 0.9924,
+                  "absoluteGap": 0.00131,
+                  "observedRateWilson95CI": [
+                    0.98351,
+                    0.99651
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99262,
+                  "observedRate": 0.98985,
+                  "absoluteGap": 0.00277,
+                  "observedRateWilson95CI": [
+                    0.9801,
+                    0.99485
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99375,
+                  "observedRate": 0.99239,
+                  "absoluteGap": 0.00136,
+                  "observedRateWilson95CI": [
+                    0.98349,
+                    0.99651
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99463,
+                  "observedRate": 0.99746,
+                  "absoluteGap": 0.00283,
+                  "observedRateWilson95CI": [
+                    0.99079,
+                    0.9993
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99542,
+                  "observedRate": 0.99619,
+                  "absoluteGap": 0.00077,
+                  "observedRateWilson95CI": [
+                    0.98887,
+                    0.9987
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99617,
+                  "observedRate": 0.99365,
+                  "absoluteGap": 0.00252,
+                  "observedRateWilson95CI": [
+                    0.98523,
+                    0.99729
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99697,
+                  "observedRate": 0.99746,
+                  "absoluteGap": 0.0005,
+                  "observedRateWilson95CI": [
+                    0.99079,
+                    0.9993
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99816,
+                  "observedRate": 1.0,
+                  "absoluteGap": 0.00184,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.00157,
+              "maximumCalibrationError": 0.00283,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            }
+          },
+          {
+            "line": 10.5,
+            "over": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.00055,
+                  "observedRate": 0.0,
+                  "absoluteGap": 0.00055,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.00096,
+                  "observedRate": 0.00127,
+                  "absoluteGap": 0.00031,
+                  "observedRateWilson95CI": [
+                    0.00022,
+                    0.00714
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.00125,
+                  "observedRate": 0.0,
+                  "absoluteGap": 0.00125,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00153,
+                  "observedRate": 0.0,
+                  "absoluteGap": 0.00153,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00184,
+                  "observedRate": 0.00127,
+                  "absoluteGap": 0.00057,
+                  "observedRateWilson95CI": [
+                    0.00022,
+                    0.00715
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00219,
+                  "observedRate": 0.00254,
+                  "absoluteGap": 0.00035,
+                  "observedRateWilson95CI": [
+                    0.0007,
+                    0.00921
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00264,
+                  "observedRate": 0.00254,
+                  "absoluteGap": 0.0001,
+                  "observedRateWilson95CI": [
+                    0.0007,
+                    0.00921
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00328,
+                  "observedRate": 0.00381,
+                  "absoluteGap": 0.00053,
+                  "observedRateWilson95CI": [
+                    0.0013,
+                    0.01113
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00444,
+                  "observedRate": 0.00254,
+                  "absoluteGap": 0.00191,
+                  "observedRateWilson95CI": [
+                    0.0007,
+                    0.00921
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00997,
+                  "observedRate": 0.00761,
+                  "absoluteGap": 0.00235,
+                  "observedRateWilson95CI": [
+                    0.00349,
+                    0.01651
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.00094,
+              "maximumCalibrationError": 0.00235,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            },
+            "under": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.99004,
+                  "observedRate": 0.9924,
+                  "absoluteGap": 0.00236,
+                  "observedRateWilson95CI": [
+                    0.98351,
+                    0.99651
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.99556,
+                  "observedRate": 0.99747,
+                  "absoluteGap": 0.00191,
+                  "observedRateWilson95CI": [
+                    0.99081,
+                    0.9993
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.99672,
+                  "observedRate": 0.9962,
+                  "absoluteGap": 0.00053,
+                  "observedRateWilson95CI": [
+                    0.98888,
+                    0.99871
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99736,
+                  "observedRate": 0.99746,
+                  "absoluteGap": 0.0001,
+                  "observedRateWilson95CI": [
+                    0.99079,
+                    0.9993
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99781,
+                  "observedRate": 0.99746,
+                  "absoluteGap": 0.00035,
+                  "observedRateWilson95CI": [
+                    0.99079,
+                    0.9993
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99816,
+                  "observedRate": 0.99873,
+                  "absoluteGap": 0.00057,
+                  "observedRateWilson95CI": [
+                    0.99285,
+                    0.99978
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99847,
+                  "observedRate": 1.0,
+                  "absoluteGap": 0.00153,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99875,
+                  "observedRate": 1.0,
+                  "absoluteGap": 0.00125,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99904,
+                  "observedRate": 0.99873,
+                  "absoluteGap": 0.00031,
+                  "observedRateWilson95CI": [
+                    0.99285,
+                    0.99978
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99945,
+                  "observedRate": 1.0,
+                  "absoluteGap": 0.00055,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.00095,
+              "maximumCalibrationError": 0.00236,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            }
+          },
+          {
+            "line": 11.5,
+            "over": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.00015,
+                  "observedRate": 0.0,
+                  "absoluteGap": 0.00015,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.00028,
+                  "observedRate": 0.0,
+                  "absoluteGap": 0.00028,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.00038,
+                  "observedRate": 0.0,
+                  "absoluteGap": 0.00038,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00048,
+                  "observedRate": 0.0,
+                  "absoluteGap": 0.00048,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00059,
+                  "observedRate": 0.0,
+                  "absoluteGap": 0.00059,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00071,
+                  "observedRate": 0.0,
+                  "absoluteGap": 0.00071,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00088,
+                  "observedRate": 0.00127,
+                  "absoluteGap": 0.00039,
+                  "observedRateWilson95CI": [
+                    0.00022,
+                    0.00715
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00112,
+                  "observedRate": 0.00381,
+                  "absoluteGap": 0.00268,
+                  "observedRateWilson95CI": [
+                    0.0013,
+                    0.01113
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00158,
+                  "observedRate": 0.00127,
+                  "absoluteGap": 0.00031,
+                  "observedRateWilson95CI": [
+                    0.00022,
+                    0.00715
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00403,
+                  "observedRate": 0.00381,
+                  "absoluteGap": 0.00022,
+                  "observedRateWilson95CI": [
+                    0.0013,
+                    0.01113
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.00062,
+              "maximumCalibrationError": 0.00268,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            },
+            "under": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.99597,
+                  "observedRate": 0.9962,
+                  "absoluteGap": 0.00022,
+                  "observedRateWilson95CI": [
+                    0.98888,
+                    0.99871
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.99842,
+                  "observedRate": 0.99873,
+                  "absoluteGap": 0.00032,
+                  "observedRateWilson95CI": [
+                    0.99286,
+                    0.99978
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.99888,
+                  "observedRate": 0.9962,
+                  "absoluteGap": 0.00268,
+                  "observedRateWilson95CI": [
+                    0.98888,
+                    0.99871
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99912,
+                  "observedRate": 0.99873,
+                  "absoluteGap": 0.00039,
+                  "observedRateWilson95CI": [
+                    0.99285,
+                    0.99978
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99929,
+                  "observedRate": 1.0,
+                  "absoluteGap": 0.00071,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99942,
+                  "observedRate": 1.0,
+                  "absoluteGap": 0.00058,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99952,
+                  "observedRate": 1.0,
+                  "absoluteGap": 0.00048,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99962,
+                  "observedRate": 1.0,
+                  "absoluteGap": 0.00038,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99972,
+                  "observedRate": 1.0,
+                  "absoluteGap": 0.00028,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99985,
+                  "observedRate": 1.0,
+                  "absoluteGap": 0.00015,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.00062,
+              "maximumCalibrationError": 0.00268,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            }
+          },
+          {
+            "line": 12.5,
+            "over": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 4e-05,
+                  "observedRate": 0.0,
+                  "absoluteGap": 4e-05,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 8e-05,
+                  "observedRate": 0.0,
+                  "absoluteGap": 8e-05,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.00011,
+                  "observedRate": 0.0,
+                  "absoluteGap": 0.00011,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00014,
+                  "observedRate": 0.0,
+                  "absoluteGap": 0.00014,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00017,
+                  "observedRate": 0.0,
+                  "absoluteGap": 0.00017,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00022,
+                  "observedRate": 0.0,
+                  "absoluteGap": 0.00022,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00027,
+                  "observedRate": 0.0,
+                  "absoluteGap": 0.00027,
+                  "observedRateWilson95CI": [
+                    0.0,
+                    0.00485
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00036,
+                  "observedRate": 0.00127,
+                  "absoluteGap": 0.00091,
+                  "observedRateWilson95CI": [
+                    0.00022,
+                    0.00715
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00053,
+                  "observedRate": 0.00127,
+                  "absoluteGap": 0.00074,
+                  "observedRateWilson95CI": [
+                    0.00022,
+                    0.00715
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.00154,
+                  "observedRate": 0.00254,
+                  "absoluteGap": 0.001,
+                  "observedRateWilson95CI": [
+                    0.0007,
+                    0.00921
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.00037,
+              "maximumCalibrationError": 0.001,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            },
+            "under": {
+              "bins": [
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.99846,
+                  "observedRate": 0.99747,
+                  "absoluteGap": 0.001,
+                  "observedRateWilson95CI": [
+                    0.99081,
+                    0.9993
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.99947,
+                  "observedRate": 0.99873,
+                  "absoluteGap": 0.00074,
+                  "observedRateWilson95CI": [
+                    0.99286,
+                    0.99978
+                  ]
+                },
+                {
+                  "matches": 789,
+                  "meanPredicted": 0.99964,
+                  "observedRate": 0.99873,
+                  "absoluteGap": 0.00091,
+                  "observedRateWilson95CI": [
+                    0.99286,
+                    0.99978
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99973,
+                  "observedRate": 1.0,
+                  "absoluteGap": 0.00027,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99978,
+                  "observedRate": 1.0,
+                  "absoluteGap": 0.00022,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99983,
+                  "observedRate": 1.0,
+                  "absoluteGap": 0.00017,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99986,
+                  "observedRate": 1.0,
+                  "absoluteGap": 0.00014,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99989,
+                  "observedRate": 1.0,
+                  "absoluteGap": 0.00011,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99992,
+                  "observedRate": 1.0,
+                  "absoluteGap": 8e-05,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                },
+                {
+                  "matches": 788,
+                  "meanPredicted": 0.99996,
+                  "observedRate": 1.0,
+                  "absoluteGap": 4e-05,
+                  "observedRateWilson95CI": [
+                    0.99515,
+                    1.0
+                  ]
+                }
+              ],
+              "expectedCalibrationError": 0.00037,
+              "maximumCalibrationError": 0.001,
+              "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."
+            }
+          }
+        ]
+      },
       "significanceLevel": 0.05,
       "interpretation": "Negative NB2-minus-Poisson loss differences favor NB2. Holm-adjusted p below 0.05 indicates evidence of a difference after correcting the six line comparisons; confidence intervals crossing zero indicate uncertainty."
     }
