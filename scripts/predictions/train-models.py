@@ -305,7 +305,7 @@ def walk_forward_validation(rows, target, eligible_flag, lines=CORNERS_LINES):
             1e-6,
         )
         fold_line_scores = []
-        for line_index, line in enumerate(lines)
+        for line_index, line in enumerate(lines):
             actual = (y_test > line).astype(float)
             p = poisson.sf(int(line), pred)
             q = negative_binomial_sf(line, pred, alpha)
@@ -347,7 +347,7 @@ def walk_forward_validation(rows, target, eligible_flag, lines=CORNERS_LINES):
 
     comparisons = []
     brier_p_values, log_p_values = [], []
-    for index, line in enumerate(lines)
+    for index, line in enumerate(lines):
         values = pooled[line]
         actual = np.asarray(values["actual"], dtype=float)
         p = np.asarray(values["poisson"], dtype=float)
