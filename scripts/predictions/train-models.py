@@ -266,6 +266,7 @@ def walk_forward_validation(rows, target, eligible_flag):
     ]
     pooled = {line: {"actual": [], "poisson": [], "nb": []} for line in LINES}
     folds = []
+    fold_coefficients = []
     for fold_index, start_date in enumerate(fold_starts):
         end_date = fold_starts[fold_index + 1] if fold_index + 1 < len(fold_starts) else None
         train = [r for r in usable if date.fromisoformat(r["date"]) < start_date]
@@ -294,6 +295,8 @@ def walk_forward_validation(rows, target, eligible_flag):
         model.fit(x_train, y_train)
         pred = np.maximum(model.predict(x_test), 1e-8)
         train_mean = np.maximum(model.predict(x_train), 1e-8)
+        raw_coef, raw_intercept = raw_scale_coefficients(model)
+        fold_coefficients.append({"seasonStart": start_date.isoformat(), "coefficients": raw_coef.tolist(), "intercept": raw_intercept})
         alpha = max(
             float(np.sum((y_train - train_mean) ** 2 - train_mean)
                   / np.sum(train_mean ** 2)),
@@ -311,6 +314,8 @@ def walk_forward_validation(rows, target, eligible_flag):
                 "line": line,
                 "poisson": probability_metrics(actual, p),
                 "negativeBinomial": probability_metrics(actual, q),
+                "poissonCalibration": calibration_diagnostics(actual, p),
+                "negativeBinomialCalibration": calibration_diagnostics(actual, q),
             })
         folds.append({
             "seasonStart": start_date.isoformat(),
@@ -321,6 +326,8 @@ def walk_forward_validation(rows, target, eligible_flag):
             "testFrom": min(r["date"] for r in test),
             "testThrough": max(r["date"] for r in test),
             "negativeBinomialAlpha": round(float(alpha), 8),
+            "rawCoefficients": [round(float(v), 8) for v in raw_coef],
+            "rawIntercept": round(float(raw_intercept), 8),
             "lineScores": fold_line_scores,
             "pointMetrics": {
                 "poissonMae": round(float(np.mean(np.abs(y_test - pred))), 5),
@@ -368,6 +375,7 @@ def walk_forward_validation(rows, target, eligible_flag):
         "evaluatedFolds": evaluated_folds,
         "pooledTestRows": len(pooled[LINES[0]]["actual"]),
         "pooledComparisons": comparisons,
+        "coefficientStability": coefficient_stability(fold_coefficients),
         "significanceLevel": 0.05,
         "interpretation": "Negative NB2-minus-Poisson loss differences favor NB2. Holm-adjusted p below 0.05 indicates evidence of a difference after correcting the six line comparisons; confidence intervals crossing zero indicate uncertainty.",
     }
@@ -432,6 +440,10 @@ def train_market(rows, target, eligible_flag, baseline_key):
         "byLeague": grouped_metrics(test, y_test, pred, baseline, "league"),
         "bySeason": grouped_metrics(test, y_test, pred, baseline, "season"),
         "walkForward": walk_forward_validation(rows, target, eligible_flag),
+        "calibrationDiagnostics": {
+            "poisson": [{"line": line, "over": calibration_diagnostics((y_test > line).astype(float), poisson.sf(int(line), pred)), "under": calibration_diagnostics((y_test <= line).astype(float), poisson.cdf(int(line), pred))} for line in LINES],
+            "negativeBinomial": [{"line": line, "over": calibration_diagnostics((y_test > line).astype(float), negative_binomial_sf(line, pred, pearson_alpha)), "under": calibration_diagnostics((y_test <= line).astype(float), 1.0-negative_binomial_sf(line, pred, pearson_alpha))} for line in LINES],
+        },
         "distributionComparison": {
             "calibrationBands": {
                 "poisson": calibration_probability_bands(y_test, pred, pearson_alpha, "poisson"),
