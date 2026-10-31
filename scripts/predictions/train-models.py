@@ -167,7 +167,7 @@ def calibration_probability_bands(y, mean, alpha, distribution):
     return output
 
 
-def paired_permutation_pvalue(actual, p_poisson, p_nb, loss="brier", seed=20261031, samples=5000):
+def paired_permutation_pvalue(actual, p_poisson, p_nb, loss="brier", seed=20261031, samples=1999):
     """Two-sided paired sign-flip test for NB2-minus-Poisson per-match loss."""
     y = np.asarray(actual, dtype=float)
     p = np.clip(np.asarray(p_poisson, dtype=float), 1e-8, 1 - 1e-8)
