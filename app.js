@@ -157,7 +157,7 @@ function bestMarket(item) {
 function setSummaryHeaders(isSummary) {
   const headers = [...$('predictions-table').querySelectorAll('thead th')];
   const normalLabels = ['Дата и время', 'Лига', 'Хозяева', 'Гости', 'Вер. исхода (П1/X/П2)', '1X (П1 или X)', '12 (П1 или П2)', 'X2 (X или П2)', 'ТБ (голы)', 'ТМ (голы)', 'Результат матча'];
-  const summaryLabels = ['Дата и время', 'Лига', 'Хозяева', 'Гости', 'BSD', 'SStats', 'Euro365', 'FB_DATA', 'Api-Football', '', ''];
+  const summaryLabels = ['Дата и время', 'Лига', 'Хозяева', 'Гости', 'BSD', 'SStats', 'Euro365', 'FB_DATA', '', ''];
   headers.forEach((header, index) => {
     header.textContent = isSummary ? summaryLabels[index] : normalLabels[index];
     header.style.display = isSummary && index >= 9 ? 'none' : '';
