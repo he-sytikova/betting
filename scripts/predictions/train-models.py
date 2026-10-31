@@ -18,7 +18,9 @@ ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "data" / "corners_cards_training.csv"
 OUT = ROOT / "data" / "corners_cards_model_report.json"
 HOLDOUT_START = date(2024, 7, 1)
-LINES = [7.5, 8.5, 9.5, 10.5, 11.5, 12.5]
+CORNERS_LINES = [7.5, 8.5, 9.5, 10.5, 11.5, 12.5]
+YELLOW_CARD_LINES = [0.5, 1.5, 2.5, 3.5, 4.5, 5.5]
+LINES_BY_MARKET = {"corners": CORNERS_LINES, "yellowCards": YELLOW_CARD_LINES}
 FEATURES = [
     "home_team_for_avg5", "home_team_against_avg5",
     "home_team_for_avg10", "home_team_against_avg10",
@@ -121,9 +123,9 @@ def negative_binomial_sf(line, mean, alpha):
     probability = size / (size + mean)
     return nbinom.sf(int(line), size, probability)
 
-def evaluate_lines(y, prediction, distribution="poisson", alpha=None):
+def evaluate_lines(y, prediction, distribution="poisson", alpha=None, lines=CORNERS_LINES):
     results = []
-    for line in LINES:
+    for line in lines
         # For half-point lines there is no push: over means integer total > line.
         over_actual = (y > line).astype(float)
         if distribution == "negative_binomial":
@@ -147,7 +149,7 @@ def evaluate_lines(y, prediction, distribution="poisson", alpha=None):
         })
     return results
 
-def grouped_metrics(rows, y, pred, baseline, group_key, min_rows=100, distribution="poisson", alpha=None):
+def grouped_metrics(rows, y, pred, baseline, group_key, min_rows=100, distribution="poisson", alpha=None, lines=CORNERS_LINES):
     groups = {}
     keys = sorted({r.get(group_key, "") for r in rows if r.get(group_key, "")})
     for key in keys:
@@ -162,8 +164,8 @@ def grouped_metrics(rows, y, pred, baseline, group_key, min_rows=100, distributi
             "baselineMae": round(float(np.mean(np.abs(gy - gb))), 4),
             "poissonDeviance": round(poisson_deviance(gy, gp), 4),
             "baselinePoissonDeviance": round(poisson_deviance(gy, gb), 4),
-            "totalLines": evaluate_lines(gy, gp, distribution, alpha),
-            "baselineTotalLines": evaluate_lines(gy, gb),
+            "totalLines": evaluate_lines(gy, gp, distribution, alpha, lines),
+            "baselineTotalLines": evaluate_lines(gy, gb, lines=lines)
             "actualMean": round(float(np.mean(gy)), 4),
             "actualVariance": round(float(np.var(gy)), 4),
             "varianceToMean": round(float(np.var(gy) / np.mean(gy)), 4) if np.mean(gy) > 0 else None,
@@ -199,10 +201,10 @@ def paired_bootstrap_ci(actual, p_poisson, p_nb, seed=20261031, samples=1000):
     }
 
 
-def calibration_probability_bands(y, mean, alpha, distribution):
+def calibration_probability_bands(y, mean, alpha, distribution, lines=CORNERS_LINES):
     output = []
     y = np.asarray(y, dtype=float)
-    for line in LINES:
+    for line in lines
         actual = (y > line).astype(float)
         if distribution == "negative_binomial":
             probability = negative_binomial_sf(line, mean, alpha)
@@ -257,14 +259,14 @@ def holm_adjust(p_values):
     return [float(x) for x in adjusted]
 
 
-def walk_forward_validation(rows, target, eligible_flag):
+def walk_forward_validation(rows, target, eligible_flag, lines=CORNERS_LINES):
     """Refit on all data before each season; test only on that season."""
     usable = [r for r in rows if r[eligible_flag] == "1" and r[target] != ""]
     fold_starts = [
         date(2023, 7, 1), date(2024, 7, 1),
         date(2025, 7, 1), date(2026, 7, 1),
     ]
-    pooled = {line: {"actual": [], "poisson": [], "nb": []} for line in LINES}
+    pooled = {line: {"actual": [], "poisson": [], "nb": []} for line in lines}
     folds = []
     fold_coefficients = []
     for fold_index, start_date in enumerate(fold_starts):
@@ -303,7 +305,7 @@ def walk_forward_validation(rows, target, eligible_flag):
             1e-6,
         )
         fold_line_scores = []
-        for line_index, line in enumerate(LINES):
+        for line_index, line in enumerate(lines)
             actual = (y_test > line).astype(float)
             p = poisson.sf(int(line), pred)
             q = negative_binomial_sf(line, pred, alpha)
@@ -345,7 +347,7 @@ def walk_forward_validation(rows, target, eligible_flag):
 
     comparisons = []
     brier_p_values, log_p_values = [], []
-    for index, line in enumerate(LINES):
+    for index, line in enumerate(lines)
         values = pooled[line]
         actual = np.asarray(values["actual"], dtype=float)
         p = np.asarray(values["poisson"], dtype=float)
@@ -373,7 +375,7 @@ def walk_forward_validation(rows, target, eligible_flag):
         "method": "Expanding-window seasonal walk-forward; refit each fold using only earlier matches; paired two-sided sign-flip permutation tests; Holm correction applied across six lines separately for Brier and Log Loss.",
         "folds": folds,
         "evaluatedFolds": evaluated_folds,
-        "pooledTestRows": len(pooled[LINES[0]]["actual"]),
+        "pooledTestRows": len(pooled[lines[0]]["actual"])
         "pooledComparisons": comparisons,
         "coefficientStability": coefficient_stability(fold_coefficients),
         "significanceLevel": 0.05,
@@ -390,7 +392,7 @@ def make_poisson_pipeline(feature_count=None):
     ])
 
 
-def feature_ablation_diagnostics(x_train, x_test, y_train, y_test):
+def feature_ablation_diagnostics(x_train, x_test, y_train, y_test, lines=CORNERS_LINES):
     """Drop-one refits and holdout permutation importance; all transforms fit on train only."""
     def fit_score(train_x, test_x):
         candidate = make_poisson_pipeline()
@@ -403,7 +405,7 @@ def feature_ablation_diagnostics(x_train, x_test, y_train, y_test):
                 "line": line,
                 "overBrier": probability_metrics((y_test > line).astype(float), poisson.sf(int(line), prediction))["brierScore"],
                 "overLogLoss": probability_metrics((y_test > line).astype(float), poisson.sf(int(line), prediction))["logLoss"],
-            } for line in LINES],
+            } for line in lines],
         }
 
     full_model, full = fit_score(x_train, x_test)
@@ -455,6 +457,7 @@ def feature_ablation_diagnostics(x_train, x_test, y_train, y_test):
 
 def feature_variant_training(rows, target, eligible_flag, market):
     """Compare full, reduced and compact feature sets on chronological periods."""
+    lines = LINES_BY_MARKET[market]
     removable = {
         "corners": {"home_team_for_avg5", "away_team_against_avg5", "away_team_for_avg5"},
         "yellowCards": {"home_card_team_for_avg5", "home_team_against_avg10",
@@ -501,7 +504,7 @@ def feature_variant_training(rows, target, eligible_flag, market):
             model.fit(x_train, y_train)
             pred = np.maximum(model.predict(x_test), 1e-8)
             line_calibration = []
-            for line in LINES:
+            for line in lines:
                 actual = (y_test > line).astype(float)
                 probability = poisson.sf(int(line), pred)
                 cal = calibration_diagnostics(actual, probability)
@@ -535,7 +538,7 @@ def feature_variant_training(rows, target, eligible_flag, market):
 
 
 
-def train_market(rows, target, eligible_flag, baseline_key):
+def train_market(rows, target, eligible_flag, baseline_key, market_lines):
     usable = [r for r in rows if r[eligible_flag] == "1" and r[target] != ""]
     train = [r for r in usable if date.fromisoformat(r["date"]) < HOLDOUT_START]
     test = [r for r in usable if date.fromisoformat(r["date"]) >= HOLDOUT_START]
@@ -552,7 +555,7 @@ def train_market(rows, target, eligible_flag, baseline_key):
     ])
     model.fit(x_train, y_train)
     pred = np.maximum(model.predict(x_test), 1e-8)
-    feature_diagnostics = feature_ablation_diagnostics(x_train, x_test, y_train, y_test)
+    feature_diagnostics = feature_ablation_diagnostics(x_train, x_test, y_train, y_test, market_lines)
     poisson_train_mean = np.maximum(model.predict(x_train), 1e-8)
     pearson_alpha = max(
         float(np.sum((y_train - poisson_train_mean) ** 2 - poisson_train_mean)
@@ -585,26 +588,26 @@ def train_market(rows, target, eligible_flag, baseline_key):
             "improvesMaeOverBaseline": mae < base_mae,
             "improvesPoissonDevianceOverBaseline": poisson_deviance(y_test, pred) < poisson_deviance(y_test, baseline),
         },
-        "totalLines": evaluate_lines(y_test, pred),
-        "baselineTotalLines": evaluate_lines(y_test, baseline),
+        "totalLines": evaluate_lines(y_test, pred, lines=market_lines),
+        "baselineTotalLines": evaluate_lines(y_test, baseline, lines=market_lines)
         "dispersion": {
             "actualMean": round(float(np.mean(y_test)), 4),
             "actualVariance": round(float(np.var(y_test)), 4),
             "varianceToMean": round(float(np.var(y_test) / np.mean(y_test)), 4) if np.mean(y_test) > 0 else None,
         },
-        "byLeague": grouped_metrics(test, y_test, pred, baseline, "league"),
-        "bySeason": grouped_metrics(test, y_test, pred, baseline, "season"),
-        "walkForward": walk_forward_validation(rows, target, eligible_flag),
+        "byLeague": grouped_metrics(test, y_test, pred, baseline, "league", lines=market_lines),
+        "bySeason": grouped_metrics(test, y_test, pred, baseline, "season", lines=market_lines),
+        "walkForward": walk_forward_validation(rows, target, eligible_flag, market_lines)
         "featureDiagnostics": feature_diagnostics,
         "featureVariantTraining": feature_variant_training(rows, target, eligible_flag, "corners" if target == "corners_total" else "yellowCards"),
         "calibrationDiagnostics": {
-            "poisson": [{"line": line, "over": calibration_diagnostics((y_test > line).astype(float), poisson.sf(int(line), pred)), "under": calibration_diagnostics((y_test <= line).astype(float), poisson.cdf(int(line), pred))} for line in LINES],
-            "negativeBinomial": [{"line": line, "over": calibration_diagnostics((y_test > line).astype(float), negative_binomial_sf(line, pred, pearson_alpha)), "under": calibration_diagnostics((y_test <= line).astype(float), 1.0-negative_binomial_sf(line, pred, pearson_alpha))} for line in LINES],
+            "poisson": [{"line": line, "over": calibration_diagnostics((y_test > line).astype(float), poisson.sf(int(line), pred)), "under": calibration_diagnostics((y_test <= line).astype(float), poisson.cdf(int(line), pred))} for line in market_lines],
+            "negativeBinomial": [{"line": line, "over": calibration_diagnostics((y_test > line).astype(float), negative_binomial_sf(line, pred, pearson_alpha)), "under": calibration_diagnostics((y_test <= line).astype(float), 1.0-negative_binomial_sf(line, pred, pearson_alpha))} for line in market_lines],
         },
         "distributionComparison": {
             "calibrationBands": {
-                "poisson": calibration_probability_bands(y_test, pred, pearson_alpha, "poisson"),
-                "negativeBinomial": calibration_probability_bands(y_test, pred, pearson_alpha, "negative_binomial"),
+                "poisson": calibration_probability_bands(y_test, pred, pearson_alpha, "poisson", market_lines),
+                "negativeBinomial": calibration_probability_bands(y_test, pred, pearson_alpha, "negative_binomial", market_lines),
             },
             "pairedBootstrapByLine": [
                 {
@@ -616,8 +619,8 @@ def train_market(rows, target, eligible_flag, baseline_key):
                         seed=20261031 + index,
                     ),
                 }
-                for index, line in enumerate(LINES)
-            ],
+                for index, line in enumerate(market_lines)
+            ]
         },
         "negativeBinomial": {
             "status": "evaluated",
@@ -629,9 +632,9 @@ def train_market(rows, target, eligible_flag, baseline_key):
                 "improvesMaeOverPoisson": float(np.mean(np.abs(y_test - nb_pred))) < mae,
                 "improvesDevianceOverPoisson": poisson_deviance(y_test, nb_pred) < poisson_deviance(y_test, pred),
             },
-            "totalLines": evaluate_lines(y_test, nb_pred, "negative_binomial", pearson_alpha),
-            "byLeague": grouped_metrics(test, y_test, nb_pred, baseline, "league", distribution="negative_binomial", alpha=pearson_alpha),
-            "bySeason": grouped_metrics(test, y_test, nb_pred, baseline, "season", distribution="negative_binomial", alpha=pearson_alpha),
+            "totalLines": evaluate_lines(y_test, nb_pred, "negative_binomial", pearson_alpha, market_lines),
+            "byLeague": grouped_metrics(test, y_test, nb_pred, baseline, "league", distribution="negative_binomial", alpha=pearson_alpha, lines=market_lines),
+            "bySeason": grouped_metrics(test, y_test, nb_pred, baseline, "league", distribution="negative_binomial", alpha=pearson_alpha, lines=market_lines)
         },
         "model": {
             "type": "PoissonRegressor",
@@ -656,9 +659,10 @@ def main():
         "method": "Poisson mean model with Poisson vs Negative Binomial comparison on a chronological holdout and expanding-window seasonal walk-forward folds; dispersion estimated from training-only Pearson residuals",
         "holdoutStart": HOLDOUT_START.isoformat(),
         "datasetRows": len(rows),
-        "evaluatedLines": LINES,
-        "corners": train_market(rows, "corners_total", "corners_model_eligible", "league_corners_avg"),
-        "yellowCards": train_market(rows, "cards_total", "cards_model_eligible", "league_cards_avg"),
+        "evaluatedLines": CORNERS_LINES,
+        "evaluatedLinesByMarket": LINES_BY_MARKET,
+        "corners": train_market(rows, "corners_total", "corners_model_eligible", "league_corners_avg", CORNERS_LINES),
+        "yellowCards": train_market(rows, "cards_total", "cards_model_eligible", "league_cards_avg", YELLOW_CARD_LINES)
         "note": "Calibration and line metrics are descriptive diagnostics, not proof of betting value. Walk-forward tests refit each season using only prior matches; Holm-adjusted paired tests correct six line comparisons separately for Brier and Log Loss. No ROI is calculated because historical bookmaker odds are unavailable. Production use requires odds-aware validation and market-specific calibration.",
     }
     OUT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
