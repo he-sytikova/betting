@@ -175,10 +175,10 @@ def audit_football_data():
             except (urllib.error.URLError, TimeoutError, OSError) as exc:
                 errors.append({"league_code": code, "season": season, "error": str(exc)[:120]})
             time.sleep(0.03)
-    for item in aggregate.values():
+    for code, item in aggregate.items():
+        item["code"] = code
         item["corners_coverage"] = round(item["corners_complete"] / item["matches"], 4) if item["matches"] else 0
         item["cards_coverage"] = round(item["yellow_cards_complete"] / item["matches"], 4) if item["matches"] else 0
-        code = next(k for k, v in aggregate.items() if v is item)
         teams = []
         for (team_code, team), stats in team_stats.items():
             if team_code != code:
