@@ -19,16 +19,30 @@ Audit date: 2026-10-31
 5. **No odds-aware backtest.** Historical bookmaker prices are not stored, so the current research report cannot establish ROI, closing-line value (CLV), or whether a model edge survives bookmaker margin.
 6. **Source constraints.** The open-matchday repository is marked non-commercial with attribution required in the audit metadata. Any future training use must respect its license terms.
 
-## Validation status before this correction
+## Corrected validation results
 
-The existing walk-forward report covered three evaluated seasonal folds and 11,825 pooled test rows per market. Negative Binomial showed a small, statistically supported improvement over Poisson for corners at line 7.5 after the six-line Holm correction; most other corner-line comparisons were inconclusive. The previous card-line comparison is not relied upon because it used the wrong lines.
+The corrected walk-forward report covers three evaluated seasonal folds and 11,825 pooled test rows per market. Card totals are now evaluated on 0.5–5.5, matching the app.
+
+- **Corners:** NB2 improves probability loss over Poisson at line 7.5 after the six-line Holm correction (adjusted p = 0.015 for Brier and 0.009 for Log Loss). The other lines do not show a confirmed improvement after correction.
+- **Yellow cards:** NB2 is better at 0.5, 4.5, and 5.5; worse at 2.5 and 3.5; and inconclusive at 1.5. These differences pass the six-line Holm correction in the corresponding directions. This suggests distribution choice should be assessed by market line, not globally.
+
+## CatBoost candidate benchmark
+
+CatBoost Poisson was compared with a PoissonRegressor research baseline using the same 19 numeric features, the same chronological folds, and league as an additional categorical feature. This controlled algorithm comparison is **not** a direct comparison with the reduced feature set in the browser export.
+
+| Market | Poisson MAE | CatBoost MAE | Poisson deviance | CatBoost deviance |
+|---|---:|---:|---:|---:|
+| Corners | 2.709493 | 2.714260 | 1.175476 | 1.179015 |
+| Yellow cards | 1.596568 | 1.594611 | 1.156594 | 1.155529 |
+
+CatBoost is worse on corners. Its small point-metric improvement for cards is not accompanied by statistically confirmed Brier/Log Loss improvement after Holm correction. It remains research-only and is not selected for production.
 
 ## Next development sequence
 
-1. Re-run the existing report with the corrected market-specific lines and review yellow-card calibration at 0.5–5.5.
-2. Benchmark CatBoost Poisson against the existing Poisson mean model on identical chronological folds, keeping it research-only.
-3. Compare count error, Brier score, log loss, calibration, and stability by season and league before considering any candidate for production.
-4. Add new match features only when historical values can be reconstructed strictly as-of kickoff and coverage is adequate.
+1. Audit historical source coverage for referee, fouls, shots, shots on target, and red-card fields before changing the training dataset.
+2. Add only features that have sufficient historical coverage and can be reconstructed strictly as-of kickoff, with same-day matches excluded from prior form.
+3. Compare feature-augmented Poisson/NB2 and CatBoost on identical chronological folds; do not tune on the final evaluation folds.
+4. Evaluate line-specific distribution choice and calibration on the corrected card and corner lines.
 5. Build odds capture and an out-of-sample betting ledger before making claims about expected value, ROI, or CLV.
 
 ## Production safety
