@@ -320,15 +320,11 @@ def main():
             "pointMetrics": report["corners"].get("metrics", report["corners"]),
             "lineProbabilityScores": line_score_summary(report["corners"]),
             "distributionComparison": report["corners"].get("distributionComparison", {}),
-            "byLeague": report["corners"].get("byLeague", {}),
-            "bySeason": report["corners"].get("bySeason", {}),
         },
         "yellowCards": {
             "pointMetrics": report["yellowCards"].get("metrics", report["yellowCards"]),
             "lineProbabilityScores": line_score_summary(report["yellowCards"]),
             "distributionComparison": report["yellowCards"].get("distributionComparison", {}),
-            "byLeague": report["yellowCards"].get("byLeague", {}),
-            "bySeason": report["yellowCards"].get("bySeason", {}),
         },
     }, ensure_ascii=False, indent=2))
 
