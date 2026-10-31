@@ -202,12 +202,18 @@ def audit_football_data():
         item["cornersEligiblePreliminary"] = (
             item["corners_complete"] >= MIN_MATCHES and
             item["corners_coverage"] >= 0.80 and
-            bool(teams) and all(t["cornersAvailable"] >= MIN_TEAM_MATCHES for t in teams)
+            bool(teams) and all(
+                t["cornersAvailable"] >= MIN_TEAM_MATCHES and
+                t["recent10CornersCoverage"] >= 0.80 for t in teams
+            )
         )
         item["cardsEligiblePreliminary"] = (
             item["yellow_cards_complete"] >= MIN_MATCHES and
             item["cards_coverage"] >= 0.80 and
-            bool(teams) and all(t["cardsAvailable"] >= MIN_TEAM_MATCHES for t in teams)
+            bool(teams) and all(
+                t["cardsAvailable"] >= MIN_TEAM_MATCHES and
+                t["recent10CardsCoverage"] >= 0.80 for t in teams
+            )
         )
     return list(aggregate.values()), errors
 
