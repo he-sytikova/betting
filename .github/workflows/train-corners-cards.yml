@@ -29,6 +29,9 @@ jobs:
       - name: Install model dependencies
         run: python -m pip install --upgrade pip numpy scikit-learn
 
+      - name: Refresh data eligibility audit
+        run: python scripts/predictions/audit-data.py
+
       - name: Build leakage-safe historical dataset
         run: python scripts/predictions/build-dataset.py
 
