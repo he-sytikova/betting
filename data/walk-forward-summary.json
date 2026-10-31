@@ -1930,6 +1930,740 @@
         ],
         "interpretation": "Positive drop-one deltas mean removing the feature worsened the model; negative deltas mean removal improved it. Permutation increases measure predictive reliance, not causal importance. Correlated features can mask one another."
       },
+      "featureVariantTraining": {
+        "method": "Each feature set is refit using only matches before each chronological test period. Feature sets were selected from prior exploratory ablation/permutation diagnostics; comparisons are exploratory, not a fully untouched confirmatory test.",
+        "variants": {
+          "full": {
+            "featureCount": 19,
+            "features": [
+              "home_team_for_avg5",
+              "home_team_against_avg5",
+              "home_team_for_avg10",
+              "home_team_against_avg10",
+              "away_team_for_avg5",
+              "away_team_against_avg5",
+              "away_team_for_avg10",
+              "away_team_against_avg10",
+              "home_card_team_for_avg5",
+              "home_card_team_against_avg5",
+              "home_card_team_for_avg10",
+              "home_card_team_against_avg10",
+              "away_card_team_for_avg5",
+              "away_card_team_against_avg5",
+              "away_card_team_for_avg10",
+              "away_card_team_against_avg10",
+              "league_corners_avg",
+              "league_cards_avg",
+              "home_advantage"
+            ],
+            "evaluations": [
+              {
+                "period": "holdout_2024_07",
+                "status": "evaluated",
+                "trainRows": 34968,
+                "testRows": 7883,
+                "testFrom": "2024-08-03",
+                "testThrough": "2026-05-24",
+                "mae": 2.688845,
+                "poissonDeviance": 1.169596,
+                "lineCalibration": [
+                  {
+                    "line": 7.5,
+                    "brier": 0.189772,
+                    "logLoss": 0.567192,
+                    "ece": 0.02771,
+                    "mce": 0.05229
+                  },
+                  {
+                    "line": 8.5,
+                    "brier": 0.230642,
+                    "logLoss": 0.653757,
+                    "ece": 0.0254,
+                    "mce": 0.04023
+                  },
+                  {
+                    "line": 9.5,
+                    "brier": 0.247729,
+                    "logLoss": 0.688609,
+                    "ece": 0.01452,
+                    "mce": 0.04149
+                  },
+                  {
+                    "line": 10.5,
+                    "brier": 0.237479,
+                    "logLoss": 0.667765,
+                    "ece": 0.01438,
+                    "mce": 0.04526
+                  },
+                  {
+                    "line": 11.5,
+                    "brier": 0.205613,
+                    "logLoss": 0.600869,
+                    "ece": 0.01261,
+                    "mce": 0.02843
+                  },
+                  {
+                    "line": 12.5,
+                    "brier": 0.1646,
+                    "logLoss": 0.509862,
+                    "ece": 0.00901,
+                    "mce": 0.02068
+                  }
+                ]
+              },
+              {
+                "period": "walk_2023_24",
+                "status": "evaluated",
+                "trainRows": 31026,
+                "testRows": 3942,
+                "testFrom": "2023-08-04",
+                "testThrough": "2024-06-02",
+                "mae": 2.751733,
+                "poissonDeviance": 1.187563,
+                "lineCalibration": [
+                  {
+                    "line": 7.5,
+                    "brier": 0.173195,
+                    "logLoss": 0.529107,
+                    "ece": 0.02332,
+                    "mce": 0.06844
+                  },
+                  {
+                    "line": 8.5,
+                    "brier": 0.217659,
+                    "logLoss": 0.626594,
+                    "ece": 0.01868,
+                    "mce": 0.04656
+                  },
+                  {
+                    "line": 9.5,
+                    "brier": 0.244286,
+                    "logLoss": 0.681665,
+                    "ece": 0.01775,
+                    "mce": 0.03738
+                  },
+                  {
+                    "line": 10.5,
+                    "brier": 0.243682,
+                    "logLoss": 0.68035,
+                    "ece": 0.0197,
+                    "mce": 0.05143
+                  },
+                  {
+                    "line": 11.5,
+                    "brier": 0.220903,
+                    "logLoss": 0.633211,
+                    "ece": 0.02503,
+                    "mce": 0.06561
+                  },
+                  {
+                    "line": 12.5,
+                    "brier": 0.184395,
+                    "logLoss": 0.554585,
+                    "ece": 0.02563,
+                    "mce": 0.05728
+                  }
+                ]
+              },
+              {
+                "period": "walk_2024_25",
+                "status": "evaluated",
+                "trainRows": 34968,
+                "testRows": 3941,
+                "testFrom": "2024-08-03",
+                "testThrough": "2025-05-25",
+                "mae": 2.69417,
+                "poissonDeviance": 1.170671,
+                "lineCalibration": [
+                  {
+                    "line": 7.5,
+                    "brier": 0.189802,
+                    "logLoss": 0.566962,
+                    "ece": 0.02854,
+                    "mce": 0.03808
+                  },
+                  {
+                    "line": 8.5,
+                    "brier": 0.2318,
+                    "logLoss": 0.65605,
+                    "ece": 0.03037,
+                    "mce": 0.06619
+                  },
+                  {
+                    "line": 9.5,
+                    "brier": 0.247225,
+                    "logLoss": 0.687551,
+                    "ece": 0.02426,
+                    "mce": 0.06385
+                  },
+                  {
+                    "line": 10.5,
+                    "brier": 0.237009,
+                    "logLoss": 0.666866,
+                    "ece": 0.0201,
+                    "mce": 0.04539
+                  },
+                  {
+                    "line": 11.5,
+                    "brier": 0.20376,
+                    "logLoss": 0.596918,
+                    "ece": 0.01121,
+                    "mce": 0.02267
+                  },
+                  {
+                    "line": 12.5,
+                    "brier": 0.163493,
+                    "logLoss": 0.507047,
+                    "ece": 0.01192,
+                    "mce": 0.03019
+                  }
+                ]
+              },
+              {
+                "period": "walk_2025_26",
+                "status": "evaluated",
+                "trainRows": 38909,
+                "testRows": 3942,
+                "testFrom": "2025-08-01",
+                "testThrough": "2026-05-24",
+                "mae": 2.682571,
+                "poissonDeviance": 1.168192,
+                "lineCalibration": [
+                  {
+                    "line": 7.5,
+                    "brier": 0.189627,
+                    "logLoss": 0.567108,
+                    "ece": 0.02851,
+                    "mce": 0.0723
+                  },
+                  {
+                    "line": 8.5,
+                    "brier": 0.229383,
+                    "logLoss": 0.651251,
+                    "ece": 0.02203,
+                    "mce": 0.05586
+                  },
+                  {
+                    "line": 9.5,
+                    "brier": 0.24818,
+                    "logLoss": 0.689557,
+                    "ece": 0.02122,
+                    "mce": 0.06238
+                  },
+                  {
+                    "line": 10.5,
+                    "brier": 0.237917,
+                    "logLoss": 0.668594,
+                    "ece": 0.01721,
+                    "mce": 0.02993
+                  },
+                  {
+                    "line": 11.5,
+                    "brier": 0.207481,
+                    "logLoss": 0.60484,
+                    "ece": 0.01929,
+                    "mce": 0.04533
+                  },
+                  {
+                    "line": 12.5,
+                    "brier": 0.16573,
+                    "logLoss": 0.512731,
+                    "ece": 0.01238,
+                    "mce": 0.03716
+                  }
+                ]
+              },
+              {
+                "period": "walk_2026_27",
+                "status": "skipped_insufficient_data",
+                "trainRows": 42851,
+                "testRows": 0
+              }
+            ]
+          },
+          "reduced": {
+            "featureCount": 16,
+            "features": [
+              "home_team_against_avg5",
+              "home_team_for_avg10",
+              "home_team_against_avg10",
+              "away_team_for_avg10",
+              "away_team_against_avg10",
+              "home_card_team_for_avg5",
+              "home_card_team_against_avg5",
+              "home_card_team_for_avg10",
+              "home_card_team_against_avg10",
+              "away_card_team_for_avg5",
+              "away_card_team_against_avg5",
+              "away_card_team_for_avg10",
+              "away_card_team_against_avg10",
+              "league_corners_avg",
+              "league_cards_avg",
+              "home_advantage"
+            ],
+            "evaluations": [
+              {
+                "period": "holdout_2024_07",
+                "status": "evaluated",
+                "trainRows": 34968,
+                "testRows": 7883,
+                "testFrom": "2024-08-03",
+                "testThrough": "2026-05-24",
+                "mae": 2.685941,
+                "poissonDeviance": 1.167587,
+                "lineCalibration": [
+                  {
+                    "line": 7.5,
+                    "brier": 0.189566,
+                    "logLoss": 0.566562,
+                    "ece": 0.03024,
+                    "mce": 0.0492
+                  },
+                  {
+                    "line": 8.5,
+                    "brier": 0.230431,
+                    "logLoss": 0.653273,
+                    "ece": 0.02827,
+                    "mce": 0.04468
+                  },
+                  {
+                    "line": 9.5,
+                    "brier": 0.247359,
+                    "logLoss": 0.687851,
+                    "ece": 0.01475,
+                    "mce": 0.0239
+                  },
+                  {
+                    "line": 10.5,
+                    "brier": 0.237127,
+                    "logLoss": 0.667035,
+                    "ece": 0.01238,
+                    "mce": 0.03219
+                  },
+                  {
+                    "line": 11.5,
+                    "brier": 0.205361,
+                    "logLoss": 0.600268,
+                    "ece": 0.00817,
+                    "mce": 0.0281
+                  },
+                  {
+                    "line": 12.5,
+                    "brier": 0.164442,
+                    "logLoss": 0.509385,
+                    "ece": 0.01006,
+                    "mce": 0.01952
+                  }
+                ]
+              },
+              {
+                "period": "walk_2023_24",
+                "status": "evaluated",
+                "trainRows": 31026,
+                "testRows": 3942,
+                "testFrom": "2023-08-04",
+                "testThrough": "2024-06-02",
+                "mae": 2.750887,
+                "poissonDeviance": 1.187539,
+                "lineCalibration": [
+                  {
+                    "line": 7.5,
+                    "brier": 0.173381,
+                    "logLoss": 0.529608,
+                    "ece": 0.0223,
+                    "mce": 0.03764
+                  },
+                  {
+                    "line": 8.5,
+                    "brier": 0.217653,
+                    "logLoss": 0.626515,
+                    "ece": 0.01577,
+                    "mce": 0.02288
+                  },
+                  {
+                    "line": 9.5,
+                    "brier": 0.244315,
+                    "logLoss": 0.681694,
+                    "ece": 0.01409,
+                    "mce": 0.02755
+                  },
+                  {
+                    "line": 10.5,
+                    "brier": 0.243563,
+                    "logLoss": 0.680138,
+                    "ece": 0.01869,
+                    "mce": 0.05176
+                  },
+                  {
+                    "line": 11.5,
+                    "brier": 0.220679,
+                    "logLoss": 0.632783,
+                    "ece": 0.0229,
+                    "mce": 0.06108
+                  },
+                  {
+                    "line": 12.5,
+                    "brier": 0.184325,
+                    "logLoss": 0.554453,
+                    "ece": 0.02619,
+                    "mce": 0.06085
+                  }
+                ]
+              },
+              {
+                "period": "walk_2024_25",
+                "status": "evaluated",
+                "trainRows": 34968,
+                "testRows": 3941,
+                "testFrom": "2024-08-03",
+                "testThrough": "2025-05-25",
+                "mae": 2.691855,
+                "poissonDeviance": 1.168848,
+                "lineCalibration": [
+                  {
+                    "line": 7.5,
+                    "brier": 0.189694,
+                    "logLoss": 0.566607,
+                    "ece": 0.02888,
+                    "mce": 0.05187
+                  },
+                  {
+                    "line": 8.5,
+                    "brier": 0.231689,
+                    "logLoss": 0.655779,
+                    "ece": 0.03074,
+                    "mce": 0.054
+                  },
+                  {
+                    "line": 9.5,
+                    "brier": 0.246976,
+                    "logLoss": 0.687037,
+                    "ece": 0.02278,
+                    "mce": 0.05076
+                  },
+                  {
+                    "line": 10.5,
+                    "brier": 0.236705,
+                    "logLoss": 0.666235,
+                    "ece": 0.01708,
+                    "mce": 0.05005
+                  },
+                  {
+                    "line": 11.5,
+                    "brier": 0.203494,
+                    "logLoss": 0.596322,
+                    "ece": 0.00907,
+                    "mce": 0.02797
+                  },
+                  {
+                    "line": 12.5,
+                    "brier": 0.163314,
+                    "logLoss": 0.506585,
+                    "ece": 0.01006,
+                    "mce": 0.02264
+                  }
+                ]
+              },
+              {
+                "period": "walk_2025_26",
+                "status": "evaluated",
+                "trainRows": 38909,
+                "testRows": 3942,
+                "testFrom": "2025-08-01",
+                "testThrough": "2026-05-24",
+                "mae": 2.679415,
+                "poissonDeviance": 1.166256,
+                "lineCalibration": [
+                  {
+                    "line": 7.5,
+                    "brier": 0.189359,
+                    "logLoss": 0.566313,
+                    "ece": 0.03174,
+                    "mce": 0.07034
+                  },
+                  {
+                    "line": 8.5,
+                    "brier": 0.229107,
+                    "logLoss": 0.650631,
+                    "ece": 0.0306,
+                    "mce": 0.05925
+                  },
+                  {
+                    "line": 9.5,
+                    "brier": 0.247732,
+                    "logLoss": 0.688644,
+                    "ece": 0.02697,
+                    "mce": 0.05283
+                  },
+                  {
+                    "line": 10.5,
+                    "brier": 0.237556,
+                    "logLoss": 0.667846,
+                    "ece": 0.01833,
+                    "mce": 0.05246
+                  },
+                  {
+                    "line": 11.5,
+                    "brier": 0.207262,
+                    "logLoss": 0.604284,
+                    "ece": 0.02338,
+                    "mce": 0.04405
+                  },
+                  {
+                    "line": 12.5,
+                    "brier": 0.165608,
+                    "logLoss": 0.5123,
+                    "ece": 0.02203,
+                    "mce": 0.04184
+                  }
+                ]
+              },
+              {
+                "period": "walk_2026_27",
+                "status": "skipped_insufficient_data",
+                "trainRows": 42851,
+                "testRows": 0
+              }
+            ]
+          },
+          "compact": {
+            "featureCount": 6,
+            "features": [
+              "home_team_for_avg10",
+              "home_team_against_avg10",
+              "away_team_for_avg10",
+              "away_team_against_avg10",
+              "league_corners_avg",
+              "home_advantage"
+            ],
+            "evaluations": [
+              {
+                "period": "holdout_2024_07",
+                "status": "evaluated",
+                "trainRows": 34968,
+                "testRows": 7883,
+                "testFrom": "2024-08-03",
+                "testThrough": "2026-05-24",
+                "mae": 2.685321,
+                "poissonDeviance": 1.167096,
+                "lineCalibration": [
+                  {
+                    "line": 7.5,
+                    "brier": 0.189585,
+                    "logLoss": 0.566622,
+                    "ece": 0.02815,
+                    "mce": 0.04401
+                  },
+                  {
+                    "line": 8.5,
+                    "brier": 0.230396,
+                    "logLoss": 0.653188,
+                    "ece": 0.02611,
+                    "mce": 0.05283
+                  },
+                  {
+                    "line": 9.5,
+                    "brier": 0.247265,
+                    "logLoss": 0.687655,
+                    "ece": 0.01566,
+                    "mce": 0.04079
+                  },
+                  {
+                    "line": 10.5,
+                    "brier": 0.23704,
+                    "logLoss": 0.666852,
+                    "ece": 0.01238,
+                    "mce": 0.0369
+                  },
+                  {
+                    "line": 11.5,
+                    "brier": 0.205305,
+                    "logLoss": 0.600134,
+                    "ece": 0.01174,
+                    "mce": 0.02233
+                  },
+                  {
+                    "line": 12.5,
+                    "brier": 0.164377,
+                    "logLoss": 0.509179,
+                    "ece": 0.01023,
+                    "mce": 0.0269
+                  }
+                ]
+              },
+              {
+                "period": "walk_2023_24",
+                "status": "evaluated",
+                "trainRows": 31026,
+                "testRows": 3942,
+                "testFrom": "2023-08-04",
+                "testThrough": "2024-06-02",
+                "mae": 2.752813,
+                "poissonDeviance": 1.186813,
+                "lineCalibration": [
+                  {
+                    "line": 7.5,
+                    "brier": 0.17345,
+                    "logLoss": 0.529786,
+                    "ece": 0.0227,
+                    "mce": 0.07033
+                  },
+                  {
+                    "line": 8.5,
+                    "brier": 0.217776,
+                    "logLoss": 0.626814,
+                    "ece": 0.0211,
+                    "mce": 0.06232
+                  },
+                  {
+                    "line": 9.5,
+                    "brier": 0.244464,
+                    "logLoss": 0.681999,
+                    "ece": 0.02173,
+                    "mce": 0.04648
+                  },
+                  {
+                    "line": 10.5,
+                    "brier": 0.243601,
+                    "logLoss": 0.680213,
+                    "ece": 0.02431,
+                    "mce": 0.0526
+                  },
+                  {
+                    "line": 11.5,
+                    "brier": 0.220535,
+                    "logLoss": 0.632436,
+                    "ece": 0.02677,
+                    "mce": 0.07722
+                  },
+                  {
+                    "line": 12.5,
+                    "brier": 0.184136,
+                    "logLoss": 0.553891,
+                    "ece": 0.02358,
+                    "mce": 0.08466
+                  }
+                ]
+              },
+              {
+                "period": "walk_2024_25",
+                "status": "evaluated",
+                "trainRows": 34968,
+                "testRows": 3941,
+                "testFrom": "2024-08-03",
+                "testThrough": "2025-05-25",
+                "mae": 2.691794,
+                "poissonDeviance": 1.168494,
+                "lineCalibration": [
+                  {
+                    "line": 7.5,
+                    "brier": 0.189723,
+                    "logLoss": 0.566687,
+                    "ece": 0.03161,
+                    "mce": 0.06367
+                  },
+                  {
+                    "line": 8.5,
+                    "brier": 0.23165,
+                    "logLoss": 0.655675,
+                    "ece": 0.03408,
+                    "mce": 0.05384
+                  },
+                  {
+                    "line": 9.5,
+                    "brier": 0.246909,
+                    "logLoss": 0.686893,
+                    "ece": 0.03088,
+                    "mce": 0.06344
+                  },
+                  {
+                    "line": 10.5,
+                    "brier": 0.236678,
+                    "logLoss": 0.666189,
+                    "ece": 0.02532,
+                    "mce": 0.06781
+                  },
+                  {
+                    "line": 11.5,
+                    "brier": 0.203512,
+                    "logLoss": 0.596376,
+                    "ece": 0.01662,
+                    "mce": 0.04469
+                  },
+                  {
+                    "line": 12.5,
+                    "brier": 0.163249,
+                    "logLoss": 0.506401,
+                    "ece": 0.0161,
+                    "mce": 0.02594
+                  }
+                ]
+              },
+              {
+                "period": "walk_2025_26",
+                "status": "evaluated",
+                "trainRows": 38909,
+                "testRows": 3942,
+                "testFrom": "2025-08-01",
+                "testThrough": "2026-05-24",
+                "mae": 2.678169,
+                "poissonDeviance": 1.165531,
+                "lineCalibration": [
+                  {
+                    "line": 7.5,
+                    "brier": 0.189374,
+                    "logLoss": 0.566363,
+                    "ece": 0.0288,
+                    "mce": 0.06386
+                  },
+                  {
+                    "line": 8.5,
+                    "brier": 0.229068,
+                    "logLoss": 0.650546,
+                    "ece": 0.02678,
+                    "mce": 0.04707
+                  },
+                  {
+                    "line": 9.5,
+                    "brier": 0.247585,
+                    "logLoss": 0.688346,
+                    "ece": 0.02447,
+                    "mce": 0.0444
+                  },
+                  {
+                    "line": 10.5,
+                    "brier": 0.237382,
+                    "logLoss": 0.667469,
+                    "ece": 0.0188,
+                    "mce": 0.03974
+                  },
+                  {
+                    "line": 11.5,
+                    "brier": 0.207112,
+                    "logLoss": 0.603915,
+                    "ece": 0.02291,
+                    "mce": 0.04501
+                  },
+                  {
+                    "line": 12.5,
+                    "brier": 0.165535,
+                    "logLoss": 0.512043,
+                    "ece": 0.01705,
+                    "mce": 0.0449
+                  }
+                ]
+              },
+              {
+                "period": "walk_2026_27",
+                "status": "skipped_insufficient_data",
+                "trainRows": 42851,
+                "testRows": 0
+              }
+            ]
+          }
+        },
+        "selectionNote": "Reduced removes features whose omission slightly improved prior holdout ablation. Compact keeps target-specific 10-match rolling statistics, league average and home advantage."
+      },
       "holdoutCalibration": {
         "poisson": [
           {
@@ -6145,6 +6879,738 @@
           }
         ],
         "interpretation": "Positive drop-one deltas mean removing the feature worsened the model; negative deltas mean removal improved it. Permutation increases measure predictive reliance, not causal importance. Correlated features can mask one another."
+      },
+      "featureVariantTraining": {
+        "method": "Each feature set is refit using only matches before each chronological test period. Feature sets were selected from prior exploratory ablation/permutation diagnostics; comparisons are exploratory, not a fully untouched confirmatory test.",
+        "variants": {
+          "full": {
+            "featureCount": 19,
+            "features": [
+              "home_team_for_avg5",
+              "home_team_against_avg5",
+              "home_team_for_avg10",
+              "home_team_against_avg10",
+              "away_team_for_avg5",
+              "away_team_against_avg5",
+              "away_team_for_avg10",
+              "away_team_against_avg10",
+              "home_card_team_for_avg5",
+              "home_card_team_against_avg5",
+              "home_card_team_for_avg10",
+              "home_card_team_against_avg10",
+              "away_card_team_for_avg5",
+              "away_card_team_against_avg5",
+              "away_card_team_for_avg10",
+              "away_card_team_against_avg10",
+              "league_corners_avg",
+              "league_cards_avg",
+              "home_advantage"
+            ],
+            "evaluations": [
+              {
+                "period": "holdout_2024_07",
+                "status": "evaluated",
+                "trainRows": 34968,
+                "testRows": 7883,
+                "testFrom": "2024-08-03",
+                "testThrough": "2026-05-24",
+                "mae": 1.580804,
+                "poissonDeviance": 1.149217,
+                "lineCalibration": [
+                  {
+                    "line": 7.5,
+                    "brier": 0.039514,
+                    "logLoss": 0.168229,
+                    "ece": 0.00518,
+                    "mce": 0.01029
+                  },
+                  {
+                    "line": 8.5,
+                    "brier": 0.018009,
+                    "logLoss": 0.088913,
+                    "ece": 0.00295,
+                    "mce": 0.00858
+                  },
+                  {
+                    "line": 9.5,
+                    "brier": 0.007266,
+                    "logLoss": 0.041353,
+                    "ece": 0.00159,
+                    "mce": 0.00396
+                  },
+                  {
+                    "line": 10.5,
+                    "brier": 0.002149,
+                    "logLoss": 0.014611,
+                    "ece": 0.00075,
+                    "mce": 0.00121
+                  },
+                  {
+                    "line": 11.5,
+                    "brier": 0.001012,
+                    "logLoss": 0.007438,
+                    "ece": 0.00062,
+                    "mce": 0.00298
+                  },
+                  {
+                    "line": 12.5,
+                    "brier": 0.000506,
+                    "logLoss": 0.003903,
+                    "ece": 0.0004,
+                    "mce": 0.00142
+                  }
+                ]
+              },
+              {
+                "period": "walk_2023_24",
+                "status": "evaluated",
+                "trainRows": 31026,
+                "testRows": 3942,
+                "testFrom": "2023-08-04",
+                "testThrough": "2024-06-02",
+                "mae": 1.62805,
+                "poissonDeviance": 1.171353,
+                "lineCalibration": [
+                  {
+                    "line": 7.5,
+                    "brier": 0.056314,
+                    "logLoss": 0.22502,
+                    "ece": 0.01202,
+                    "mce": 0.02637
+                  },
+                  {
+                    "line": 8.5,
+                    "brier": 0.022006,
+                    "logLoss": 0.10707,
+                    "ece": 0.00653,
+                    "mce": 0.01612
+                  },
+                  {
+                    "line": 9.5,
+                    "brier": 0.010766,
+                    "logLoss": 0.059856,
+                    "ece": 0.0033,
+                    "mce": 0.01116
+                  },
+                  {
+                    "line": 10.5,
+                    "brier": 0.003778,
+                    "logLoss": 0.023627,
+                    "ece": 0.00149,
+                    "mce": 0.0036
+                  },
+                  {
+                    "line": 11.5,
+                    "brier": 0.001015,
+                    "logLoss": 0.007874,
+                    "ece": 0.00106,
+                    "mce": 0.00206
+                  },
+                  {
+                    "line": 12.5,
+                    "brier": 1e-06,
+                    "logLoss": 0.000384,
+                    "ece": 0.00038,
+                    "mce": 0.0017
+                  }
+                ]
+              },
+              {
+                "period": "walk_2024_25",
+                "status": "evaluated",
+                "trainRows": 34968,
+                "testRows": 3941,
+                "testFrom": "2024-08-03",
+                "testThrough": "2025-05-25",
+                "mae": 1.610702,
+                "poissonDeviance": 1.196054,
+                "lineCalibration": [
+                  {
+                    "line": 7.5,
+                    "brier": 0.043355,
+                    "logLoss": 0.179564,
+                    "ece": 0.006,
+                    "mce": 0.01445
+                  },
+                  {
+                    "line": 8.5,
+                    "brier": 0.019145,
+                    "logLoss": 0.091957,
+                    "ece": 0.00493,
+                    "mce": 0.01156
+                  },
+                  {
+                    "line": 9.5,
+                    "brier": 0.008012,
+                    "logLoss": 0.044881,
+                    "ece": 0.00174,
+                    "mce": 0.00453
+                  },
+                  {
+                    "line": 10.5,
+                    "brier": 0.003283,
+                    "logLoss": 0.021085,
+                    "ece": 0.00192,
+                    "mce": 0.00585
+                  },
+                  {
+                    "line": 11.5,
+                    "brier": 0.001518,
+                    "logLoss": 0.010613,
+                    "ece": 0.00099,
+                    "mce": 0.00361
+                  },
+                  {
+                    "line": 12.5,
+                    "brier": 0.001013,
+                    "logLoss": 0.007623,
+                    "ece": 0.00086,
+                    "mce": 0.00358
+                  }
+                ]
+              },
+              {
+                "period": "walk_2025_26",
+                "status": "evaluated",
+                "trainRows": 38909,
+                "testRows": 3942,
+                "testFrom": "2025-08-01",
+                "testThrough": "2026-05-24",
+                "mae": 1.550955,
+                "poissonDeviance": 1.102384,
+                "lineCalibration": [
+                  {
+                    "line": 7.5,
+                    "brier": 0.035679,
+                    "logLoss": 0.15696,
+                    "ece": 0.00863,
+                    "mce": 0.01904
+                  },
+                  {
+                    "line": 8.5,
+                    "brier": 0.016876,
+                    "logLoss": 0.085947,
+                    "ece": 0.00702,
+                    "mce": 0.01256
+                  },
+                  {
+                    "line": 9.5,
+                    "brier": 0.006521,
+                    "logLoss": 0.037885,
+                    "ece": 0.0036,
+                    "mce": 0.01041
+                  },
+                  {
+                    "line": 10.5,
+                    "brier": 0.001016,
+                    "logLoss": 0.008147,
+                    "ece": 0.00188,
+                    "mce": 0.00326
+                  },
+                  {
+                    "line": 11.5,
+                    "brier": 0.000507,
+                    "logLoss": 0.004275,
+                    "ece": 0.00098,
+                    "mce": 0.00437
+                  },
+                  {
+                    "line": 12.5,
+                    "brier": 0.0,
+                    "logLoss": 0.000185,
+                    "ece": 0.00018,
+                    "mce": 0.0007
+                  }
+                ]
+              },
+              {
+                "period": "walk_2026_27",
+                "status": "skipped_insufficient_data",
+                "trainRows": 42851,
+                "testRows": 0
+              }
+            ]
+          },
+          "reduced": {
+            "featureCount": 14,
+            "features": [
+              "home_team_for_avg5",
+              "home_team_against_avg5",
+              "home_team_for_avg10",
+              "away_team_against_avg5",
+              "away_team_for_avg10",
+              "home_card_team_for_avg10",
+              "home_card_team_against_avg10",
+              "away_card_team_for_avg5",
+              "away_card_team_against_avg5",
+              "away_card_team_for_avg10",
+              "away_card_team_against_avg10",
+              "league_corners_avg",
+              "league_cards_avg",
+              "home_advantage"
+            ],
+            "evaluations": [
+              {
+                "period": "holdout_2024_07",
+                "status": "evaluated",
+                "trainRows": 34968,
+                "testRows": 7883,
+                "testFrom": "2024-08-03",
+                "testThrough": "2026-05-24",
+                "mae": 1.580196,
+                "poissonDeviance": 1.148902,
+                "lineCalibration": [
+                  {
+                    "line": 7.5,
+                    "brier": 0.039539,
+                    "logLoss": 0.168365,
+                    "ece": 0.00324,
+                    "mce": 0.00755
+                  },
+                  {
+                    "line": 8.5,
+                    "brier": 0.018019,
+                    "logLoss": 0.089043,
+                    "ece": 0.00336,
+                    "mce": 0.00697
+                  },
+                  {
+                    "line": 9.5,
+                    "brier": 0.007266,
+                    "logLoss": 0.041426,
+                    "ece": 0.00162,
+                    "mce": 0.004
+                  },
+                  {
+                    "line": 10.5,
+                    "brier": 0.002149,
+                    "logLoss": 0.014634,
+                    "ece": 0.00111,
+                    "mce": 0.00309
+                  },
+                  {
+                    "line": 11.5,
+                    "brier": 0.001013,
+                    "logLoss": 0.007448,
+                    "ece": 0.00074,
+                    "mce": 0.0019
+                  },
+                  {
+                    "line": 12.5,
+                    "brier": 0.000507,
+                    "logLoss": 0.003898,
+                    "ece": 0.00041,
+                    "mce": 0.00144
+                  }
+                ]
+              },
+              {
+                "period": "walk_2023_24",
+                "status": "evaluated",
+                "trainRows": 31026,
+                "testRows": 3942,
+                "testFrom": "2023-08-04",
+                "testThrough": "2024-06-02",
+                "mae": 1.627386,
+                "poissonDeviance": 1.170927,
+                "lineCalibration": [
+                  {
+                    "line": 7.5,
+                    "brier": 0.056305,
+                    "logLoss": 0.224797,
+                    "ece": 0.01055,
+                    "mce": 0.02603
+                  },
+                  {
+                    "line": 8.5,
+                    "brier": 0.022004,
+                    "logLoss": 0.106749,
+                    "ece": 0.00693,
+                    "mce": 0.01554
+                  },
+                  {
+                    "line": 9.5,
+                    "brier": 0.010765,
+                    "logLoss": 0.059646,
+                    "ece": 0.00294,
+                    "mce": 0.00969
+                  },
+                  {
+                    "line": 10.5,
+                    "brier": 0.003777,
+                    "logLoss": 0.02351,
+                    "ece": 0.0015,
+                    "mce": 0.00376
+                  },
+                  {
+                    "line": 11.5,
+                    "brier": 0.001015,
+                    "logLoss": 0.007833,
+                    "ece": 0.00106,
+                    "mce": 0.00199
+                  },
+                  {
+                    "line": 12.5,
+                    "brier": 0.0,
+                    "logLoss": 0.00038,
+                    "ece": 0.00038,
+                    "mce": 0.00167
+                  }
+                ]
+              },
+              {
+                "period": "walk_2024_25",
+                "status": "evaluated",
+                "trainRows": 34968,
+                "testRows": 3941,
+                "testFrom": "2024-08-03",
+                "testThrough": "2025-05-25",
+                "mae": 1.610295,
+                "poissonDeviance": 1.195789,
+                "lineCalibration": [
+                  {
+                    "line": 7.5,
+                    "brier": 0.0434,
+                    "logLoss": 0.179807,
+                    "ece": 0.00565,
+                    "mce": 0.01542
+                  },
+                  {
+                    "line": 8.5,
+                    "brier": 0.01916,
+                    "logLoss": 0.092108,
+                    "ece": 0.00496,
+                    "mce": 0.01205
+                  },
+                  {
+                    "line": 9.5,
+                    "brier": 0.00801,
+                    "logLoss": 0.044911,
+                    "ece": 0.00229,
+                    "mce": 0.00799
+                  },
+                  {
+                    "line": 10.5,
+                    "brier": 0.003283,
+                    "logLoss": 0.021169,
+                    "ece": 0.00192,
+                    "mce": 0.00591
+                  },
+                  {
+                    "line": 11.5,
+                    "brier": 0.001518,
+                    "logLoss": 0.01063,
+                    "ece": 0.00103,
+                    "mce": 0.00363
+                  },
+                  {
+                    "line": 12.5,
+                    "brier": 0.001013,
+                    "logLoss": 0.007616,
+                    "ece": 0.00087,
+                    "mce": 0.00362
+                  }
+                ]
+              },
+              {
+                "period": "walk_2025_26",
+                "status": "evaluated",
+                "trainRows": 38909,
+                "testRows": 3942,
+                "testFrom": "2025-08-01",
+                "testThrough": "2026-05-24",
+                "mae": 1.550164,
+                "poissonDeviance": 1.102011,
+                "lineCalibration": [
+                  {
+                    "line": 7.5,
+                    "brier": 0.035684,
+                    "logLoss": 0.156967,
+                    "ece": 0.00912,
+                    "mce": 0.03154
+                  },
+                  {
+                    "line": 8.5,
+                    "brier": 0.016881,
+                    "logLoss": 0.086039,
+                    "ece": 0.00713,
+                    "mce": 0.01544
+                  },
+                  {
+                    "line": 9.5,
+                    "brier": 0.006523,
+                    "logLoss": 0.037996,
+                    "ece": 0.00459,
+                    "mce": 0.01058
+                  },
+                  {
+                    "line": 10.5,
+                    "brier": 0.001015,
+                    "logLoss": 0.008113,
+                    "ece": 0.00182,
+                    "mce": 0.00318
+                  },
+                  {
+                    "line": 11.5,
+                    "brier": 0.000507,
+                    "logLoss": 0.004278,
+                    "ece": 0.00098,
+                    "mce": 0.00437
+                  },
+                  {
+                    "line": 12.5,
+                    "brier": 0.0,
+                    "logLoss": 0.000183,
+                    "ece": 0.00018,
+                    "mce": 0.00068
+                  }
+                ]
+              },
+              {
+                "period": "walk_2026_27",
+                "status": "skipped_insufficient_data",
+                "trainRows": 42851,
+                "testRows": 0
+              }
+            ]
+          },
+          "compact": {
+            "featureCount": 6,
+            "features": [
+              "home_card_team_for_avg10",
+              "home_card_team_against_avg10",
+              "away_card_team_for_avg10",
+              "away_card_team_against_avg10",
+              "league_cards_avg",
+              "home_advantage"
+            ],
+            "evaluations": [
+              {
+                "period": "holdout_2024_07",
+                "status": "evaluated",
+                "trainRows": 34968,
+                "testRows": 7883,
+                "testFrom": "2024-08-03",
+                "testThrough": "2026-05-24",
+                "mae": 1.58093,
+                "poissonDeviance": 1.150042,
+                "lineCalibration": [
+                  {
+                    "line": 7.5,
+                    "brier": 0.039554,
+                    "logLoss": 0.168489,
+                    "ece": 0.00727,
+                    "mce": 0.011
+                  },
+                  {
+                    "line": 8.5,
+                    "brier": 0.018016,
+                    "logLoss": 0.08908,
+                    "ece": 0.00596,
+                    "mce": 0.01391
+                  },
+                  {
+                    "line": 9.5,
+                    "brier": 0.007271,
+                    "logLoss": 0.041571,
+                    "ece": 0.00208,
+                    "mce": 0.00461
+                  },
+                  {
+                    "line": 10.5,
+                    "brier": 0.002149,
+                    "logLoss": 0.014598,
+                    "ece": 0.00049,
+                    "mce": 0.00118
+                  },
+                  {
+                    "line": 11.5,
+                    "brier": 0.001013,
+                    "logLoss": 0.0075,
+                    "ece": 0.00065,
+                    "mce": 0.00174
+                  },
+                  {
+                    "line": 12.5,
+                    "brier": 0.000507,
+                    "logLoss": 0.003978,
+                    "ece": 0.00046,
+                    "mce": 0.00219
+                  }
+                ]
+              },
+              {
+                "period": "walk_2023_24",
+                "status": "evaluated",
+                "trainRows": 31026,
+                "testRows": 3942,
+                "testFrom": "2023-08-04",
+                "testThrough": "2024-06-02",
+                "mae": 1.628161,
+                "poissonDeviance": 1.171189,
+                "lineCalibration": [
+                  {
+                    "line": 7.5,
+                    "brier": 0.056313,
+                    "logLoss": 0.224532,
+                    "ece": 0.0112,
+                    "mce": 0.02275
+                  },
+                  {
+                    "line": 8.5,
+                    "brier": 0.022023,
+                    "logLoss": 0.106977,
+                    "ece": 0.00634,
+                    "mce": 0.01651
+                  },
+                  {
+                    "line": 9.5,
+                    "brier": 0.010769,
+                    "logLoss": 0.059764,
+                    "ece": 0.00469,
+                    "mce": 0.01094
+                  },
+                  {
+                    "line": 10.5,
+                    "brier": 0.003776,
+                    "logLoss": 0.023432,
+                    "ece": 0.00203,
+                    "mce": 0.00419
+                  },
+                  {
+                    "line": 11.5,
+                    "brier": 0.001014,
+                    "logLoss": 0.007728,
+                    "ece": 0.00125,
+                    "mce": 0.00374
+                  },
+                  {
+                    "line": 12.5,
+                    "brier": 0.0,
+                    "logLoss": 0.000373,
+                    "ece": 0.00037,
+                    "mce": 0.00159
+                  }
+                ]
+              },
+              {
+                "period": "walk_2024_25",
+                "status": "evaluated",
+                "trainRows": 34968,
+                "testRows": 3941,
+                "testFrom": "2024-08-03",
+                "testThrough": "2025-05-25",
+                "mae": 1.61048,
+                "poissonDeviance": 1.195933,
+                "lineCalibration": [
+                  {
+                    "line": 7.5,
+                    "brier": 0.043411,
+                    "logLoss": 0.179721,
+                    "ece": 0.00839,
+                    "mce": 0.01861
+                  },
+                  {
+                    "line": 8.5,
+                    "brier": 0.019151,
+                    "logLoss": 0.091926,
+                    "ece": 0.00608,
+                    "mce": 0.01289
+                  },
+                  {
+                    "line": 9.5,
+                    "brier": 0.008016,
+                    "logLoss": 0.045061,
+                    "ece": 0.00343,
+                    "mce": 0.00703
+                  },
+                  {
+                    "line": 10.5,
+                    "brier": 0.003284,
+                    "logLoss": 0.02118,
+                    "ece": 0.00181,
+                    "mce": 0.00612
+                  },
+                  {
+                    "line": 11.5,
+                    "brier": 0.001519,
+                    "logLoss": 0.010707,
+                    "ece": 0.00101,
+                    "mce": 0.00411
+                  },
+                  {
+                    "line": 12.5,
+                    "brier": 0.001014,
+                    "logLoss": 0.007782,
+                    "ece": 0.00096,
+                    "mce": 0.00478
+                  }
+                ]
+              },
+              {
+                "period": "walk_2025_26",
+                "status": "evaluated",
+                "trainRows": 38909,
+                "testRows": 3942,
+                "testFrom": "2025-08-01",
+                "testThrough": "2026-05-24",
+                "mae": 1.551385,
+                "poissonDeviance": 1.103868,
+                "lineCalibration": [
+                  {
+                    "line": 7.5,
+                    "brier": 0.0357,
+                    "logLoss": 0.157248,
+                    "ece": 0.00666,
+                    "mce": 0.01532
+                  },
+                  {
+                    "line": 8.5,
+                    "brier": 0.016883,
+                    "logLoss": 0.08623,
+                    "ece": 0.00588,
+                    "mce": 0.01153
+                  },
+                  {
+                    "line": 9.5,
+                    "brier": 0.006525,
+                    "logLoss": 0.038078,
+                    "ece": 0.00253,
+                    "mce": 0.00862
+                  },
+                  {
+                    "line": 10.5,
+                    "brier": 0.001015,
+                    "logLoss": 0.008021,
+                    "ece": 0.0013,
+                    "mce": 0.00292
+                  },
+                  {
+                    "line": 11.5,
+                    "brier": 0.000507,
+                    "logLoss": 0.004291,
+                    "ece": 0.00081,
+                    "mce": 0.00198
+                  },
+                  {
+                    "line": 12.5,
+                    "brier": 0.0,
+                    "logLoss": 0.000176,
+                    "ece": 0.00018,
+                    "mce": 0.00064
+                  }
+                ]
+              },
+              {
+                "period": "walk_2026_27",
+                "status": "skipped_insufficient_data",
+                "trainRows": 42851,
+                "testRows": 0
+              }
+            ]
+          }
+        },
+        "selectionNote": "Reduced removes features whose omission slightly improved prior holdout ablation. Compact keeps target-specific 10-match rolling statistics, league average and home advantage."
       },
       "holdoutCalibration": {
         "poisson": [
