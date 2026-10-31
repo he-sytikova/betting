@@ -71,6 +71,7 @@ jobs:
                       for fold in walk.get("folds", [])
                   ],
                   "pooledComparisons": walk.get("pooledComparisons", []),
+                  "coefficientStability": walk.get("coefficientStability", {}),
                   "significanceLevel": walk.get("significanceLevel"),
                   "interpretation": walk.get("interpretation"),
               }
