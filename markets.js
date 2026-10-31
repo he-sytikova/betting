@@ -112,7 +112,7 @@ function makeModelRows(fixtures) {
     const league = productionModels.leagueStats?.[leagueCode];
     if (!home || !away || !league) continue;
     // Deduplicate by the matched historical team IDs, not by provider display names.
-    const key = [fixture.time, leagueCode, homeMatch.key, awayMatch.key].join('|');
+    const key = [Date.parse(fixture.time), leagueCode, homeMatch.key, awayMatch.key].join('|');
     if (seen.has(key)) continue;
     seen.add(key);
     const features = {
