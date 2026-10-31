@@ -1,0 +1,51 @@
+name: Audit historical feature coverage
+
+on:
+  push:
+    branches:
+      - model-development
+    paths:
+      - scripts/predictions/audit-data.py
+      - .github/workflows/audit-feature-coverage.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: historical-feature-coverage-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          ref: model-development
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Run historical source coverage audit
+        run: python scripts/predictions/audit-data.py
+
+      - name: Publish audit report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/corners_cards_audit.json
+          git commit -m "chore: update historical feature coverage audit" || echo "No audit changes"
+          git pull --rebase origin model-development
+          git push origin HEAD:model-development
+
+      - name: Upload coverage audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: historical-feature-coverage-audit
+          path: data/corners_cards_audit.json
+          if-no-files-found: error
+          retention-days: 30
