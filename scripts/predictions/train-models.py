@@ -452,6 +452,89 @@ def feature_ablation_diagnostics(x_train, x_test, y_train, y_test):
     }
 
 
+
+def feature_variant_training(rows, target, eligible_flag, market):
+    """Compare full, reduced and compact feature sets on chronological periods."""
+    removable = {
+        "corners": {"home_team_for_avg5", "away_team_against_avg5", "away_team_for_avg5"},
+        "yellowCards": {"home_card_team_for_avg5", "home_team_against_avg10",
+                        "away_team_for_avg5", "home_card_team_against_avg5",
+                        "away_team_against_avg10"},
+    }[market]
+    if market == "corners":
+        compact = ["home_team_for_avg10", "home_team_against_avg10",
+                   "away_team_for_avg10", "away_team_against_avg10",
+                   "league_corners_avg", "home_advantage"]
+    else:
+        compact = ["home_card_team_for_avg10", "home_card_team_against_avg10",
+                   "away_card_team_for_avg10", "away_card_team_against_avg10",
+                   "league_cards_avg", "home_advantage"]
+    variants = {
+        "full": list(FEATURES),
+        "reduced": [f for f in FEATURES if f not in removable],
+        "compact": compact,
+    }
+    usable = [r for r in rows if r[eligible_flag] == "1" and r[target] != ""]
+    periods = [
+        ("holdout_2024_07", HOLDOUT_START, None),
+        ("walk_2023_24", date(2023, 7, 1), date(2024, 7, 1)),
+        ("walk_2024_25", date(2024, 7, 1), date(2025, 7, 1)),
+        ("walk_2025_26", date(2025, 7, 1), date(2026, 7, 1)),
+        ("walk_2026_27", date(2026, 7, 1), None),
+    ]
+    results = {}
+    for variant_name, feature_names in variants.items():
+        evaluations = []
+        for period_name, start, end in periods:
+            train = [r for r in usable if date.fromisoformat(r["date"]) < start]
+            test = [r for r in usable if date.fromisoformat(r["date"]) >= start
+                    and (end is None or date.fromisoformat(r["date"]) < end)]
+            if len(train) < 1000 or len(test) < 100:
+                evaluations.append({"period": period_name, "status": "skipped_insufficient_data",
+                                    "trainRows": len(train), "testRows": len(test)})
+                continue
+            x_train = np.array([[float(r.get(k) or "nan") for k in feature_names] for r in train])
+            x_test = np.array([[float(r.get(k) or "nan") for k in feature_names] for r in test])
+            y_train = np.array([float(r[target]) for r in train])
+            y_test = np.array([float(r[target]) for r in test])
+            model = make_poisson_pipeline()
+            model.fit(x_train, y_train)
+            pred = np.maximum(model.predict(x_test), 1e-8)
+            line_calibration = []
+            for line in LINES:
+                actual = (y_test > line).astype(float)
+                probability = poisson.sf(int(line), pred)
+                cal = calibration_diagnostics(actual, probability)
+                clipped = np.clip(probability, 1e-8, 1 - 1e-8)
+                line_calibration.append({
+                    "line": line,
+                    "brier": round(float(np.mean((probability - actual) ** 2)), 6),
+                    "logLoss": round(float(-np.mean(actual * np.log(clipped) +
+                        (1 - actual) * np.log(1 - clipped))), 6),
+                    "ece": cal["expectedCalibrationError"],
+                    "mce": cal["maximumCalibrationError"],
+                })
+            evaluations.append({
+                "period": period_name, "status": "evaluated",
+                "trainRows": len(train), "testRows": len(test),
+                "testFrom": min(r["date"] for r in test),
+                "testThrough": max(r["date"] for r in test),
+                "mae": round(float(np.mean(np.abs(y_test - pred))), 6),
+                "poissonDeviance": round(poisson_deviance(y_test, pred), 6),
+                "lineCalibration": line_calibration,
+            })
+        results[variant_name] = {
+            "featureCount": len(feature_names), "features": feature_names,
+            "evaluations": evaluations,
+        }
+    return {
+        "method": "Each feature set is refit using only matches before each chronological test period. Feature sets were selected from prior exploratory ablation/permutation diagnostics; comparisons are exploratory, not a fully untouched confirmatory test.",
+        "variants": results,
+        "selectionNote": "Reduced removes features whose omission slightly improved prior holdout ablation. Compact keeps target-specific 10-match rolling statistics, league average and home advantage.",
+    }
+
+
+
 def train_market(rows, target, eligible_flag, baseline_key):
     usable = [r for r in rows if r[eligible_flag] == "1" and r[target] != ""]
     train = [r for r in usable if date.fromisoformat(r["date"]) < HOLDOUT_START]
@@ -513,6 +596,7 @@ def train_market(rows, target, eligible_flag, baseline_key):
         "bySeason": grouped_metrics(test, y_test, pred, baseline, "season"),
         "walkForward": walk_forward_validation(rows, target, eligible_flag),
         "featureDiagnostics": feature_diagnostics,
+        "featureVariantTraining": feature_variant_training(rows, target, eligible_flag, "corners" if target == "corners_total" else "yellowCards"),
         "calibrationDiagnostics": {
             "poisson": [{"line": line, "over": calibration_diagnostics((y_test > line).astype(float), poisson.sf(int(line), pred)), "under": calibration_diagnostics((y_test <= line).astype(float), poisson.cdf(int(line), pred))} for line in LINES],
             "negativeBinomial": [{"line": line, "over": calibration_diagnostics((y_test > line).astype(float), negative_binomial_sf(line, pred, pearson_alpha)), "under": calibration_diagnostics((y_test <= line).astype(float), 1.0-negative_binomial_sf(line, pred, pearson_alpha))} for line in LINES],
