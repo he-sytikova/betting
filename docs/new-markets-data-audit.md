@@ -94,8 +94,20 @@ Important limitations:
 
 The BSD license v4.0 (effective 2026-10-01) explicitly permits internal retention, historical snapshots, backtesting, model development/evaluation, ML training and display of derived outputs. It prohibits redistribution of substantial raw data and sharing API keys. The license does not warrant accuracy or fitness for wagering.
 
-## Automated bounded probe added
+## Automated BSD historical-statistics audit
 
-Added `scripts/predictions/audit-bsd-new-markets.py` and manual workflow `.github/workflows/audit-bsd-new-markets.yml`. The workflow uses the existing `BSD_TOKEN` Actions secret, samples up to five recent finished matches in each of the two latest seasons for the 20 target competitions, checks availability keys and referee assignment, and uploads only an aggregate JSON report as a 30-day artifact. It does not commit raw match data, alter the current forecast pipeline, or touch production.
+The first manual run (2026-10-31, run `41241880525`) successfully sampled 181 matches across 20 matched competition codes. It exposed two audit defects: fuzzy league matching assigned Scottish Championship/League One/League Two to English competitions, and rapid requests triggered HTTP 429 in the Turkish and Greek samples. The first report also checked only availability keys, not actual team-stat values.
 
-Run it from GitHub Actions → **BSD historical coverage audit - new markets** → **Run workflow** on branch `model-development`. The workflow must complete before we can state actual BSD historical coverage. Its sample is reconnaissance, not the final training dataset or league whitelist.
+The audit has now been hardened on `model-development`:
+
+- Referee identity/history is excluded entirely by project decision.
+- League matching requires an exact normalized league-name match **and** a country match; ambiguous or country-less matches are reported as unmatched rather than guessed.
+- Requests are paced and HTTP 429 responses are retried with `Retry-After` or exponential backoff.
+- The sample is increased to up to 10 recent finished matches in each of the two latest seasons per competition.
+- For each sampled match, the script checks both `/availability/` and actual `/stats/` values. The report distinguishes key availability from the presence of both teams' non-null values. Zero is treated as a valid value; null/missing is not.
+- Only aggregate coverage metadata is uploaded; raw match payloads are not stored.
+- The workflow timeout is 60 minutes to accommodate rate limiting.
+
+The report is still a bounded reconnaissance sample, not a final league whitelist. A league/market is not eligible for training solely because the sample has high coverage. The next decision must use actual two-sided values, adequate historical depth, season stability, and a sufficiently large dataset. Shot totals use BSD aggregate team stats for this first audit; any later shotmap comparison must be separately validated before choosing a production target definition.
+
+Run GitHub Actions → **BSD historical coverage audit - new markets** → **Run workflow** on `model-development`. The current production branch and Pages deployment are not changed.
