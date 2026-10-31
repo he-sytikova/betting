@@ -125,7 +125,7 @@ def negative_binomial_sf(line, mean, alpha):
 
 def evaluate_lines(y, prediction, distribution="poisson", alpha=None, lines=CORNERS_LINES):
     results = []
-    for line in lines
+    for line in lines:
         # For half-point lines there is no push: over means integer total > line.
         over_actual = (y > line).astype(float)
         if distribution == "negative_binomial":
@@ -204,7 +204,7 @@ def paired_bootstrap_ci(actual, p_poisson, p_nb, seed=20261031, samples=1000):
 def calibration_probability_bands(y, mean, alpha, distribution, lines=CORNERS_LINES):
     output = []
     y = np.asarray(y, dtype=float)
-    for line in lines
+    for line in lines:
         actual = (y > line).astype(float)
         if distribution == "negative_binomial":
             probability = negative_binomial_sf(line, mean, alpha)
