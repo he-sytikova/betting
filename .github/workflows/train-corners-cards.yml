@@ -72,6 +72,7 @@ jobs:
                   ],
                   "pooledComparisons": walk.get("pooledComparisons", []),
                   "coefficientStability": walk.get("coefficientStability", {}),
+                  "holdoutCalibration": report.get(market, {}).get("calibrationDiagnostics", {}),
                   "significanceLevel": walk.get("significanceLevel"),
                   "interpretation": walk.get("interpretation"),
               }
