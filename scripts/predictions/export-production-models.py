@@ -127,7 +127,7 @@ def main():
         audit = json.loads(AUDIT.read_text(encoding="utf-8"))
         for item in audit.get("sources", {}).get("footballData", {}).get("leagues", []):
             code = str(item.get("code", "")).strip()
-            name = str(item.get("name", "")).strip()
+            name = str(item.get("league", "")).strip()
             if code and name:
                 league_names[code] = name
 
