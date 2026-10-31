@@ -100,13 +100,13 @@ def main():
                 "team_for_avg5", "team_against_avg5",
                 "team_for_avg10", "team_against_avg10",
             ):
-                stats[f"{prefix}_{feature}"] = number(row, f"{prefix}_{feature}")
+                stats[feature] = number(row, f"{prefix}_{feature}")
             card_prefix = f"{side}_card"
             for feature in (
                 "team_for_avg5", "team_against_avg5",
                 "team_for_avg10", "team_against_avg10",
             ):
-                stats[f"{card_prefix}_{feature}"] = number(row, f"{card_prefix}_{feature}")
+                stats[feature.replace("team_", "card_team_")] = number(row, f"{card_prefix}_{feature}")
             latest_team[(league, norm(team))] = {
                 "name": team, "stats": stats, "matchesBefore": int(float(row.get(f"{side}_matches_before") or 0))
             }
