@@ -473,11 +473,13 @@ def main():
             "pointMetrics": report["corners"].get("metrics", report["corners"]),
             "lineProbabilityScores": line_score_summary(report["corners"]),
             "distributionComparison": report["corners"].get("distributionComparison", {}),
+            "walkForward": report["corners"].get("walkForward", {}),
         },
         "yellowCards": {
             "pointMetrics": report["yellowCards"].get("metrics", report["yellowCards"]),
             "lineProbabilityScores": line_score_summary(report["yellowCards"]),
             "distributionComparison": report["yellowCards"].get("distributionComparison", {}),
+            "walkForward": report["yellowCards"].get("walkForward", {}),
         },
     }, ensure_ascii=False, indent=2))
 
