@@ -36,18 +36,23 @@ jobs:
       - name: Run CatBoost walk-forward benchmark
         run: python scripts/predictions/benchmark-catboost.py
 
+      - name: Re-run corrected Poisson and Negative Binomial diagnostics on existing dataset
+        run: python scripts/predictions/train-models.py
+
       - name: Publish research-only candidate report
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/corners_cards_candidate_report.json
-          git commit -m "chore: add research-only CatBoost benchmark report" || echo "No report changes"
+          git add data/corners_cards_candidate_report.json data/corners_cards_model_report.json
+          git commit -m "chore: refresh corrected model diagnostics and CatBoost benchmark" || echo "No report changes"
           git push origin HEAD:model-development
 
       - name: Upload candidate benchmark report
         uses: actions/upload-artifact@v4
         with:
           name: corners-cards-catboost-candidate-report
-          path: data/corners_cards_candidate_report.json
+          path: |
+            data/corners_cards_candidate_report.json
+            data/corners_cards_model_report.json
           if-no-files-found: error
           retention-days: 30
