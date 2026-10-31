@@ -137,7 +137,8 @@ def main():
         "status": "experimental_research_model",
         "disclaimer": "Experimental model estimates, not betting advice. Only use fixtures matched to a supported league and both teams with historical features.",
         "lines": LINES,
-        "leagueNames": league_names,\n        "leagueAliases": league_aliases,
+        "leagueNames": league_names,
+        "leagueAliases": league_aliases,
         "models": {
             "corners": export_market(rows, "corners_total", "corners_model_eligible", CORNERS_FEATURES),
             "yellowCards": export_market(rows, "cards_total", "cards_model_eligible", CARDS_FEATURES),
