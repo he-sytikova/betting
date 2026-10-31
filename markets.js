@@ -52,8 +52,11 @@ function formatTotals(mean) {
 }
 function makeModelRows(fixtures) {
   if (!productionModels?.models || !productionModels?.teams || !productionModels?.leagueNames) return [];
-  const leagueCodeByName = new Map(Object.entries(productionModels.leagueNames)
-    .map(([code, name]) => [normalize(name), code]));
+  const leagueCodeByName = new Map(Object.entries(productionModels.leagueAliases || {})
+    .map(([name, code]) => [name, code]));
+  for (const [code, name] of Object.entries(productionModels.leagueNames || {})) {
+    leagueCodeByName.set(normalize(name), code);
+  }
   const seen = new Set(), output = [];
   for (const fixture of fixtures) {
     const leagueCode = leagueCodeByName.get(normalize(fixture.league));
