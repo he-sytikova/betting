@@ -30,7 +30,7 @@ test('Poisson and NB2 probabilities stay bounded and decline at higher lines', (
 });
 test('NB2 and Poisson produce distinct probabilities when dispersion is positive', () => {
  const a=context.__modelV1Test.countOver(10,7.5,'poisson',policy.markets.corners.alpha);
- const b=context.countOver(10,7.5,'negativeBinomial',policy.markets.corners.alpha);
+ const b=context.__modelV1Test.countOver(10,7.5,'negativeBinomial',policy.markets.corners.alpha);
  assert.ok(Math.abs(a-b)>1e-5);
 });
 test('formatted output labels each line with its selected distribution', () => {
