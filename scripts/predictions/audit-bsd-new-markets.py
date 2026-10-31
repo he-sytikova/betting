@@ -139,11 +139,19 @@ def get(path):
 
 
 def extract_values(payload, field):
-    """Collect non-null scalar values for a stat key across common BSD payload shapes."""
+    """Collect non-null scalar values across keyed and row-oriented BSD stats payloads."""
     found = []
+    label_keys = ("key", "name", "stat_key", "statistic", "type")
+    value_keys = ("home", "away", "home_value", "away_value", "value")
 
     def walk(node):
         if isinstance(node, dict):
+            labels = [norm(node.get(k)) for k in label_keys if node.get(k) is not None]
+            if norm(field) in labels:
+                for key in value_keys:
+                    value = node.get(key)
+                    if value is not None and not isinstance(value, (dict, list)):
+                        found.append(value)
             for key, value in node.items():
                 if norm(key) == norm(field):
                     if value is not None and not isinstance(value, (dict, list)):
@@ -152,7 +160,7 @@ def extract_values(payload, field):
                         for nested in value.values():
                             if nested is not None and not isinstance(nested, (dict, list)):
                                 found.append(nested)
-                else:
+                elif key not in label_keys:
                     walk(value)
         elif isinstance(node, list):
             for item in node:
