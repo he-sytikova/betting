@@ -384,7 +384,7 @@ def walk_forward_validation(rows, target, eligible_flag):
 
 def make_poisson_pipeline(feature_count=None):
     return Pipeline([
-        ("imputer", SimpleImputer(strategy="median)),
+        ("imputer", SimpleImputer(strategy="median")),
         ("scale", StandardScaler()),
         ("poisson", PoissonRegressor(alpha=0.5, max_iter=1000)),
     ])
