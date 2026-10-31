@@ -217,12 +217,44 @@ def main():
         "note": "Calibration bins and Brier/Log Loss are descriptive holdout diagnostics, not proof of betting value. No ROI is calculated because historical bookmaker odds are unavailable. Production use requires odds-aware walk-forward validation and market-specific calibration.",
     }
     OUT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    def line_score_summary(section):
+        def scores(lines):
+            return [
+                {
+                    "line": item["line"],
+                    "over": {
+                        "brierScore": item["over"]["brierScore"],
+                        "logLoss": item["over"]["logLoss"],
+                        "eventCount": item["over"]["eventCount"],
+                    },
+                    "under": {
+                        "brierScore": item["under"]["brierScore"],
+                        "logLoss": item["under"]["logLoss"],
+                        "eventCount": item["under"]["eventCount"],
+                    },
+                }
+                for item in lines
+            ]
+
+        nb = section.get("negativeBinomial", {})
+        return {
+            "poisson": scores(section.get("totalLines", [])),
+            "negativeBinomial": scores(nb.get("totalLines", [])),
+            "negativeBinomialAlpha": nb.get("alpha"),
+        }
+
     print(json.dumps({
         "generatedAt": report["generatedAt"],
         "datasetRows": report["datasetRows"],
         "evaluatedLines": report["evaluatedLines"],
-        "corners": {"poisson": report["corners"].get("metrics", report["corners"]), "negativeBinomial": report["corners"].get("negativeBinomial", {}).get("metrics")},
-        "yellowCards": {"poisson": report["yellowCards"].get("metrics", report["yellowCards"]), "negativeBinomial": report["yellowCards"].get("negativeBinomial", {}).get("metrics")},
+        "corners": {
+            "pointMetrics": report["corners"].get("metrics", report["corners"]),
+            "lineProbabilityScores": line_score_summary(report["corners"]),
+        },
+        "yellowCards": {
+            "pointMetrics": report["yellowCards"].get("metrics", report["yellowCards"]),
+            "lineProbabilityScores": line_score_summary(report["yellowCards"]),
+        },
     }, ensure_ascii=False, indent=2))
 
 if __name__ == "__main__":
