@@ -122,7 +122,7 @@ def main():
         })
         league_history = {group: [] for group in HISTORY_GROUPS}
         league_history["matches"] = []
-        referee_histories = defaultdict(lambda: deque(maxlen=20)
+        referee_histories = defaultdict(lambda: deque(maxlen=20))
         index = 0
         while index < len(all_matches):
             day = all_matches[index]["date"]
