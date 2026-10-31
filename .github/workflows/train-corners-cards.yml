@@ -41,7 +41,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/corners_cards_training.csv data/corners_cards_model_report.json
-          git commit -m "chore: build corners and cards training dataset" || echo "No changes to commit"
+          git add data/corners_cards_audit.json data/corners_cards_training.csv data/corners_cards_model_report.json
+          git commit -m "chore: refresh corners and cards audit and training outputs" || echo "No changes to commit"
           git pull --rebase origin main
           git push
