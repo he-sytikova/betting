@@ -60,6 +60,60 @@ def probability_metrics(actual, probability):
         "calibrationBins": bins,
     }
 
+
+def calibration_diagnostics(actual, probability, bins=10):
+    """Equal-frequency reliability bins with ECE/MCE and Wilson intervals."""
+    from scipy.stats import norm
+    y = np.asarray(actual, dtype=float)
+    p = np.clip(np.asarray(probability, dtype=float), 1e-8, 1 - 1e-8)
+    order = np.argsort(p, kind="stable")
+    chunks = np.array_split(order, min(bins, len(order)))
+    rows, weighted_error, max_error = [], 0.0, 0.0
+    z = float(norm.ppf(0.975))
+    for indices in chunks:
+        if not len(indices):
+            continue
+        n = len(indices)
+        predicted, observed = float(np.mean(p[indices])), float(np.mean(y[indices]))
+        error = abs(observed - predicted)
+        weighted_error += error * n / len(y)
+        max_error = max(max_error, error)
+        denom = 1 + z*z/n
+        center = (observed + z*z/(2*n)) / denom
+        half = z * np.sqrt(observed*(1-observed)/n + z*z/(4*n*n)) / denom
+        rows.append({"matches": int(n), "meanPredicted": round(predicted, 5),
+                     "observedRate": round(observed, 5), "absoluteGap": round(error, 5),
+                     "observedRateWilson95CI": [round(max(0.0, center-half), 5), round(min(1.0, center+half), 5)]})
+    return {"bins": rows, "expectedCalibrationError": round(float(weighted_error), 5),
+            "maximumCalibrationError": round(float(max_error), 5),
+            "note": "Equal-frequency bins; Wilson intervals describe sampling uncertainty in observed event rates, not model uncertainty."}
+
+
+def raw_scale_coefficients(model):
+    """Convert standardized Poisson coefficients to original feature units."""
+    poisson_model, scaler = model.named_steps["poisson"], model.named_steps["scale"]
+    coefficients = poisson_model.coef_ / scaler.scale_
+    intercept = float(poisson_model.intercept_ - np.sum(poisson_model.coef_ * scaler.mean_ / scaler.scale_))
+    return coefficients, intercept
+
+
+def coefficient_stability(fold_coefficients):
+    if len(fold_coefficients) < 2:
+        return {"status": "insufficient_folds", "foldsWithCoefficients": len(fold_coefficients), "features": []}
+    matrix = np.asarray([item["coefficients"] for item in fold_coefficients], dtype=float)
+    features = []
+    for index, name in enumerate(FEATURES):
+        values = matrix[:, index]
+        signs = np.sign(values)
+        agreement = max(float(np.mean(signs > 0)), float(np.mean(signs < 0)))
+        features.append({"feature": name, "foldCoefficients": [round(float(v), 8) for v in values],
+            "meanCoefficient": round(float(np.mean(values)), 8), "stdCoefficient": round(float(np.std(values, ddof=1)), 8),
+            "signAgreement": round(agreement, 4), "signFlips": int(np.sum(signs[1:] != signs[:-1])),
+            "stableSign": bool(agreement >= 0.8)})
+    return {"status": "evaluated", "foldsWithCoefficients": len(fold_coefficients),
+            "coefficientScale": "Original feature units; coefficients from separately refit Poisson means",
+            "features": features}
+
 def negative_binomial_sf(line, mean, alpha):
     mean = np.maximum(np.asarray(mean, dtype=float), 1e-8)
     alpha = max(float(alpha), 1e-8)
