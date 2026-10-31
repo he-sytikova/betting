@@ -589,7 +589,7 @@ def train_market(rows, target, eligible_flag, baseline_key, market_lines):
             "improvesPoissonDevianceOverBaseline": poisson_deviance(y_test, pred) < poisson_deviance(y_test, baseline),
         },
         "totalLines": evaluate_lines(y_test, pred, lines=market_lines),
-        "baselineTotalLines": evaluate_lines(y_test, baseline, lines=market_lines)
+        "baselineTotalLines": evaluate_lines(y_test, baseline, lines=market_lines),
         "dispersion": {
             "actualMean": round(float(np.mean(y_test)), 4),
             "actualVariance": round(float(np.var(y_test)), 4),
@@ -597,7 +597,7 @@ def train_market(rows, target, eligible_flag, baseline_key, market_lines):
         },
         "byLeague": grouped_metrics(test, y_test, pred, baseline, "league", lines=market_lines),
         "bySeason": grouped_metrics(test, y_test, pred, baseline, "season", lines=market_lines),
-        "walkForward": walk_forward_validation(rows, target, eligible_flag, market_lines)
+        "walkForward": walk_forward_validation(rows, target, eligible_flag, market_lines),
         "featureDiagnostics": feature_diagnostics,
         "featureVariantTraining": feature_variant_training(rows, target, eligible_flag, "corners" if target == "corners_total" else "yellowCards"),
         "calibrationDiagnostics": {
@@ -620,7 +620,7 @@ def train_market(rows, target, eligible_flag, baseline_key, market_lines):
                     ),
                 }
                 for index, line in enumerate(market_lines)
-            ]
+            ],
         },
         "negativeBinomial": {
             "status": "evaluated",
