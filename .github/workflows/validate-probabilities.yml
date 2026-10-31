@@ -1,0 +1,64 @@
+name: Validate corners and yellow-card probabilities
+
+on:
+  push:
+    branches:
+      - model-development
+    paths:
+      - scripts/predictions/validate-probabilities.py
+      - scripts/predictions/train-models.py
+      - scripts/predictions/build-dataset.py
+      - data/corners_cards_training.csv
+      - .github/workflows/validate-probabilities.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: probability-validation
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout model development branch
+        uses: actions/checkout@v5
+        with:
+          ref: model-development
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip numpy scipy scikit-learn
+
+      - name: Rebuild leakage-safe historical dataset
+        run: python scripts/predictions/build-dataset.py
+
+      - name: Compile validation scripts
+        run: python -m compileall -q scripts/predictions
+
+      - name: Validate probabilities by market and line
+        run: python scripts/predictions/validate-probabilities.py
+
+      - name: Commit research report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/corners_cards_training.csv data/corners_cards_probability_report.json
+          git commit -m "chore: add line-level probability validation report" || echo "No report changes"
+          git pull --rebase origin model-development
+          git push origin HEAD:model-development
+
+      - name: Upload probability validation report
+        uses: actions/upload-artifact@v4
+        with:
+          name: corners-cards-probability-validation
+          path: data/corners_cards_probability_report.json
+          if-no-files-found: error
+          retention-days: 30
