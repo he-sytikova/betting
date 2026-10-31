@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-31T19:17:13.027454+00:00",
+  "generatedAt": "2026-10-31T19:37:22.865493+00:00",
   "status": "research_only_probability_validation",
   "datasetRows": 42851,
   "method": "Expanding-window seasonal walk-forward; each fold fits the feature Poisson model and estimates dispersion using training rows only. The benchmark is the pre-match league rolling mean. Poisson and NB2 probabilities are compared on identical held-out matches. Paired bootstrap CIs and sign-flip permutation tests are reported; Holm correction is applied across lines separately for Brier and Log Loss.",
@@ -288,17 +288,18 @@
                 ]
               },
               "comparisonFeatureMinusBaseline": {
-                "brierDeltaNbMinusPoisson": -0.000905,
+                "comparison": "featureModel minus leagueBaseline",
+                "brierDelta": -0.000905,
                 "brierDelta95CI": [
                   -0.0015234,
                   -0.0003264
                 ],
-                "logLossDeltaNbMinusPoisson": -0.0026788,
+                "logLossDelta": -0.0026788,
                 "logLossDelta95CI": [
                   -0.0042982,
                   -0.001107
                 ],
-                "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference",
+                "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
                 "brierPermutationP": 0.0015,
                 "logLossPermutationP": 0.004,
                 "brierHolmAdjustedP": 0.003,
@@ -756,17 +757,18 @@
                 ]
               },
               "comparisonFeatureMinusBaseline": {
-                "brierDeltaNbMinusPoisson": -0.0015302,
+                "comparison": "featureModel minus leagueBaseline",
+                "brierDelta": -0.0015302,
                 "brierDelta95CI": [
                   -0.0023222,
                   -0.0007132
                 ],
-                "logLossDeltaNbMinusPoisson": -0.0035516,
+                "logLossDelta": -0.0035516,
                 "logLossDelta95CI": [
                   -0.0053539,
                   -0.0017807
                 ],
-                "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference",
+                "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
                 "brierPermutationP": 0.0005,
                 "logLossPermutationP": 0.0005,
                 "brierHolmAdjustedP": 0.003,
@@ -1224,17 +1226,18 @@
                 ]
               },
               "comparisonFeatureMinusBaseline": {
-                "brierDeltaNbMinusPoisson": -0.0020588,
+                "comparison": "featureModel minus leagueBaseline",
+                "brierDelta": -0.0020588,
                 "brierDelta95CI": [
                   -0.0029796,
                   -0.0011494
                 ],
-                "logLossDeltaNbMinusPoisson": -0.0042309,
+                "logLossDelta": -0.0042309,
                 "logLossDelta95CI": [
                   -0.005965,
                   -0.002223
                 ],
-                "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference",
+                "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
                 "brierPermutationP": 0.0005,
                 "logLossPermutationP": 0.0005,
                 "brierHolmAdjustedP": 0.003,
@@ -1692,17 +1695,18 @@
                 ]
               },
               "comparisonFeatureMinusBaseline": {
-                "brierDeltaNbMinusPoisson": -0.0023067,
+                "comparison": "featureModel minus leagueBaseline",
+                "brierDelta": -0.0023067,
                 "brierDelta95CI": [
                   -0.0031705,
                   -0.0014164
                 ],
-                "logLossDeltaNbMinusPoisson": -0.0048998,
+                "logLossDelta": -0.0048998,
                 "logLossDelta95CI": [
                   -0.0068187,
                   -0.0030628
                 ],
-                "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference",
+                "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
                 "brierPermutationP": 0.0005,
                 "logLossPermutationP": 0.0005,
                 "brierHolmAdjustedP": 0.003,
@@ -2160,17 +2164,18 @@
                 ]
               },
               "comparisonFeatureMinusBaseline": {
-                "brierDeltaNbMinusPoisson": -0.0018543,
+                "comparison": "featureModel minus leagueBaseline",
+                "brierDelta": -0.0018543,
                 "brierDelta95CI": [
                   -0.0026382,
                   -0.001035
                 ],
-                "logLossDeltaNbMinusPoisson": -0.0045056,
+                "logLossDelta": -0.0045056,
                 "logLossDelta95CI": [
                   -0.0063271,
                   -0.0027037
                 ],
-                "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference",
+                "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
                 "brierPermutationP": 0.0005,
                 "logLossPermutationP": 0.0005,
                 "brierHolmAdjustedP": 0.003,
@@ -2628,17 +2633,18 @@
                 ]
               },
               "comparisonFeatureMinusBaseline": {
-                "brierDeltaNbMinusPoisson": -0.0013662,
+                "comparison": "featureModel minus leagueBaseline",
+                "brierDelta": -0.0013662,
                 "brierDelta95CI": [
                   -0.002018,
                   -0.0007493
                 ],
-                "logLossDeltaNbMinusPoisson": -0.004197,
+                "logLossDelta": -0.004197,
                 "logLossDelta95CI": [
                   -0.0060898,
                   -0.002334
                 ],
-                "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference",
+                "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
                 "brierPermutationP": 0.0005,
                 "logLossPermutationP": 0.0005,
                 "brierHolmAdjustedP": 0.003,
@@ -3098,17 +3104,18 @@
                 ]
               },
               "comparisonFeatureMinusBaseline": {
-                "brierDeltaNbMinusPoisson": -0.0011392,
+                "comparison": "featureModel minus leagueBaseline",
+                "brierDelta": -0.0011392,
                 "brierDelta95CI": [
                   -0.0017235,
                   -0.0005588
                 ],
-                "logLossDeltaNbMinusPoisson": -0.0030996,
+                "logLossDelta": -0.0030996,
                 "logLossDelta95CI": [
                   -0.0046022,
                   -0.0015941
                 ],
-                "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference",
+                "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
                 "brierPermutationP": 0.0005,
                 "logLossPermutationP": 0.0005,
                 "brierHolmAdjustedP": 0.003,
@@ -3566,17 +3573,18 @@
                 ]
               },
               "comparisonFeatureMinusBaseline": {
-                "brierDeltaNbMinusPoisson": -0.0016738,
+                "comparison": "featureModel minus leagueBaseline",
+                "brierDelta": -0.0016738,
                 "brierDelta95CI": [
                   -0.0023877,
                   -0.000939
                 ],
-                "logLossDeltaNbMinusPoisson": -0.0037506,
+                "logLossDelta": -0.0037506,
                 "logLossDelta95CI": [
                   -0.0054899,
                   -0.0021207
                 ],
-                "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference",
+                "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
                 "brierPermutationP": 0.0005,
                 "logLossPermutationP": 0.0005,
                 "brierHolmAdjustedP": 0.003,
@@ -4034,17 +4042,18 @@
                 ]
               },
               "comparisonFeatureMinusBaseline": {
-                "brierDeltaNbMinusPoisson": -0.0020138,
+                "comparison": "featureModel minus leagueBaseline",
+                "brierDelta": -0.0020138,
                 "brierDelta95CI": [
                   -0.0029033,
                   -0.0010835
                 ],
-                "logLossDeltaNbMinusPoisson": -0.0041165,
+                "logLossDelta": -0.0041165,
                 "logLossDelta95CI": [
                   -0.0058504,
                   -0.0024815
                 ],
-                "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference",
+                "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
                 "brierPermutationP": 0.0005,
                 "logLossPermutationP": 0.0005,
                 "brierHolmAdjustedP": 0.003,
@@ -4502,17 +4511,18 @@
                 ]
               },
               "comparisonFeatureMinusBaseline": {
-                "brierDeltaNbMinusPoisson": -0.0020966,
+                "comparison": "featureModel minus leagueBaseline",
+                "brierDelta": -0.0020966,
                 "brierDelta95CI": [
                   -0.0029092,
                   -0.0012411
                 ],
-                "logLossDeltaNbMinusPoisson": -0.0044294,
+                "logLossDelta": -0.0044294,
                 "logLossDelta95CI": [
                   -0.0060935,
                   -0.0028269
                 ],
-                "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference",
+                "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
                 "brierPermutationP": 0.0005,
                 "logLossPermutationP": 0.0005,
                 "brierHolmAdjustedP": 0.003,
@@ -4970,17 +4980,18 @@
                 ]
               },
               "comparisonFeatureMinusBaseline": {
-                "brierDeltaNbMinusPoisson": -0.0015954,
+                "comparison": "featureModel minus leagueBaseline",
+                "brierDelta": -0.0015954,
                 "brierDelta95CI": [
                   -0.0023788,
                   -0.0008793
                 ],
-                "logLossDeltaNbMinusPoisson": -0.0037785,
+                "logLossDelta": -0.0037785,
                 "logLossDelta95CI": [
                   -0.0055082,
                   -0.0020676
                 ],
-                "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference",
+                "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
                 "brierPermutationP": 0.0005,
                 "logLossPermutationP": 0.0005,
                 "brierHolmAdjustedP": 0.003,
@@ -5438,17 +5449,18 @@
                 ]
               },
               "comparisonFeatureMinusBaseline": {
-                "brierDeltaNbMinusPoisson": -0.0011359,
+                "comparison": "featureModel minus leagueBaseline",
+                "brierDelta": -0.0011359,
                 "brierDelta95CI": [
                   -0.0017119,
                   -0.0005594
                 ],
-                "logLossDeltaNbMinusPoisson": -0.0032631,
+                "logLossDelta": -0.0032631,
                 "logLossDelta95CI": [
                   -0.0048723,
                   -0.0015895
                 ],
-                "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference",
+                "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
                 "brierPermutationP": 0.0005,
                 "logLossPermutationP": 0.0005,
                 "brierHolmAdjustedP": 0.003,
@@ -5682,6 +5694,134 @@
           }
         ]
       },
+      "distributionComparison": [
+        {
+          "line": 7.5,
+          "NB2MinusPoisson": {
+            "comparison": "NB2 minus Poisson (feature-model mean)",
+            "brierDelta": -0.000642,
+            "brierDelta95CI": [
+              -0.0009268,
+              -0.000339
+            ],
+            "logLossDelta": -0.001871,
+            "logLossDelta95CI": [
+              -0.0026768,
+              -0.0010233
+            ],
+            "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
+            "brierPermutationP": 0.0005,
+            "logLossPermutationP": 0.0005,
+            "brierHolmAdjustedP": 0.003,
+            "logLossHolmAdjustedP": 0.003
+          }
+        },
+        {
+          "line": 8.5,
+          "NB2MinusPoisson": {
+            "comparison": "NB2 minus Poisson (feature-model mean)",
+            "brierDelta": -0.0004861,
+            "brierDelta95CI": [
+              -0.0007598,
+              -0.0002175
+            ],
+            "logLossDelta": -0.001125,
+            "logLossDelta95CI": [
+              -0.0017759,
+              -0.0005077
+            ],
+            "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
+            "brierPermutationP": 0.001,
+            "logLossPermutationP": 0.001,
+            "brierHolmAdjustedP": 0.005,
+            "logLossHolmAdjustedP": 0.005
+          }
+        },
+        {
+          "line": 9.5,
+          "NB2MinusPoisson": {
+            "comparison": "NB2 minus Poisson (feature-model mean)",
+            "brierDelta": -0.0002628,
+            "brierDelta95CI": [
+              -0.0004327,
+              -7.24e-05
+            ],
+            "logLossDelta": -0.0005554,
+            "logLossDelta95CI": [
+              -0.0009365,
+              -0.0001933
+            ],
+            "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
+            "brierPermutationP": 0.006,
+            "logLossPermutationP": 0.003,
+            "brierHolmAdjustedP": 0.024,
+            "logLossHolmAdjustedP": 0.012
+          }
+        },
+        {
+          "line": 10.5,
+          "NB2MinusPoisson": {
+            "comparison": "NB2 minus Poisson (feature-model mean)",
+            "brierDelta": -3.25e-05,
+            "brierDelta95CI": [
+              -0.0001096,
+              4.64e-05
+            ],
+            "logLossDelta": -6.33e-05,
+            "logLossDelta95CI": [
+              -0.000225,
+              0.0001086
+            ],
+            "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
+            "brierPermutationP": 0.432,
+            "logLossPermutationP": 0.4585,
+            "brierHolmAdjustedP": 1.0,
+            "logLossHolmAdjustedP": 1.0
+          }
+        },
+        {
+          "line": 11.5,
+          "NB2MinusPoisson": {
+            "comparison": "NB2 minus Poisson (feature-model mean)",
+            "brierDelta": 4.3e-05,
+            "brierDelta95CI": [
+              -7.57e-05,
+              0.0001607
+            ],
+            "logLossDelta": 0.0001067,
+            "logLossDelta95CI": [
+              -0.0001936,
+              0.00041
+            ],
+            "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
+            "brierPermutationP": 0.497,
+            "logLossPermutationP": 0.4905,
+            "brierHolmAdjustedP": 1.0,
+            "logLossHolmAdjustedP": 1.0
+          }
+        },
+        {
+          "line": 12.5,
+          "NB2MinusPoisson": {
+            "comparison": "NB2 minus Poisson (feature-model mean)",
+            "brierDelta": -2.66e-05,
+            "brierDelta95CI": [
+              -0.0002153,
+              0.0001446
+            ],
+            "logLossDelta": -0.0001069,
+            "logLossDelta95CI": [
+              -0.0006484,
+              0.0004279
+            ],
+            "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
+            "brierPermutationP": 0.7645,
+            "logLossPermutationP": 0.71,
+            "brierHolmAdjustedP": 1.0,
+            "logLossHolmAdjustedP": 1.0
+          }
+        }
+      ],
       "interpretation": "Negative Brier/log-loss deltas favor the feature model. Holm-adjusted p<0.05 indicates evidence of a difference across the market's tested lines. Reliability bins and ECE/MCE describe calibration. This is not an ROI test; historical bookmaker odds are unavailable."
     },
     "yellowCards": {
@@ -5968,17 +6108,18 @@
                 ]
               },
               "comparisonFeatureMinusBaseline": {
-                "brierDeltaNbMinusPoisson": -8.56e-05,
+                "comparison": "featureModel minus leagueBaseline",
+                "brierDelta": -8.56e-05,
                 "brierDelta95CI": [
                   -0.0001498,
                   -2.32e-05
                 ],
-                "logLossDeltaNbMinusPoisson": -0.0022312,
+                "logLossDelta": -0.0022312,
                 "logLossDelta95CI": [
                   -0.0035688,
                   -0.001008
                 ],
-                "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference",
+                "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
                 "brierPermutationP": 0.008,
                 "logLossPermutationP": 0.0005,
                 "brierHolmAdjustedP": 0.008,
@@ -6436,17 +6577,18 @@
                 ]
               },
               "comparisonFeatureMinusBaseline": {
-                "brierDeltaNbMinusPoisson": -0.0006437,
+                "comparison": "featureModel minus leagueBaseline",
+                "brierDelta": -0.0006437,
                 "brierDelta95CI": [
                   -0.001018,
                   -0.0003101
                 ],
-                "logLossDeltaNbMinusPoisson": -0.0035206,
+                "logLossDelta": -0.0035206,
                 "logLossDelta95CI": [
                   -0.0051877,
                   -0.0017655
                 ],
-                "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference",
+                "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
                 "brierPermutationP": 0.0005,
                 "logLossPermutationP": 0.001,
                 "brierHolmAdjustedP": 0.003,
@@ -6904,17 +7046,18 @@
                 ]
               },
               "comparisonFeatureMinusBaseline": {
-                "brierDeltaNbMinusPoisson": -0.0021985,
+                "comparison": "featureModel minus leagueBaseline",
+                "brierDelta": -0.0021985,
                 "brierDelta95CI": [
                   -0.0030188,
                   -0.0013629
                 ],
-                "logLossDeltaNbMinusPoisson": -0.0059281,
+                "logLossDelta": -0.0059281,
                 "logLossDelta95CI": [
                   -0.0080745,
                   -0.0037451
                 ],
-                "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference",
+                "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
                 "brierPermutationP": 0.0005,
                 "logLossPermutationP": 0.0005,
                 "brierHolmAdjustedP": 0.003,
@@ -7372,17 +7515,18 @@
                 ]
               },
               "comparisonFeatureMinusBaseline": {
-                "brierDeltaNbMinusPoisson": -0.002893,
+                "comparison": "featureModel minus leagueBaseline",
+                "brierDelta": -0.002893,
                 "brierDelta95CI": [
                   -0.0039684,
                   -0.0017988
                 ],
-                "logLossDeltaNbMinusPoisson": -0.0059934,
+                "logLossDelta": -0.0059934,
                 "logLossDelta95CI": [
                   -0.0083522,
                   -0.0036935
                 ],
-                "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference",
+                "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
                 "brierPermutationP": 0.0005,
                 "logLossPermutationP": 0.0005,
                 "brierHolmAdjustedP": 0.003,
@@ -7840,17 +7984,18 @@
                 ]
               },
               "comparisonFeatureMinusBaseline": {
-                "brierDeltaNbMinusPoisson": -0.0031143,
+                "comparison": "featureModel minus leagueBaseline",
+                "brierDelta": -0.0031143,
                 "brierDelta95CI": [
                   -0.0041444,
                   -0.0019558
                 ],
-                "logLossDeltaNbMinusPoisson": -0.006891,
+                "logLossDelta": -0.006891,
                 "logLossDelta95CI": [
                   -0.0092387,
                   -0.0043523
                 ],
-                "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference",
+                "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
                 "brierPermutationP": 0.0005,
                 "logLossPermutationP": 0.0005,
                 "brierHolmAdjustedP": 0.003,
@@ -8308,17 +8453,18 @@
                 ]
               },
               "comparisonFeatureMinusBaseline": {
-                "brierDeltaNbMinusPoisson": -0.0020365,
+                "comparison": "featureModel minus leagueBaseline",
+                "brierDelta": -0.0020365,
                 "brierDelta95CI": [
                   -0.0027649,
                   -0.001356
                 ],
-                "logLossDeltaNbMinusPoisson": -0.0062788,
+                "logLossDelta": -0.0062788,
                 "logLossDelta95CI": [
                   -0.0084426,
                   -0.0042697
                 ],
-                "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference",
+                "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
                 "brierPermutationP": 0.0005,
                 "logLossPermutationP": 0.0005,
                 "brierHolmAdjustedP": 0.003,
@@ -8778,17 +8924,18 @@
                 ]
               },
               "comparisonFeatureMinusBaseline": {
-                "brierDeltaNbMinusPoisson": -6.19e-05,
+                "comparison": "featureModel minus leagueBaseline",
+                "brierDelta": -6.19e-05,
                 "brierDelta95CI": [
                   -0.0001263,
                   -1.3e-06
                 ],
-                "logLossDeltaNbMinusPoisson": -0.0016042,
+                "logLossDelta": -0.0016042,
                 "logLossDelta95CI": [
                   -0.0027202,
                   -0.0005264
                 ],
-                "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference",
+                "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
                 "brierPermutationP": 0.064,
                 "logLossPermutationP": 0.003,
                 "brierHolmAdjustedP": 0.064,
@@ -9246,17 +9393,18 @@
                 ]
               },
               "comparisonFeatureMinusBaseline": {
-                "brierDeltaNbMinusPoisson": -0.0005774,
+                "comparison": "featureModel minus leagueBaseline",
+                "brierDelta": -0.0005774,
                 "brierDelta95CI": [
                   -0.0009184,
                   -0.0002462
                 ],
-                "logLossDeltaNbMinusPoisson": -0.0030028,
+                "logLossDelta": -0.0030028,
                 "logLossDelta95CI": [
                   -0.0045837,
                   -0.001298
                 ],
-                "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference",
+                "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
                 "brierPermutationP": 0.001,
                 "logLossPermutationP": 0.001,
                 "brierHolmAdjustedP": 0.003,
@@ -9714,17 +9862,18 @@
                 ]
               },
               "comparisonFeatureMinusBaseline": {
-                "brierDeltaNbMinusPoisson": -0.0021107,
+                "comparison": "featureModel minus leagueBaseline",
+                "brierDelta": -0.0021107,
                 "brierDelta95CI": [
                   -0.0029003,
                   -0.0013161
                 ],
-                "logLossDeltaNbMinusPoisson": -0.0055718,
+                "logLossDelta": -0.0055718,
                 "logLossDelta95CI": [
                   -0.007512,
                   -0.0035308
                 ],
-                "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference",
+                "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
                 "brierPermutationP": 0.0005,
                 "logLossPermutationP": 0.0005,
                 "brierHolmAdjustedP": 0.003,
@@ -10182,17 +10331,18 @@
                 ]
               },
               "comparisonFeatureMinusBaseline": {
-                "brierDeltaNbMinusPoisson": -0.0027691,
+                "comparison": "featureModel minus leagueBaseline",
+                "brierDelta": -0.0027691,
                 "brierDelta95CI": [
                   -0.0038385,
                   -0.0015779
                 ],
-                "logLossDeltaNbMinusPoisson": -0.0057118,
+                "logLossDelta": -0.0057118,
                 "logLossDelta95CI": [
                   -0.0081821,
                   -0.0034246
                 ],
-                "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference",
+                "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
                 "brierPermutationP": 0.0005,
                 "logLossPermutationP": 0.0005,
                 "brierHolmAdjustedP": 0.003,
@@ -10650,17 +10800,18 @@
                 ]
               },
               "comparisonFeatureMinusBaseline": {
-                "brierDeltaNbMinusPoisson": -0.0030347,
+                "comparison": "featureModel minus leagueBaseline",
+                "brierDelta": -0.0030347,
                 "brierDelta95CI": [
                   -0.0040874,
                   -0.0020248
                 ],
-                "logLossDeltaNbMinusPoisson": -0.0066969,
+                "logLossDelta": -0.0066969,
                 "logLossDelta95CI": [
                   -0.0091278,
                   -0.0043951
                 ],
-                "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference",
+                "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
                 "brierPermutationP": 0.0005,
                 "logLossPermutationP": 0.0005,
                 "brierHolmAdjustedP": 0.003,
@@ -11118,17 +11269,18 @@
                 ]
               },
               "comparisonFeatureMinusBaseline": {
-                "brierDeltaNbMinusPoisson": -0.0020798,
+                "comparison": "featureModel minus leagueBaseline",
+                "brierDelta": -0.0020798,
                 "brierDelta95CI": [
                   -0.002803,
                   -0.0013685
                 ],
-                "logLossDeltaNbMinusPoisson": -0.0063121,
+                "logLossDelta": -0.0063121,
                 "logLossDelta95CI": [
                   -0.0085262,
                   -0.0041218
                 ],
-                "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference",
+                "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
                 "brierPermutationP": 0.0005,
                 "logLossPermutationP": 0.0005,
                 "brierHolmAdjustedP": 0.003,
@@ -11362,6 +11514,134 @@
           }
         ]
       },
+      "distributionComparison": [
+        {
+          "line": 0.5,
+          "NB2MinusPoisson": {
+            "comparison": "NB2 minus Poisson (feature-model mean)",
+            "brierDelta": -2.42e-05,
+            "brierDelta95CI": [
+              -3.33e-05,
+              -1.51e-05
+            ],
+            "logLossDelta": -0.0004483,
+            "logLossDelta95CI": [
+              -0.000634,
+              -0.0002722
+            ],
+            "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
+            "brierPermutationP": 0.0005,
+            "logLossPermutationP": 0.0005,
+            "brierHolmAdjustedP": 0.003,
+            "logLossHolmAdjustedP": 0.003
+          }
+        },
+        {
+          "line": 1.5,
+          "NB2MinusPoisson": {
+            "comparison": "NB2 minus Poisson (feature-model mean)",
+            "brierDelta": 9.4e-06,
+            "brierDelta95CI": [
+              -3.15e-05,
+              5.13e-05
+            ],
+            "logLossDelta": 9.2e-06,
+            "logLossDelta95CI": [
+              -0.0001843,
+              0.0002078
+            ],
+            "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
+            "brierPermutationP": 0.655,
+            "logLossPermutationP": 0.926,
+            "brierHolmAdjustedP": 0.655,
+            "logLossHolmAdjustedP": 0.926
+          }
+        },
+        {
+          "line": 2.5,
+          "NB2MinusPoisson": {
+            "comparison": "NB2 minus Poisson (feature-model mean)",
+            "brierDelta": 0.0001475,
+            "brierDelta95CI": [
+              8.09e-05,
+              0.0002101
+            ],
+            "logLossDelta": 0.0003549,
+            "logLossDelta95CI": [
+              0.0001787,
+              0.0005245
+            ],
+            "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
+            "brierPermutationP": 0.0005,
+            "logLossPermutationP": 0.0005,
+            "brierHolmAdjustedP": 0.003,
+            "logLossHolmAdjustedP": 0.003
+          }
+        },
+        {
+          "line": 3.5,
+          "NB2MinusPoisson": {
+            "comparison": "NB2 minus Poisson (feature-model mean)",
+            "brierDelta": 9.36e-05,
+            "brierDelta95CI": [
+              4.79e-05,
+              0.0001374
+            ],
+            "logLossDelta": 0.000184,
+            "logLossDelta95CI": [
+              9.1e-05,
+              0.0002768
+            ],
+            "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
+            "brierPermutationP": 0.0005,
+            "logLossPermutationP": 0.001,
+            "brierHolmAdjustedP": 0.003,
+            "logLossHolmAdjustedP": 0.003
+          }
+        },
+        {
+          "line": 4.5,
+          "NB2MinusPoisson": {
+            "comparison": "NB2 minus Poisson (feature-model mean)",
+            "brierDelta": -4.07e-05,
+            "brierDelta95CI": [
+              -6.22e-05,
+              -1.94e-05
+            ],
+            "logLossDelta": -0.0001163,
+            "logLossDelta95CI": [
+              -0.0001749,
+              -5.74e-05
+            ],
+            "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
+            "brierPermutationP": 0.001,
+            "logLossPermutationP": 0.0005,
+            "brierHolmAdjustedP": 0.003,
+            "logLossHolmAdjustedP": 0.003
+          }
+        },
+        {
+          "line": 5.5,
+          "NB2MinusPoisson": {
+            "comparison": "NB2 minus Poisson (feature-model mean)",
+            "brierDelta": -5.31e-05,
+            "brierDelta95CI": [
+              -8.47e-05,
+              -1.92e-05
+            ],
+            "logLossDelta": -0.0002251,
+            "logLossDelta95CI": [
+              -0.0003477,
+              -9.35e-05
+            ],
+            "note": "Negative favors the candidate; positive favors the baseline; CI crossing zero means no clear difference",
+            "brierPermutationP": 0.0035,
+            "logLossPermutationP": 0.002,
+            "brierHolmAdjustedP": 0.007,
+            "logLossHolmAdjustedP": 0.004
+          }
+        }
+      ],
       "interpretation": "Negative Brier/log-loss deltas favor the feature model. Holm-adjusted p<0.05 indicates evidence of a difference across the market's tested lines. Reliability bins and ECE/MCE describe calibration. This is not an ROI test; historical bookmaker odds are unavailable."
     }
   },
