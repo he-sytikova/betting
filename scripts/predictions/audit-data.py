@@ -183,7 +183,15 @@ def audit_football_data():
         for (team_code, team), stats in team_stats.items():
             if team_code != code:
                 continue
-            recent = sorted(stats["recent"], key=lambda x: x[0])[-10:]
+            def date_key(entry):
+                raw = entry[0]
+                for fmt in ("%d/%m/%y", "%d/%m/%Y", "%Y-%m-%d"):
+                    try:
+                        return datetime.strptime(raw, fmt)
+                    except ValueError:
+                        pass
+                return datetime.min
+            recent = sorted(stats["recent"], key=date_key)[-10:]
             teams.append({
                 "team": team, "appearances": stats["appearances"],
                 "cornersAvailable": stats["corners"], "cardsAvailable": stats["cards"],
