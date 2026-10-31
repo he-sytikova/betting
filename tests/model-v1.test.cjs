@@ -8,7 +8,7 @@ const html = fs.readFileSync(root + '/model-v1.html', 'utf8');
 const policy = JSON.parse(fs.readFileSync(root + '/data/corners_cards_distribution_v1.json', 'utf8'));
 const context = { document: { addEventListener() {} }, console, Math, Number, Date, Map, Set };
 vm.createContext(context);
-vm.runInContext(source + '\\nglobalThis.__modelV1Test = { countOver, formatTotals, configure: (models, config) => { productionModels = models; distributionConfig = config; } };', context, { filename: 'model-v1.js' });
+vm.runInContext(source + ';globalThis.__modelV1Test = { countOver, formatTotals, configure: (models, config) => { productionModels = models; distributionConfig = config; } };', context, { filename: 'model-v1.js' });
 test('page contains controls and loads v1 script', () => {
  for (const id of ['market-type','market-source','market-search','markets-body','markets-error','markets-empty','markets-count','markets-date','refresh-btn']) assert.ok(html.includes('id="'+id+'"'));
  assert.ok(html.includes('<script src="model-v1.js"></script>'));
