@@ -37,6 +37,9 @@ jobs:
       - name: Train, calibrate and evaluate total lines
         run: python scripts/predictions/train-models.py
 
+      - name: Export browser production models and team features
+        run: python scripts/predictions/export-production-models.py
+
       - name: Create compact walk-forward summary
         run: |
           python - <<'PY'
@@ -92,14 +95,18 @@ jobs:
           import json
           from pathlib import Path
           report = json.loads(Path("data/corners_cards_model_report.json").read_text(encoding="utf-8"))
+          models = json.loads(Path("data/corners_cards_models.json").read_text(encoding="utf-8"))
           for market in ("corners", "yellowCards"):
               nb = report.get(market, {}).get("negativeBinomial", {})
               if nb.get("status") != "evaluated" or not nb.get("totalLines"):
                   raise SystemExit(f"Missing Negative Binomial results for {market}")
-          print("Validated Poisson and Negative Binomial report sections")
+              model = models.get("models", {}).get(market, {})
+              if not model.get("features") or not model.get("coefficients"):
+                  raise SystemExit(f"Missing exported production model for {market}")
+          print("Validated backtest and browser model exports")
           PY
           git add data/corners_cards_audit.json data/corners_cards_training.csv
-          git add -f data/corners_cards_model_report.json data/walk-forward-summary.json
+          git add -f data/corners_cards_model_report.json data/walk-forward-summary.json data/corners_cards_models.json
           git commit -m "chore: refresh corners and cards audit and training outputs" || echo "No changes to commit"
           git pull --rebase origin main
           git push
