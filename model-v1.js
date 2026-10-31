@@ -232,6 +232,13 @@ async function load() {
     if (!productionModels?.models || !productionModels?.teams || !distributionConfig?.markets?.corners || !distributionConfig?.markets?.yellowCards) {
       throw new Error('Не удалось загрузить конфигурацию гибридного распределения v1.');
     }
+    for (const market of ['corners', 'yellowCards']) {
+      const policy = distributionConfig.markets[market];
+      if (!Number.isFinite(policy.alpha) || policy.alpha <= 0 ||
+          !policy.lines || Object.values(policy.lines).some(value => !['poisson', 'negativeBinomial'].includes(value))) {
+        throw new Error('Некорректная конфигурация распределения для рынка: ' + market);
+      }
+    }
     const now = Date.now();
     const fixtures = (Array.isArray(data.predictions) ? data.predictions : []).filter(item => {
       const kickoff = Date.parse(item.time);
