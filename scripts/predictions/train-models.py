@@ -165,7 +165,7 @@ def grouped_metrics(rows, y, pred, baseline, group_key, min_rows=100, distributi
             "poissonDeviance": round(poisson_deviance(gy, gp), 4),
             "baselinePoissonDeviance": round(poisson_deviance(gy, gb), 4),
             "totalLines": evaluate_lines(gy, gp, distribution, alpha, lines),
-            "baselineTotalLines": evaluate_lines(gy, gb, lines=lines)
+            "baselineTotalLines": evaluate_lines(gy, gb, lines=lines),
             "actualMean": round(float(np.mean(gy)), 4),
             "actualVariance": round(float(np.var(gy)), 4),
             "varianceToMean": round(float(np.var(gy) / np.mean(gy)), 4) if np.mean(gy) > 0 else None,
