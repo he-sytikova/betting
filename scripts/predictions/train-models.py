@@ -116,6 +116,35 @@ def grouped_metrics(rows, y, pred, baseline, group_key, min_rows=100, distributi
         }
     return {"minimumGroupRows": min_rows, "groupsReported": len(groups), "groups": groups}
 
+def paired_bootstrap_ci(actual, p_poisson, p_nb, seed=20261031, samples=1000):
+    """95% paired bootstrap CI for NB2-minus-Poisson probability-loss differences."""
+    y = np.asarray(actual, dtype=float)
+    p = np.clip(np.asarray(p_poisson, dtype=float), 1e-8, 1 - 1e-8)
+    q = np.clip(np.asarray(p_nb, dtype=float), 1e-8, 1 - 1e-8)
+    brier_delta = (q - y) ** 2 - (p - y) ** 2
+    loss_p = -(y * np.log(p) + (1 - y) * np.log(1 - p))
+    loss_q = -(y * np.log(q) + (1 - y) * np.log(1 - q))
+    log_delta = loss_q - loss_p
+    rng = np.random.default_rng(seed)
+
+    def ci(values):
+        n = len(values)
+        means = np.empty(samples)
+        for start in range(0, samples, 100):
+            count = min(100, samples - start)
+            sample_idx = rng.integers(0, n, size=(count, n))
+            means[start:start + count] = values[sample_idx].mean(axis=1)
+        return [round(float(x), 7) for x in np.percentile(means, [2.5, 97.5])]
+
+    return {
+        "brierDeltaNbMinusPoisson": round(float(brier_delta.mean()), 7),
+        "brierDelta95CI": ci(brier_delta),
+        "logLossDeltaNbMinusPoisson": round(float(log_delta.mean()), 7),
+        "logLossDelta95CI": ci(log_delta),
+        "note": "Negative favors NB2; positive favors Poisson; CI crossing zero means no clear difference",
+    }
+
+
 def train_market(rows, target, eligible_flag, baseline_key):
     usable = [r for r in rows if r[eligible_flag] == "1" and r[target] != ""]
     train = [r for r in usable if date.fromisoformat(r["date"]) < HOLDOUT_START]
@@ -174,6 +203,20 @@ def train_market(rows, target, eligible_flag, baseline_key):
         },
         "byLeague": grouped_metrics(test, y_test, pred, baseline, "league"),
         "bySeason": grouped_metrics(test, y_test, pred, baseline, "season"),
+        "distributionComparison": {
+            "pairedBootstrapByLine": [
+                {
+                    "line": line,
+                    **paired_bootstrap_ci(
+                        (y_test > line).astype(float),
+                        poisson.sf(int(line), pred),
+                        negative_binomial_sf(line, pred, pearson_alpha),
+                        seed=20261031 + index,
+                    ),
+                }
+                for index, line in enumerate(LINES)
+            ],
+        },
         "negativeBinomial": {
             "status": "evaluated",
             "meanModel": "same PoissonRegressor conditional mean; NB2 distribution adds estimated overdispersion",
