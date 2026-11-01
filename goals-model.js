@@ -208,6 +208,34 @@ function predictFixture(fixture,config) {
 function formatLines(items, label) {
   return items.map(x=>label(x)).join(' · ');
 }
+const MIN_DISPLAY_PROBABILITY = 80;
+
+function heatmapColor(probability) {
+  const ratio = Math.max(0, Math.min(1, (probability - MIN_DISPLAY_PROBABILITY) / 20));
+  const pale = [220, 252, 231];
+  const dark = [20, 83, 45];
+  const rgb = pale.map((start, index) => Math.round(start + (dark[index] - start) * ratio));
+  return 'rgb(' + rgb.join(', ') + ')';
+}
+
+function highlightProbabilityCells(row, threshold = MIN_DISPLAY_PROBABILITY) {
+  for (const cell of row.cells) {
+    cell.style.backgroundColor = '#fff';
+    cell.style.color = '#000';
+    cell.removeAttribute('title');
+    if (!cell.classList.contains('probability-cell')) continue;
+    const probabilities = Array.from(cell.textContent.matchAll(/([0-9]+(?:[.,][0-9]+)?)\\s*%/g))
+      .map(match => Number.parseFloat(match[1].replace(',', '.')))
+      .filter(Number.isFinite);
+    if (!probabilities.length) continue;
+    const highest = Math.max(...probabilities);
+    if (highest > threshold) {
+      cell.style.backgroundColor = heatmapColor(highest);
+      cell.title = 'Максимальная вероятность: ' + highest.toFixed(1) + '%';
+    }
+  }
+}
+
 function render() {
   const query=$('market-search').value.trim().toLocaleLowerCase('ru');
   const visible=rows.filter(r=>[r.fixture.league,r.fixture.home,r.fixture.away].join(' ').toLocaleLowerCase('ru').includes(query));
@@ -230,6 +258,7 @@ function render() {
     for(let i=0;i<cells.length;i++){
       const td=document.createElement('td'); td.textContent=cells[i]; if(i>=3) td.className='probability-cell'; tr.appendChild(td);
     }
+    highlightProbabilityCells(tr);
     body.appendChild(tr);
   }
   $('markets-count').textContent='Матчей с расчётом: '+visible.length+' из '+rows.length;
