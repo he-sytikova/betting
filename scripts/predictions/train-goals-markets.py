@@ -93,6 +93,158 @@ def metrics(y, pred, baseline_mean):
         "baselineReference": "constant mean of the training partition; no holdout information used",
     }
 
+def poisson_score_probabilities(home_mean, away_mean):
+    """Return market probabilities from a normalized independent-Poisson score grid."""
+    goals = np.arange(41)
+    home_pmf = poisson.pmf(goals, max(float(home_mean), 1e-9))
+    away_pmf = poisson.pmf(goals, max(float(away_mean), 1e-9))
+    home_pmf /= home_pmf.sum()
+    away_pmf /= away_pmf.sum()
+    matrix = np.outer(home_pmf, away_pmf)
+    home_goals, away_goals = np.indices(matrix.shape)
+    p_home = float(matrix[home_goals > away_goals].sum())
+    p_draw = float(matrix[home_goals == away_goals].sum())
+    p_away = float(matrix[home_goals < away_goals].sum())
+    return {
+        "homePmf": home_pmf, "awayPmf": away_pmf, "matrix": matrix,
+        "home": p_home, "draw": p_draw, "away": p_away,
+        "btts": float(matrix[1:, 1:].sum()),
+        "totalOver": {line: float(matrix[home_goals + away_goals > line].sum())
+                      for line in (0.5, 1.5, 2.5, 3.5, 4.5)},
+        "homeOver": {line: float(home_pmf[goals > line].sum())
+                     for line in (0.5, 1.5, 2.5, 3.5)},
+        "awayOver": {line: float(away_pmf[goals > line].sum())
+                     for line in (0.5, 1.5, 2.5, 3.5)},
+        "asian": {
+            line: {
+                "win": float(matrix[home_goals - away_goals + line > 0].sum()),
+                "push": float(matrix[home_goals - away_goals + line == 0].sum()),
+                "lose": float(matrix[home_goals - away_goals + line < 0].sum()),
+            }
+            for line in (-1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5)
+        },
+    }
+
+
+def binary_probability_metrics(actual, probabilities, baseline_actual):
+    actual = np.asarray(actual, dtype=float)
+    probabilities = np.clip(np.asarray(probabilities, dtype=float), 1e-9, 1 - 1e-9)
+    baseline_actual = np.asarray(baseline_actual, dtype=float)
+    baseline_probability = float(np.mean(baseline_actual))
+    baseline_probability = float(np.clip(baseline_probability, 1e-9, 1 - 1e-9))
+    brier = float(np.mean((probabilities - actual) ** 2))
+    baseline_brier = float(np.mean((baseline_probability - actual) ** 2))
+    log_loss = float(-np.mean(actual * np.log(probabilities) + (1 - actual) * np.log(1 - probabilities)))
+    baseline_log_loss = float(-np.mean(actual * np.log(baseline_probability) + (1 - actual) * np.log(1 - baseline_probability)))
+    bins = []
+    ece = 0.0
+    for index in range(10):
+        low, high = index / 10, (index + 1) / 10
+        mask = (probabilities >= low) & ((probabilities < high) if index < 9 else (probabilities <= high))
+        if not np.any(mask):
+            continue
+        mean_predicted = float(np.mean(probabilities[mask]))
+        observed = float(np.mean(actual[mask]))
+        weight = float(np.mean(mask))
+        ece += weight * abs(mean_predicted - observed)
+        bins.append({"range": f"{low:.1f}-{high:.1f}", "rows": int(np.sum(mask)),
+                     "predicted": round(mean_predicted, 4), "observed": round(observed, 4)})
+    return {
+        "rows": int(len(actual)), "baselineProbability": round(baseline_probability, 5),
+        "brier": round(brier, 5), "baselineBrier": round(baseline_brier, 5),
+        "brierSkill": round(1 - brier / baseline_brier, 5) if baseline_brier else None,
+        "logLoss": round(log_loss, 5), "baselineLogLoss": round(baseline_log_loss, 5),
+        "logLossImprovement": round(baseline_log_loss - log_loss, 5),
+        "expectedCalibrationError10": round(float(ece), 5), "reliabilityBins": bins,
+    }
+
+
+def multiclass_probability_metrics(actual_classes, probabilities, baseline_classes):
+    actual_classes = np.asarray(actual_classes, dtype=int)
+    probabilities = np.clip(np.asarray(probabilities, dtype=float), 1e-9, 1)
+    probabilities /= probabilities.sum(axis=1, keepdims=True)
+    baseline_classes = np.asarray(baseline_classes, dtype=int)
+    baseline = np.bincount(baseline_classes, minlength=3).astype(float)
+    baseline /= baseline.sum()
+    one_hot = np.eye(3)[actual_classes]
+    brier = float(np.mean(np.sum((probabilities - one_hot) ** 2, axis=1)))
+    baseline_matrix = np.tile(baseline, (len(actual_classes), 1))
+    baseline_brier = float(np.mean(np.sum((baseline_matrix - one_hot) ** 2, axis=1)))
+    log_loss = float(-np.mean(np.log(probabilities[np.arange(len(actual_classes)), actual_classes])))
+    baseline_log_loss = float(-np.mean(np.log(baseline[actual_classes])))
+    return {
+        "rows": int(len(actual_classes)), "baselineProbabilities": [round(float(x), 5) for x in baseline],
+        "brier": round(brier, 5), "baselineBrier": round(baseline_brier, 5),
+        "brierSkill": round(1 - brier / baseline_brier, 5) if baseline_brier else None,
+        "logLoss": round(log_loss, 5), "baselineLogLoss": round(baseline_log_loss, 5),
+        "logLossImprovement": round(baseline_log_loss - log_loss, 5),
+    }
+
+
+def evaluate_probability_markets(train_rows, test_rows, home_predictions, away_predictions):
+    """Chronological holdout scoring; all constant baselines use training outcomes only."""
+    train_home = np.asarray([int(float(r["target_home_goals"])) for r in train_rows])
+    train_away = np.asarray([int(float(r["target_away_goals"])) for r in train_rows])
+    test_home = np.asarray([int(float(r["target_home_goals"])) for r in test_rows])
+    test_away = np.asarray([int(float(r["target_away_goals"])) for r in test_rows])
+    train_classes = np.where(train_home > train_away, 0, np.where(train_home == train_away, 1, 2))
+    test_classes = np.where(test_home > test_away, 0, np.where(test_home == test_away, 1, 2))
+    predictions = [poisson_score_probabilities(h, a) for h, a in zip(home_predictions, away_predictions)]
+    outcome_probs = np.asarray([[p["home"], p["draw"], p["away"]] for p in predictions])
+    result = {"1X2": multiclass_probability_metrics(test_classes, outcome_probs, train_classes)}
+
+    match_total_train = train_home + train_away
+    match_total_test = test_home + test_away
+    home_train_decisive = train_home != train_away
+    home_test_decisive = test_home != test_away
+    result["matchTotals"] = {}
+    for line in (0.5, 1.5, 2.5, 3.5, 4.5):
+        result["matchTotals"][str(line)] = binary_probability_metrics(
+            match_total_test > line, [p["totalOver"][line] for p in predictions], match_total_train > line)
+    result["homeTeamTotals"] = {}
+    result["awayTeamTotals"] = {}
+    for line in (0.5, 1.5, 2.5, 3.5):
+        result["homeTeamTotals"][str(line)] = binary_probability_metrics(
+            test_home > line, [p["homeOver"][line] for p in predictions], train_home > line)
+        result["awayTeamTotals"][str(line)] = binary_probability_metrics(
+            test_away > line, [p["awayOver"][line] for p in predictions], train_away > line)
+    result["bothTeamsToScore"] = binary_probability_metrics(
+        (test_home > 0) & (test_away > 0), [p["btts"] for p in predictions],
+        (train_home > 0) & (train_away > 0))
+
+    result["drawNoBet"] = {}
+    for side, train_margin, test_margin in (
+        ("home", train_home - train_away, test_home - test_away),
+        ("away", train_away - train_home, test_away - test_home),
+    ):
+        train_decisive = train_margin != 0
+        test_decisive = test_margin != 0
+        probs = [p[side] / (p["home"] + p["away"]) for p in predictions]
+        result["drawNoBet"][side] = binary_probability_metrics(
+            test_margin[test_decisive] > 0,
+            np.asarray(probs)[test_decisive],
+            train_margin[train_decisive] > 0)
+        result["drawNoBet"][side]["coverageRows"] = int(np.sum(test_decisive))
+        result["drawNoBet"][side]["pushRate"] = round(float(np.mean(~test_decisive)), 5)
+
+    result["asianHandicapHome"] = {}
+    for line in (-1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5):
+        train_result = train_home - train_away + line
+        test_result = test_home - test_away + line
+        train_decisive = train_result != 0
+        test_decisive = test_result != 0
+        conditional_probs = [
+            p["asian"][line]["win"] / max(1e-12, p["asian"][line]["win"] + p["asian"][line]["lose"])
+            for p in predictions
+        ]
+        result["asianHandicapHome"][str(line)] = binary_probability_metrics(
+            test_result[test_decisive] > 0,
+            np.asarray(conditional_probs)[test_decisive],
+            train_result[train_decisive] > 0)
+        result["asianHandicapHome"][str(line)]["coverageRows"] = int(np.sum(test_decisive))
+        result["asianHandicapHome"][str(line)]["pushRate"] = round(float(np.mean(~test_decisive)), 5)
+    return result
+
 def main():
     with DATA.open(encoding="utf-8", newline="") as f:
         rows = [r for r in csv.DictReader(f) if r.get("target_home_goals") not in ("", None) and r.get("target_away_goals") not in ("", None)]
@@ -107,14 +259,18 @@ def main():
               "holdoutStart": HOLDOUT_START.isoformat(), "method": "Chronological holdout; no random split; features are prior-match rolling histories.",
               "markets": {}, "status": "experimental_research_model"}
     models = {}
+    holdout_predictions = {}
     for side, target in (("homeGoals", "target_home_goals"), ("awayGoals", "target_away_goals")):
         _, tm, imp, sc = fit(train, target)
         y = np.asarray([float(r[target]) for r in test])
         train_mean = float(np.mean([float(r[target]) for r in train]))
         pred = predict(test, tm, imp, sc)
+        holdout_predictions[side] = pred
         report["markets"][side] = metrics(y, pred, train_mean)
         exported, _, _, _ = fit(rows, target)
         models[side] = exported
+    report["probabilityMarkets"] = evaluate_probability_markets(
+        train, test, holdout_predictions["homeGoals"], holdout_predictions["awayGoals"])
     latest_team, latest_league = {}, {}
     team_feature_names = [
         "goal_team_for_avg5", "goal_team_against_avg5", "goal_team_for_avg10", "goal_team_against_avg10",
