@@ -71,12 +71,27 @@ def deviance(y, mu):
     term = np.where(y > 0, y * np.log(np.maximum(y, 1e-9) / mu) - (y - mu), mu)
     return float(2 * np.mean(term))
 
-def metrics(y, pred):
-    return {"rows": int(len(y)), "actualMean": round(float(np.mean(y)), 4),
-            "predictedMean": round(float(np.mean(pred)), 4),
-            "mae": round(float(np.mean(np.abs(y-pred))), 5),
-            "poissonDeviance": round(deviance(y,pred), 5),
-            "baselineMean": round(float(np.mean(y)), 5)}
+def metrics(y, pred, baseline_mean):
+    baseline = np.full(len(y), float(baseline_mean), dtype=float)
+    model_mae = float(np.mean(np.abs(y - pred)))
+    baseline_mae = float(np.mean(np.abs(y - baseline)))
+    model_deviance = deviance(y, pred)
+    baseline_deviance = deviance(y, baseline)
+    return {
+        "rows": int(len(y)),
+        "actualMean": round(float(np.mean(y)), 4),
+        "predictedMean": round(float(np.mean(pred)), 4),
+        "mae": round(model_mae, 5),
+        "baselineMae": round(baseline_mae, 5),
+        "maeImprovement": round(baseline_mae - model_mae, 5),
+        "maeImprovementPct": round((baseline_mae - model_mae) / baseline_mae * 100, 3) if baseline_mae else 0,
+        "poissonDeviance": round(model_deviance, 5),
+        "baselinePoissonDeviance": round(baseline_deviance, 5),
+        "devianceImprovement": round(baseline_deviance - model_deviance, 5),
+        "devianceImprovementPct": round((baseline_deviance - model_deviance) / baseline_deviance * 100, 3) if baseline_deviance else 0,
+        "baselineMean": round(float(baseline_mean), 5),
+        "baselineReference": "constant mean of the training partition; no holdout information used",
+    }
 
 def main():
     with DATA.open(encoding="utf-8", newline="") as f:
@@ -95,8 +110,9 @@ def main():
     for side, target in (("homeGoals", "target_home_goals"), ("awayGoals", "target_away_goals")):
         _, tm, imp, sc = fit(train, target)
         y = np.asarray([float(r[target]) for r in test])
+        train_mean = float(np.mean([float(r[target]) for r in train]))
         pred = predict(test, tm, imp, sc)
-        report["markets"][side] = metrics(y, pred)
+        report["markets"][side] = metrics(y, pred, train_mean)
         exported, _, _, _ = fit(rows, target)
         models[side] = exported
     latest_team, latest_league = {}, {}
