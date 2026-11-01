@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "data" / "corners_cards_training.csv"
 MODEL_OUT = ROOT / "data" / "goals_markets_models.json"
 REPORT_OUT = ROOT / "data" / "goals_markets_report.json"
+AUDIT = ROOT / "data" / "corners_cards_audit.json"
 HOLDOUT_START = date(2024, 7, 1)
 FEATURES = [
     "home_goal_team_for_avg5", "home_goal_team_against_avg5",
@@ -98,11 +99,58 @@ def main():
         report["markets"][side] = metrics(y, pred)
         exported, _, _, _ = fit(rows, target)
         models[side] = exported
+    latest_team, latest_league = {}, {}
+    team_feature_names = [
+        "goal_team_for_avg5", "goal_team_against_avg5", "goal_team_for_avg10", "goal_team_against_avg10",
+        "team_for_avg5", "team_against_avg5", "team_for_avg10", "team_against_avg10",
+        "card_team_for_avg5", "card_team_against_avg5", "card_team_for_avg10", "card_team_against_avg10",
+        "foul_team_for_avg5", "foul_team_against_avg5", "foul_team_for_avg10", "foul_team_against_avg10",
+        "shots_team_for_avg5", "shots_team_against_avg5", "shots_team_for_avg10", "shots_team_against_avg10",
+        "shots_on_target_team_for_avg5", "shots_on_target_team_against_avg5",
+        "shots_on_target_team_for_avg10", "shots_on_target_team_against_avg10",
+    ]
+    for row in rows:
+        league = row.get("league", "")
+        latest_league[league] = {
+            k: (float(row[k]) if row.get(k) not in ("", None) else None)
+            for k in ("league_goals_avg", "league_corners_avg", "league_cards_avg",
+                      "league_fouls_avg", "league_shots_avg", "league_shots_on_target_avg")
+        }
+        for side, team_key in (("home", "home_team"), ("away", "away_team")):
+            team = row.get(team_key, "").strip()
+            if not team:
+                continue
+            latest_team[(league, team)] = {
+                "name": team,
+                "stats": {
+                    name: (float(row[f"{side}_{name}"]) if row.get(f"{side}_{name}") not in ("", None) else None)
+                    for name in team_feature_names
+                },
+                "matchesBefore": int(float(row.get(f"{side}_matches_before") or 0)),
+            }
+    teams = {}
+    for (league, team), value in latest_team.items():
+        teams.setdefault(league, {})[team] = value
+    league_names = {}
+    if AUDIT.exists():
+        audit = json.loads(AUDIT.read_text(encoding="utf-8"))
+        for item in audit.get("sources", {}).get("footballData", {}).get("leagues", []):
+            if item.get("code") and item.get("league"):
+                league_names[str(item["code"])] = str(item["league"])
+    aliases = {name.strip().casefold(): code for code, name in league_names.items()}
+    aliases.update({
+        "premier league":"E0", "championship":"E1", "league one":"E2", "league two":"E3",
+        "scottish premiership":"SC0", "bundesliga":"D1", "2 bundesliga":"D2",
+        "serie a":"I1", "serie b":"I2", "la liga":"SP1", "segunda division":"SP2",
+        "ligue 1":"F1", "ligue 2":"F2", "eredivisie":"N1", "pro league":"B1",
+        "super lig":"T1",
+    })
     payload = {
       "schemaVersion": 1, "generatedAt": date.today().isoformat(),
       "status": "experimental_research_model",
       "disclaimer": "Independent statistical estimates; no bookmaker probabilities or picks are imported.",
-      "models": models, "features": FEATURES,
+      "models": models, "features": FEATURES, "teams": teams,
+      "leagueNames": league_names, "leagueAliases": aliases, "leagueStats": latest_league,
       "scoreGridMax": 10,
       "markets": ["1X2","doubleChance","drawNoBet","matchTotals","teamTotals","bothTeamsToScore","correctScore","asianHandicap"],
       "trainingRows": len(rows), "trainingThrough": max(r["date"] for r in rows),
