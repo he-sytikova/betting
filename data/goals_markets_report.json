@@ -1,0 +1,25 @@
+{
+  "generatedAt": "2026-11-01",
+  "datasetRows": 42851,
+  "holdoutStart": "2024-07-01",
+  "method": "Chronological holdout; no random split; features are prior-match rolling histories.",
+  "markets": {
+    "homeGoals": {
+      "rows": 7883,
+      "actualMean": 1.4978,
+      "predictedMean": 1.5072,
+      "mae": 0.95089,
+      "poissonDeviance": 1.10287,
+      "baselineMean": 1.49778
+    },
+    "awayGoals": {
+      "rows": 7883,
+      "actualMean": 1.2245,
+      "predictedMean": 1.2086,
+      "mae": 0.84345,
+      "poissonDeviance": 1.10222,
+      "baselineMean": 1.22453
+    }
+  },
+  "status": "experimental_research_model"
+}
