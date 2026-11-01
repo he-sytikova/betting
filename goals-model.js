@@ -142,12 +142,13 @@ function predictFixture(fixture,config) {
   const homeTotals=teamLines.map(line=>({line,over:totalOver(dist.hp,line)}));
   const awayTotals=teamLines.map(line=>({line,over:totalOver(dist.ap,line)}));
   const ah=ahLines.map(line=>({line,...asianOutcome(dist,line)}));
+  const awayAh=ahLines.map(line=>({line,...asianOutcome(dist,-line)}));
   return {
     fixture,leagueCode,homeMean,awayMean,
     outcome:{home:dist.home,draw:dist.draw,away:dist.away},
     doubleChance:{homeDraw:dist.home+dist.draw,drawAway:dist.draw+dist.away,homeAway:dist.home+dist.away},
     dnb:{home:dist.home/(dist.home+dist.away),away:dist.away/(dist.home+dist.away),refund:dist.draw},
-    totals,homeTotals,awayTotals,btts:{yes:dist.btts,no:1-dist.btts},ah
+    totals,homeTotals,awayTotals,btts:{yes:dist.btts,no:1-dist.btts},ah,awayAh
   };
 }
 function formatLines(items, label) {
@@ -169,7 +170,8 @@ function render() {
       formatLines(r.homeTotals,x=>'ТБ '+x.line+': '+pct(x.over)),
       formatLines(r.awayTotals,x=>'ТБ '+x.line+': '+pct(x.over)),
       'Обе: '+pct(r.btts.yes)+' / Нет: '+pct(r.btts.no),
-      formatLines(r.ah,x=>(x.line>0?'+':'')+x.line+': '+pct(x.win)+' / возврат '+pct(x.push)+' / проигрыш '+pct(x.lose))
+      formatLines(r.ah,x=>(x.line>0?'+':'')+x.line+': '+pct(x.win)+' / возврат '+pct(x.push)+' / проигрыш '+pct(x.lose)),
+      formatLines(r.awayAh,x=>(x.line>0?'+':'')+x.line+': '+pct(x.win)+' / возврат '+pct(x.push)+' / проигрыш '+pct(x.lose))
     ];
     for(let i=0;i<cells.length;i++){
       const td=document.createElement('td'); td.textContent=cells[i]; if(i>=3) td.className='probability-cell'; tr.appendChild(td);
