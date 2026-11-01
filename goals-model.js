@@ -197,7 +197,7 @@ async function load() {
     $('markets-body').replaceChildren(); rows=[];
   }
 }
-document.addEventListener('DOMContentLoaded',()=>{
+if (typeof document !== 'undefined') document.addEventListener('DOMContentLoaded',()=>{
   $('market-search').addEventListener('input',render);
   $('refresh-btn').addEventListener('click',load);
   load();
