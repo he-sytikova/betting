@@ -178,13 +178,19 @@ async function load() {
     report=reportResponse.ok?await reportResponse.json():null;
     if(!modelConfig.models?.homeGoals || !modelConfig.models?.awayGoals || !modelConfig.teams || !modelConfig.leagueAliases)
       throw new Error('Структура файла модели не соответствует ожидаемой схеме.');
-    const now=Date.now(), fixtures=(Array.isArray(data.predictions)?data.predictions:[])
+    const now=Date.now(), rawFixtures=(Array.isArray(data.predictions)?data.predictions:[])
       .filter(x=>Number.isFinite(Date.parse(x.time)) && Date.parse(x.time)>now)
       .sort((a,b)=>Date.parse(a.time)-Date.parse(b.time));
+    const fixtureMap=new Map();
+    for(const fixture of rawFixtures){
+      const key=[Date.parse(fixture.time),normalize(fixture.league),normalize(fixture.home),normalize(fixture.away)].join('|');
+      if(!fixtureMap.has(key)) fixtureMap.set(key,fixture);
+    }
+    const fixtures=Array.from(fixtureMap.values());
     let unmatched=0;
     rows=fixtures.map(f=>predictFixture(f,modelConfig)).filter(r=>{if(r.skip){unmatched++;return false;}return true;});
     $('markets-date').textContent='Расписание: '+(data.date||'—')+' · модель: '+(modelConfig.generatedAt||'—')+' · обучение по '+(modelConfig.trainingThrough||'—');
-    $('markets-count').textContent='Сопоставлено '+rows.length+' из '+fixtures.length+' будущих матчей; пропущено без полной истории: '+unmatched;
+    $('markets-count').textContent='Сопоставлено '+rows.length+' из '+fixtures.length+' уникальных будущих матчей; пропущено без полной истории: '+unmatched;
     $('model-status').textContent='Статус: '+modelConfig.status+' · '+modelConfig.trainingRows+' исторических матчей';
     if(report?.markets){
       const h=report.markets.homeGoals,a=report.markets.awayGoals;
