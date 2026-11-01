@@ -30,7 +30,7 @@ const TEAM_ALIASES = {
   'frosinone calcio': 'frosinone',
   'ss lazio': 'lazio',
   '1 union berlin': 'union berlin',
-  '1 koln': 'fc koln'
+  '1 koln': 'koln'
 };
 const LEAGUE_ALIASES = {
   'germany bundesliga':'D1','germany 2 bundesliga':'D2',
