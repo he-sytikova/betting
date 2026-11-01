@@ -224,7 +224,7 @@ function highlightProbabilityCells(row, threshold = MIN_DISPLAY_PROBABILITY) {
     cell.style.color = '#000';
     cell.removeAttribute('title');
     if (!cell.classList.contains('probability-cell')) continue;
-    const probabilities = Array.from(cell.textContent.matchAll(/([0-9]+(?:[.,][0-9]+)?)\\s*%/g))
+    const probabilities = Array.from(cell.textContent.matchAll(/([0-9]+(?:[.,][0-9]+)?)\s*%/g))
       .map(match => Number.parseFloat(match[1].replace(',', '.')))
       .filter(Number.isFinite);
     if (!probabilities.length) continue;
