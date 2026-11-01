@@ -1,6 +1,7 @@
 const $ = (id) => document.getElementById(id);
 let allMarkets = [];
 let productionModels = null;
+let modelDiagnostics = {fixtures:0, supportedLeague:0, matchedTeams:0, generated:0, unsupportedLeagues:{}, unmatchedTeams:[]};
 function val(v) { return v === null || v === undefined || v === '' || v === '—' ? '—' : String(v); }
 function fmtTime(v) {
   if (!v) return '—';
@@ -88,11 +89,16 @@ function makeModelRows(fixtures) {
     'germany 2 bundesliga': 'D2',
     'italy serie a': 'I1',
     'italy serie b': 'I2',
+    'italy serie c girone a': 'I2',
+    'italy serie c girone b': 'I2',
+    'italy serie c girone c': 'I2',
+    'italy serie b': 'I2',
     'spain la liga': 'SP1',
     'spain segunda': 'SP2',
     'france ligue 1': 'F1',
     'france ligue 2': 'F2',
     'netherlands eredivisie': 'N1',
+    'holland eredivisie': 'N1',
     'england premier league': 'E0',
     'england championship': 'E1',
     'england league one': 'E2',
@@ -102,16 +108,26 @@ function makeModelRows(fixtures) {
     if (!leagueCodeByName.has(name)) leagueCodeByName.set(name, code);
   }
   const seen = new Set(), output = [];
+  modelDiagnostics = {fixtures:fixtures.length, supportedLeague:0, matchedTeams:0, generated:0, unsupportedLeagues:{}, unmatchedTeams:[]};
   for (const fixture of fixtures) {
-    const leagueCode = leagueCodeByName.get(normalize(fixture.league));
-    if (!leagueCode) continue;
+    const normalizedLeague = normalize(fixture.league);
+    const leagueCode = leagueCodeByName.get(normalizedLeague);
+    if (!leagueCode) {
+      modelDiagnostics.unsupportedLeagues[fixture.league || 'Лига не указана'] = (modelDiagnostics.unsupportedLeagues[fixture.league || 'Лига не указана'] || 0) + 1;
+      continue;
+    }
+    modelDiagnostics.supportedLeague++;
     const leagueTeams = productionModels.teams[leagueCode];
     const homeMatch = findTeam(leagueCode, leagueTeams, fixture.home);
     const awayMatch = findTeam(leagueCode, leagueTeams, fixture.away);
     const home = homeMatch?.team;
     const away = awayMatch?.team;
     const league = productionModels.leagueStats?.[leagueCode];
-    if (!home || !away || !league) continue;
+    if (!home || !away || !league) {
+      modelDiagnostics.unmatchedTeams.push({league:fixture.league, home:fixture.home, away:fixture.away, missing:[!home?'хозяева':'',!away?'гости':''].filter(Boolean).join(', ')});
+      continue;
+    }
+    modelDiagnostics.matchedTeams++;
     // Deduplicate by the matched historical team IDs, not by provider display names.
     const key = [Date.parse(fixture.time), leagueCode, homeMatch.key, awayMatch.key].join('|');
     if (seen.has(key)) continue;
@@ -146,6 +162,7 @@ function makeModelRows(fixtures) {
       yellowCards: formatTotals(cardMean, 'yellowCards'),
     });
   }
+  modelDiagnostics.generated = output.length;
   return output;
 }
 function colorMarketCells(row) {
@@ -220,7 +237,16 @@ async function load() {
     setSourceStatus('status-fbdata','FB_DATA',data.sources?.fbdata);
     const generated = data.generatedAt ? new Date(data.generatedAt) : null;
     $('markets-date').textContent = 'Матчи на ' + (data.date || 'сегодня') + (generated && !Number.isNaN(generated.getTime()) ? ' · обновлено ' + generated.toLocaleString('ru-RU') : '');
-    $('markets-count').textContent = productionModels ? 'Модель: ' + modelRows.length + ' сопоставленных матчей' : 'Модель не загружена — доступны внешние источники';
+    $('markets-count').textContent = productionModels
+      ? 'Внутренняя модель: ' + modelDiagnostics.generated + ' матчей из ' + modelDiagnostics.fixtures + ' предстоящих · лига поддерживается: ' + modelDiagnostics.supportedLeague + ' · команды сопоставлены: ' + modelDiagnostics.matchedTeams
+      : 'Модель не загружена — доступны внешние источники';
+    const diag = $('markets-diagnostics');
+    if (diag && productionModels) {
+      const leagues = Object.entries(modelDiagnostics.unsupportedLeagues).sort((a,b)=>b[1]-a[1]).slice(0,8);
+      const teams = modelDiagnostics.unmatchedTeams.slice(0,8);
+      diag.textContent = 'Не поддерживаются лиги: ' + (leagues.length ? leagues.map(([name,count])=>name+' ('+count+')').join('; ') : 'нет')
+        + (teams.length ? '. Не найдены команды: ' + teams.map(x=>x.league+': '+x.home+' — '+x.away).join('; ') : '');
+    }
     render();
   } catch (e) {
     $('markets-error').textContent = e.message || 'Ошибка загрузки данных.';
