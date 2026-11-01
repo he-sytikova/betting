@@ -21,9 +21,9 @@ OUT = ROOT / "data" / "corners_cards_training.csv"
 BASE = "https://www.football-data.co.uk/mmz4281"
 USER_AGENT = "betting-corners-cards-dataset/1.0"
 WINDOWS = (5, 10)
-HISTORY_GROUPS = ("corners", "cards", "fouls", "shots", "shots_on_target", "red_cards")
+HISTORY_GROUPS = ("goals", "corners", "cards", "fouls", "shots", "shots_on_target", "red_cards")
 TEAM_FEATURE_PREFIXES = {
-    "corners": "team", "cards": "card_team", "fouls": "foul_team",
+    "goals": "goal_team", "corners": "team", "cards": "card_team", "fouls": "foul_team",
     "shots": "shots_team", "shots_on_target": "shots_on_target_team",
     "red_cards": "red_card_team",
 }
@@ -105,7 +105,7 @@ def main():
                     continue
                 all_matches.append({
                     "date": date, "season": season, "league": code,
-                    "home": home, "away": away,
+                    "home": home, "away": away, "hg": hg, "ag": ag,
                     "hc": number(row.get("HC")), "ac": number(row.get("AC")),
                     "hy": number(row.get("HY")), "ay": number(row.get("AY")),
                     "hf": number(row.get("HF")), "af": number(row.get("AF")),
@@ -154,6 +154,8 @@ def main():
                 row["referee_yellows_avg10"] = mean([x[0] for x in referee_history[-10:] if x[0] is not None])
                 row["referee_red_cards_avg10"] = mean([x[1] for x in referee_history[-10:] if x[1] is not None])
                 row["referee_fouls_avg10"] = mean([x[2] for x in referee_history[-10:] if x[2] is not None])
+                row["target_home_goals"], row["target_away_goals"] = m["hg"], m["ag"]
+                row["goals_total"] = m["hg"] + m["ag"]
                 row["target_home_corners"], row["target_away_corners"] = m["hc"], m["ac"]
                 row["target_home_yellow"], row["target_away_yellow"] = m["hy"], m["ay"]
                 row["corners_available"] = int(m["hc"] is not None and m["ac"] is not None)
@@ -173,7 +175,7 @@ def main():
                 histories[hkey]["matches"].append(1)
                 histories[akey]["matches"].append(1)
                 for group, home_key, away_key in (
-                    ("corners", "hc", "ac"), ("cards", "hy", "ay"),
+                    ("goals", "hg", "ag"), ("corners", "hc", "ac"), ("cards", "hy", "ay"),
                     ("fouls", "hf", "af"), ("shots", "hs", "as"),
                     ("shots_on_target", "hst", "ast"), ("red_cards", "hr", "ar"),
                 ):
@@ -202,6 +204,7 @@ def main():
         writer.writerows(output)
     print(json.dumps({
         "rows": len(output), "eligibleLeagues": sorted(eligible),
+        "goalRows": len(output),
         "cornerRows": sum(r["corners_available"] for r in output),
         "cardRows": sum(r["cards_available"] for r in output),
         "skipped": skipped, "output": str(OUT)
