@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-11-01T07:07:58.957059+00:00",
+  "generatedAt": "2026-11-01T08:04:06.473655+00:00",
   "status": "research_candidate_not_for_production",
-  "datasetRows": 42851,
+  "datasetRows": 78599,
   "method": "CatBoost Poisson objective with league categorical feature; same chronological walk-forward folds and numeric feature set as current Poisson baseline. Dispersion is estimated on training rows only; pooled NB2 probabilities retain fold-specific training-only dispersion estimates.",
   "catboostParameters": {
     "lossFunction": "Poisson",

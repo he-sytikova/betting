@@ -3,7 +3,7 @@
   "status": "calibration_and_line_backtest_only_not_for_public_predictions",
   "method": "Poisson mean model with Poisson vs Negative Binomial comparison on a chronological holdout and expanding-window seasonal walk-forward folds; dispersion estimated from training-only Pearson residuals",
   "holdoutStart": "2024-07-01",
-  "datasetRows": 42851,
+  "datasetRows": 78599,
   "evaluatedLines": [
     7.5,
     8.5,
