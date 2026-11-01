@@ -2,6 +2,12 @@ name: BSD historical coverage audit - new markets
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - model-development
+    paths:
+      - "scripts/predictions/audit-bsd-new-markets.py"
+      - ".github/workflows/audit-bsd-new-markets.yml"
 
 permissions:
   contents: read
@@ -13,14 +19,14 @@ concurrency:
 jobs:
   audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v5
         with:
           ref: model-development
       - uses: actions/setup-python@v6
         with:
-          python-version: '3.12'
+          python-version: "3.12"
       - name: Probe BSD historical coverage and actual team stats
         env:
           BSD_TOKEN: ${{ secrets.BSD_TOKEN }}
