@@ -188,7 +188,16 @@ async function load() {
     $('model-status').textContent='Статус: '+modelConfig.status+' · '+modelConfig.trainingRows+' исторических матчей';
     if(report?.markets){
       const h=report.markets.homeGoals,a=report.markets.awayGoals;
-      $('model-metrics').textContent='Хозяева: MAE '+h.mae+' (baseline '+h.baselineMae+'); гости: MAE '+a.mae+' (baseline '+a.baselineMae+'). Это метрики точности числа голов, не калибровка вероятностей рынков.';
+      const p=report.probabilityMarkets;
+      const point='MAE голов — хозяева '+h.mae+' (baseline '+h.baselineMae+'), гости '+a.mae+' (baseline '+a.baselineMae+').';
+      if(p?.['1X2']){
+        const x=p['1X2'], t=p.matchTotals?.['2.5'], b=p.bothTeamsToScore;
+        $('model-metrics').textContent=point+' Вероятности на holdout: 1X2 Brier '+x.brier+' / baseline '+x.baselineBrier+', LogLoss '+x.logLoss+' / baseline '+x.baselineLogLoss+
+          (t?'; ТБ 2.5 Brier '+t.brier+' / baseline '+t.baselineBrier:'')+
+          (b?'; обе забьют Brier '+b.brier+' / baseline '+b.baselineBrier:'')+'.';
+      } else {
+        $('model-metrics').textContent=point+' Метрики вероятностей рынков ещё не рассчитаны.';
+      }
     }
     render();
   } catch(e) {
