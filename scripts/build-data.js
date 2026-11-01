@@ -672,6 +672,16 @@ async function fetchSStats() {
     return raw !== null && dateKey(raw) === date;
   });
 
+  const leaguesPayload = await leaguesPromise;
+  const leagueNames = new Map();
+  if (leaguesPayload) {
+    for (const league of arr(leaguesPayload)) {
+      const id = pick(league, 'Id', 'LeagueId', 'leagueId');
+      const name = pick(league, 'Name', 'LeagueName', 'leagueName', 'Title', 'title');
+      if (id !== null && name !== null) leagueNames.set(String(id), String(name));
+    }
+  }
+
   // /games/list can return fixtures without a usable league name/ID.
   // In that case enrich those rows from the Flashscore-backed /Ls/List endpoint,
   // matching by provider ID first and by exact date + home + away names second.
@@ -689,7 +699,12 @@ async function fetchSStats() {
         const rawDate = first(pick(item, 'Date', 'DateTime', 'StartTime', 'StartDate', 'Kickoff', 'MatchDate', 'timestamp'));
         const home = first(pick(item, 'HomeTeamName', 'homeTeamName', 'HomeTeam', 'homeTeam', 'home', 'teamHome'), pick(item.Home || item.home || {}, 'name', 'Name', 'teamName'));
         const away = first(pick(item, 'AwayTeamName', 'awayTeamName', 'AwayTeam', 'awayTeam', 'away', 'teamAway'), pick(item.Away || item.away || {}, 'name', 'Name', 'teamName'));
-        const league = first(pick(item, 'LeagueName', 'leagueName', 'TournamentName', 'tournamentName', 'League', 'Tournament'), pick(item.League || item.league || item.Tournament || item.tournament || {}, 'name', 'Name', 'title'));
+        const leagueId = first(pick(item, 'LeagueId', 'leagueId', 'TournamentId', 'tournamentId'), pick(item.League || item.league || {}, 'id', 'Id'));
+        const league = first(
+          pick(item, 'LeagueName', 'leagueName', 'TournamentName', 'tournamentName', 'League', 'Tournament'),
+          pick(item.League || item.league || item.Tournament || item.tournament || {}, 'name', 'Name', 'title'),
+          leagueId !== null ? leagueNames.get(String(leagueId)) : null
+        );
         return {
           ...item,
           Id: first(pick(item, 'Id', 'GameId', 'gameId', 'id', 'FlashId', 'flashId')),
@@ -697,7 +712,7 @@ async function fetchSStats() {
           HomeTeamName: home,
           AwayTeamName: away,
           LeagueName: league,
-          LeagueId: first(pick(item, 'LeagueId', 'leagueId', 'TournamentId', 'tournamentId'), pick(item.League || item.league || {}, 'id', 'Id')),
+          LeagueId: leagueId,
           Status: first(pick(item, 'Status', 'status', 'MatchStatus', 'matchStatus')),
           HomeScore: first(pick(item, 'HomeScore', 'homeScore', 'home_score'), pick(item.Home || item.home || {}, 'score', 'Score')),
           AwayScore: first(pick(item, 'AwayScore', 'awayScore', 'away_score'), pick(item.Away || item.away || {}, 'score', 'Score'))
@@ -711,7 +726,9 @@ async function fetchSStats() {
       } else if (todayGames.length && lsToday.length) {
         const byId = new Map();
         const byFixture = new Map();
-        const teamKey = value => String(teamName(value)).normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+        const teamKey = value => String(teamName(value)).normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLowerCase()
+          .replace(/\\b(fc|afc|cf|sc|sv|fk|sk|club|the)\\b/g, ' ')
+          .replace(/[^a-z0-9]+/g, ' ').trim().replace(/\\s+/g, ' ');
         const fixtureKey = game => [
           dateKey(pick(game, 'Date', 'DateTime', 'StartTime', 'MatchDate')),
           teamKey(pick(game, 'HomeTeamName', 'HomeTeam', 'homeTeamName', 'home')),
@@ -761,16 +778,7 @@ async function fetchSStats() {
       liveListDiagnostic = `; fallback /Ls/List: ${safeError(error)}`;
     }
   }
-  const leaguesPayload = await leaguesPromise;
-  const leaguesResult = { status: leaguesPayload ? 'fulfilled' : 'rejected', value: leaguesPayload };
-  const leagueNames = new Map();
-  if (leaguesResult.status === 'fulfilled') {
-    for (const league of arr(leaguesResult.value)) {
-      const id = pick(league, 'Id', 'LeagueId', 'leagueId');
-      const name = pick(league, 'Name', 'LeagueName', 'leagueName', 'Title', 'title');
-      if (id !== null && name !== null) leagueNames.set(String(id), String(name));
-    }
-  }
+  const leaguesResult = { status: leagueNames.size ? 'fulfilled' : 'rejected', value: leaguesPayload };
   if (!todayGames.length) {
     const sample = games[0];
     const sampleKeys = sample && typeof sample === 'object' ? Object.keys(sample).slice(0, 24).join(',') : typeof sample;
