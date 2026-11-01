@@ -148,11 +148,11 @@ def main():
     payload = {
       "schemaVersion": 1, "generatedAt": date.today().isoformat(),
       "status": "experimental_research_model",
-      "disclaimer": "Independent statistical estimates; no bookmaker probabilities or picks are imported.",
+      "disclaimer": "Independent statistical estimates; no bookmaker probabilities or picks are imported. Red-card forecasts and exact-score forecasts are intentionally excluded.",
       "models": models, "features": FEATURES, "teams": teams,
       "leagueNames": league_names, "leagueAliases": aliases, "leagueStats": latest_league,
       "scoreGridMax": 10,
-      "markets": ["1X2","doubleChance","drawNoBet","matchTotals","teamTotals","bothTeamsToScore","correctScore","asianHandicap"],
+      "markets": ["1X2","doubleChance","drawNoBet","matchTotals","teamTotals","bothTeamsToScore","asianHandicap"],
       "trainingRows": len(rows), "trainingThrough": max(r["date"] for r in rows),
       "method": "Independent Poisson models for home and away goals; scoreline probabilities derived from their joint score matrix."
     }
