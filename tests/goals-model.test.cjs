@@ -13,6 +13,9 @@ test('team matching is normalized but refuses ambiguous matches',()=>{
  assert.equal(m.findTeam({Milan:{name:'Milan'},Inter:{name:'Inter'}},'AC Milan').name,'Milan');
  assert.equal(m.findTeam({'Den Haag':{name:'Den Haag'},Zwolle:{name:'Zwolle'}},'ADO Den Haag').name,'Den Haag');
  assert.equal(m.findTeam({'Sheffield Weds':{name:'Sheffield Weds'}},'Sheffield Wednesday').name,'Sheffield Weds');
+ assert.equal(m.findTeam({'Greuther Furth':{name:'Greuther Furth'}},'SpVgg Greuther Fürth').name,'Greuther Furth');
+ assert.equal(m.findTeam({'St Truiden':{name:'St Truiden'}},'Sint-Truidense VV').name,'St Truiden');
+ assert.equal(m.findTeam({'Ein Frankfurt':{name:'Ein Frankfurt'}},'Eintracht Frankfurt').name,'Ein Frankfurt');
  assert.equal(m.findTeam({A:{name:'United FC'},B:{name:'United'}},'United'),null);
 });
 test('Poisson probabilities sum to one and outcome markets are coherent',()=>{
