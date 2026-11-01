@@ -11,6 +11,8 @@ test('league aliases resolve canonical and common feed names',()=>{
 });
 test('team matching is normalized but refuses ambiguous matches',()=>{
  assert.equal(m.findTeam({Milan:{name:'Milan'},Inter:{name:'Inter'}},'AC Milan').name,'Milan');
+ assert.equal(m.findTeam({'Den Haag':{name:'Den Haag'},Zwolle:{name:'Zwolle'}},'ADO Den Haag').name,'Den Haag');
+ assert.equal(m.findTeam({'Sheffield Weds':{name:'Sheffield Weds'}},'Sheffield Wednesday').name,'Sheffield Weds');
  assert.equal(m.findTeam({A:{name:'United FC'},B:{name:'United'}},'United'),null);
 });
 test('Poisson probabilities sum to one and outcome markets are coherent',()=>{
