@@ -9,16 +9,30 @@
       "actualMean": 1.4978,
       "predictedMean": 1.5072,
       "mae": 0.95089,
+      "baselineMae": 1.01952,
+      "maeImprovement": 0.06862,
+      "maeImprovementPct": 6.731,
       "poissonDeviance": 1.10287,
-      "baselineMean": 1.49778
+      "baselinePoissonDeviance": 1.19287,
+      "devianceImprovement": 0.09,
+      "devianceImprovementPct": 7.545,
+      "baselineMean": 1.49937,
+      "baselineReference": "constant mean of the training partition; no holdout information used"
     },
     "awayGoals": {
       "rows": 7883,
       "actualMean": 1.2245,
       "predictedMean": 1.2086,
       "mae": 0.84345,
+      "baselineMae": 0.88494,
+      "maeImprovement": 0.04148,
+      "maeImprovementPct": 4.688,
       "poissonDeviance": 1.10222,
-      "baselineMean": 1.22453
+      "baselinePoissonDeviance": 1.18246,
+      "devianceImprovement": 0.08024,
+      "devianceImprovementPct": 6.786,
+      "baselineMean": 1.20768,
+      "baselineReference": "constant mean of the training partition; no holdout information used"
     }
   },
   "status": "experimental_research_model"
