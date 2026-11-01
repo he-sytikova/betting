@@ -15,7 +15,22 @@ const TEAM_ALIASES = {
   'internazionale milano': 'inter',
   'deportivo alaves': 'alaves',
   'cambuur leeuwarden': 'cambuur',
-  'az': 'az alkmaar'
+  'az': 'az alkmaar',
+  'pec zwolle': 'zwolle',
+  'ado den haag': 'den haag',
+  'como 1907': 'como',
+  'unione venezia': 'venezia',
+  'twente 65': 'twente',
+  'telstar 1963': 'telstar',
+  'sheffield wednesday': 'sheffield weds',
+  'rc strasbourg': 'strasbourg',
+  'rc strasbourg alsace': 'strasbourg',
+  'aj auxerre': 'auxerre',
+  'cagliari calcio': 'cagliari',
+  'frosinone calcio': 'frosinone',
+  'ss lazio': 'lazio',
+  '1 union berlin': 'union berlin',
+  '1 koln': 'fc koln'
 };
 const LEAGUE_ALIASES = {
   'germany bundesliga':'D1','germany 2 bundesliga':'D2',
