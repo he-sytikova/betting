@@ -672,10 +672,15 @@ async function fetchSStats() {
     return raw !== null && dateKey(raw) === date;
   });
 
-  // The main /games/list endpoint can return an empty result for a valid date.
-  // Fall back to the documented Flashscore-backed endpoint, which supports Date and TimeZone filters.
+  // /games/list can return fixtures without a usable league name/ID.
+  // In that case enrich those rows from the Flashscore-backed /Ls/List endpoint,
+  // matching by provider ID first and by exact date + home + away names second.
   let liveListDiagnostic = '';
-  if (!todayGames.length) {
+  const needsLeagueEnrichment = todayGames.some(game => {
+    const name = leagueNameFor(game, new Map());
+    return name === '—' || /^\\d+$/.test(String(name));
+  });
+  if (!todayGames.length || needsLeagueEnrichment) {
     try {
       const lsUrl = `${SSTATS_BASE}/Ls/List?${new URLSearchParams({ Date: date, TimeZone: '3', Limit: '1000', Offset: '0', apikey: token })}`;
       const lsPayload = await getJson(lsUrl, {}, 7500);
@@ -699,18 +704,47 @@ async function fetchSStats() {
         };
       });
       const lsToday = canonicalRows.filter(game => game.Date && dateKey(game.Date) === date);
-      if (lsToday.length) {
+      if (!todayGames.length && lsToday.length) {
         games = lsToday;
         todayGames = lsToday;
         liveListDiagnostic = `; fallback /Ls/List: найдено ${lsToday.length} матчей из ${lsRows.length} строк`;
+      } else if (todayGames.length && lsToday.length) {
+        const byId = new Map();
+        const byFixture = new Map();
+        const teamKey = value => String(teamName(value)).normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+        const fixtureKey = game => [
+          dateKey(pick(game, 'Date', 'DateTime', 'StartTime', 'MatchDate')),
+          teamKey(pick(game, 'HomeTeamName', 'HomeTeam', 'homeTeamName', 'home')),
+          teamKey(pick(game, 'AwayTeamName', 'AwayTeam', 'awayTeamName', 'away'))
+        ].join('|');
+        for (const item of lsToday) {
+          const id = pick(item, 'Id', 'GameId', 'gameId', 'id');
+          if (id !== null) byId.set(String(id), item);
+          byFixture.set(fixtureKey(item), item);
+        }
+        let enrichedCount = 0;
+        todayGames = todayGames.map(game => {
+          const currentName = leagueNameFor(game, new Map());
+          if (currentName !== '—' && !/^\\d+$/.test(String(currentName))) return game;
+          const id = pick(game, 'Id', 'GameId', 'gameId', 'id');
+          const match = (id !== null ? byId.get(String(id)) : null) || byFixture.get(fixtureKey(game));
+          const leagueName = match ? pick(match, 'LeagueName', 'leagueName', 'TournamentName', 'tournamentName') : null;
+          if (!match || leagueName === null) return game;
+          enrichedCount++;
+          return {
+            ...game,
+            LeagueName: leagueName,
+            LeagueId: first(pick(game, 'LeagueId', 'leagueId'), pick(match, 'LeagueId', 'leagueId', 'TournamentId', 'tournamentId'))
+          };
+        });
+        liveListDiagnostic = `; /Ls/List enrichment: ${enrichedCount}/${todayGames.length} строк получили лигу из ${lsToday.length} матчей`;
       } else {
-        liveListDiagnostic = `; fallback /Ls/List: строк ${lsRows.length}, совпало по дате 0, ключи первой строки ${lsRows[0] ? Object.keys(lsRows[0]).slice(0, 18).join(',') : 'нет строк'}`;
+        liveListDiagnostic = `; /Ls/List enrichment: строк ${lsRows.length}, совпало по дате ${lsToday.length}; названия лиг не обогащены`;
       }
     } catch (error) {
       liveListDiagnostic = `; fallback /Ls/List: ${safeError(error)}`;
     }
   }
-
   const leaguesPayload = await leaguesPromise;
   const leaguesResult = { status: leaguesPayload ? 'fulfilled' : 'rejected', value: leaguesPayload };
   const leagueNames = new Map();
