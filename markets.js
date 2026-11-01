@@ -69,11 +69,15 @@ function predictMean(model, featureValues) {
 }
 function formatTotals(mean, market) {
   const lines = productionModels.marketLines?.[market] || productionModels.lines;
+  const modelType = productionModels.models?.[market]?.type || 'unknown';
+  const modelLabel = ['negative_binomial', 'negative-binomial', 'nb2'].includes(String(modelType).toLowerCase())
+    ? 'NB2'
+    : modelType === 'poisson' ? 'Poisson' : modelType;
   return lines.map(line => {
     const over = poissonOver(mean, line);
     if (over === null) return '';
-    return 'ТБ ' + line + ': ' + (over * 100).toFixed(1) + '% / ТМ: ' + ((1 - over) * 100).toFixed(1) + '%';
-  }).join(' · ');
+    return 'ТБ ' + line + ': ' + (over * 100).toFixed(1) + '% / ТМ: ' + ((1 - over) * 100).toFixed(1) + '% (' + modelLabel + ')';
+  }).filter(Boolean).join('\\n');
 }
 function makeModelRows(fixtures) {
   if (!productionModels?.models || !productionModels?.teams || !productionModels?.leagueNames) return [];
@@ -153,6 +157,7 @@ function colorMarketCells(row) {
     cell.style.backgroundColor = '#fff';
     cell.style.color = '#000';
     if (cell.cellIndex < 5) continue;
+    cell.style.whiteSpace = 'pre-line';
     const nums = Array.from(cell.textContent.matchAll(/([0-9]+(?:[.,][0-9]+)?)\s*%/g), match =>
       Number.parseFloat(match[1].replace(',', '.'))
     ).filter(Number.isFinite);
