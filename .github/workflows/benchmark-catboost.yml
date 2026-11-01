@@ -1,0 +1,68 @@
+name: Benchmark CatBoost prediction candidates
+
+on:
+  push:
+    branches:
+      - model-development
+    paths:
+      - scripts/predictions/benchmark-catboost.py
+      - scripts/predictions/train-models.py
+      - scripts/predictions/build-dataset.py
+      - data/corners_cards_training.csv
+      - .github/workflows/benchmark-catboost.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: catboost-candidate-benchmark
+  cancel-in-progress: false
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          ref: model-development
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install benchmark dependencies
+        run: python -m pip install --upgrade pip numpy scipy scikit-learn catboost==1.2.8
+
+      - name: Rebuild leakage-safe dataset with audited historical features
+        run: python scripts/predictions/build-dataset.py
+
+      - name: Compile candidate benchmark
+        run: python -m compileall -q scripts/predictions
+
+      - name: Run CatBoost walk-forward benchmark
+        run: python scripts/predictions/benchmark-catboost.py
+
+      - name: Re-run corrected Poisson and Negative Binomial diagnostics on existing dataset
+        run: python scripts/predictions/train-models.py
+
+      - name: Publish research-only candidate report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/corners_cards_training.csv data/corners_cards_candidate_report.json data/corners_cards_model_report.json
+          git commit -m "chore: refresh corrected model diagnostics and CatBoost benchmark" || echo "No report changes"
+          git pull --rebase origin model-development
+          git push origin HEAD:model-development
+
+      - name: Upload candidate benchmark report
+        uses: actions/upload-artifact@v4
+        with:
+          name: corners-cards-catboost-candidate-report
+          path: |
+            data/corners_cards_candidate_report.json
+            data/corners_cards_model_report.json
+          if-no-files-found: error
+          retention-days: 30

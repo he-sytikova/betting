@@ -21,6 +21,12 @@ OUT = ROOT / "data" / "corners_cards_training.csv"
 BASE = "https://www.football-data.co.uk/mmz4281"
 USER_AGENT = "betting-corners-cards-dataset/1.0"
 WINDOWS = (5, 10)
+HISTORY_GROUPS = ("corners", "cards", "fouls", "shots", "shots_on_target", "red_cards")
+TEAM_FEATURE_PREFIXES = {
+    "corners": "team", "cards": "card_team", "fouls": "foul_team",
+    "shots": "shots_team", "shots_on_target": "shots_on_target_team",
+    "red_cards": "red_card_team",
+}
 
 def fetch_rows(url):
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
@@ -102,11 +108,21 @@ def main():
                     "home": home, "away": away,
                     "hc": number(row.get("HC")), "ac": number(row.get("AC")),
                     "hy": number(row.get("HY")), "ay": number(row.get("AY")),
+                    "hf": number(row.get("HF")), "af": number(row.get("AF")),
+                    "hs": number(row.get("HS")), "as": number(row.get("AS")),
+                    "hst": number(row.get("HST")), "ast": number(row.get("AST")),
+                    "hr": number(row.get("HR")), "ar": number(row.get("AR")),
+                    "referee": (row.get("Referee") or "").strip(),
                 })
 
         all_matches.sort(key=lambda x: (x["date"], x["home"], x["away"]))
-        histories = defaultdict(lambda: {"corners": deque(maxlen=10), "cards": deque(maxlen=10)})
-        league_history = {"corners": [], "cards": []}
+        histories = defaultdict(lambda: {
+            **{group: deque(maxlen=10) for group in HISTORY_GROUPS},
+            "matches": deque(maxlen=10),
+        })
+        league_history = {group: [] for group in HISTORY_GROUPS}
+        league_history["matches"] = []
+        referee_histories = defaultdict(lambda: deque(maxlen=20))
         index = 0
         while index < len(all_matches):
             day = all_matches[index]["date"]
@@ -120,19 +136,24 @@ def main():
                 row = {
                     "date": m["date"].isoformat(), "season": m["season"],
                     "league": code, "home_team": m["home"], "away_team": m["away"],
-                    "home_matches_before": len(histories[hkey]["corners"]),
-                    "away_matches_before": len(histories[akey]["corners"]),
-                    "league_matches_before": len(league_history["corners"]),
+                    "home_matches_before": len(histories[hkey]["matches"]),
+                    "away_matches_before": len(histories[akey]["matches"]),
+                    "league_matches_before": len(league_history["matches"]),
                     "home_advantage": 1,
+                    "referee_available": int(bool(m["referee"])),
+                    "referee_matches_before": len(referee_histories[(code, m["referee"])]) if m["referee"] else 0,
                     "corners_model_eligible": int(corner_ok),
                     "cards_model_eligible": int(card_ok),
                 }
-                row.update({f"home_{k}": v for k, v in team_features(histories[hkey]["corners"], "team").items()})
-                row.update({f"away_{k}": v for k, v in team_features(histories[akey]["corners"], "team").items()})
-                row.update({f"home_card_{k}": v for k, v in team_features(histories[hkey]["cards"], "team").items()})
-                row.update({f"away_card_{k}": v for k, v in team_features(histories[akey]["cards"], "team").items()})
-                row["league_corners_avg"] = mean(league_history["corners"][-100:])
-                row["league_cards_avg"] = mean(league_history["cards"][-100:])
+                for group, prefix in TEAM_FEATURE_PREFIXES.items():
+                    row.update({f"home_{k}": v for k, v in team_features(histories[hkey][group], prefix).items()})
+                    row.update({f"away_{k}": v for k, v in team_features(histories[akey][group], prefix).items()})
+                for group in HISTORY_GROUPS:
+                    row[f"league_{group}_avg"] = mean(league_history[group][-100:])
+                referee_history = list(referee_histories[(code, m["referee"])]) if m["referee"] else []
+                row["referee_yellows_avg10"] = mean([x[0] for x in referee_history[-10:] if x[0] is not None])
+                row["referee_red_cards_avg10"] = mean([x[1] for x in referee_history[-10:] if x[1] is not None])
+                row["referee_fouls_avg10"] = mean([x[2] for x in referee_history[-10:] if x[2] is not None])
                 row["target_home_corners"], row["target_away_corners"] = m["hc"], m["ac"]
                 row["target_home_yellow"], row["target_away_yellow"] = m["hy"], m["ay"]
                 row["corners_available"] = int(m["hc"] is not None and m["ac"] is not None)
@@ -140,22 +161,34 @@ def main():
                 row["corners_total"] = (m["hc"] + m["ac"]) if row["corners_available"] else ""
                 row["cards_total"] = (m["hy"] + m["ay"]) if row["cards_available"] else ""
                 if (corner_ok and row["corners_available"]) or (card_ok and row["cards_available"]):
-                    pending.append((row, m))
+                    output.append(row)
                 else:
                     skipped["no_market_stats"] += 1
+                # Every played match can update feature histories, even when its target totals are missing.
+                pending.append((row, m))
 
             # Update histories only after every fixture on this date has features computed.
             for row, m in pending:
                 hkey, akey = (code, m["home"]), (code, m["away"])
-                if m["hc"] is not None and m["ac"] is not None:
-                    histories[hkey]["corners"].append((m["hc"], m["ac"]))
-                    histories[akey]["corners"].append((m["ac"], m["hc"]))
-                    league_history["corners"].append(m["hc"] + m["ac"])
-                if m["hy"] is not None and m["ay"] is not None:
-                    histories[hkey]["cards"].append((m["hy"], m["ay"]))
-                    histories[akey]["cards"].append((m["ay"], m["hy"]))
-                    league_history["cards"].append(m["hy"] + m["ay"])
-                output.append(row)
+                histories[hkey]["matches"].append(1)
+                histories[akey]["matches"].append(1)
+                for group, home_key, away_key in (
+                    ("corners", "hc", "ac"), ("cards", "hy", "ay"),
+                    ("fouls", "hf", "af"), ("shots", "hs", "as"),
+                    ("shots_on_target", "hst", "ast"), ("red_cards", "hr", "ar"),
+                ):
+                    home_value, away_value = m[home_key], m[away_key]
+                    if home_value is not None and away_value is not None:
+                        histories[hkey][group].append((home_value, away_value))
+                        histories[akey][group].append((away_value, home_value))
+                        league_history[group].append(home_value + away_value)
+                league_history["matches"].append(1)
+                if m["referee"]:
+                    referee_histories[(code, m["referee"])].append((
+                        m["hy"] + m["ay"] if m["hy"] is not None and m["ay"] is not None else None,
+                        m["hr"] + m["ar"] if m["hr"] is not None and m["ar"] is not None else None,
+                        m["hf"] + m["af"] if m["hf"] is not None and m["af"] is not None else None,
+                    ))
             index = end
 
     if not output:
