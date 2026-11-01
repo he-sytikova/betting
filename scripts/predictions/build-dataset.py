@@ -69,11 +69,13 @@ def team_features(history, prefix):
 
 def main():
     audit = json.loads(AUDIT.read_text(encoding="utf-8"))
+    # Goal targets are available for every audited football-data competition.
+    # Corner/card eligibility remains market-specific and is enforced by flags
+    # during their separate model fits.
     eligible = {
-        x["code"] for x in audit["sources"]["footballData"]["leagues"]
-        if x.get("cornersEligiblePreliminary") or x.get("cardsEligiblePreliminary")
+        str(x["code"]) for x in audit["sources"]["footballData"]["leagues"]
+        if x.get("code")
     }
-    # Keep independent market flags; do not discard a league eligible for only one market.
     market_flags = {
         x["code"]: (bool(x.get("cornersEligiblePreliminary")), bool(x.get("cardsEligiblePreliminary")))
         for x in audit["sources"]["footballData"]["leagues"]
@@ -162,9 +164,10 @@ def main():
                 row["cards_available"] = int(m["hy"] is not None and m["ay"] is not None)
                 row["corners_total"] = (m["hc"] + m["ac"]) if row["corners_available"] else ""
                 row["cards_total"] = (m["hy"] + m["ay"]) if row["cards_available"] else ""
-                if (corner_ok and row["corners_available"]) or (card_ok and row["cards_available"]):
-                    output.append(row)
-                else:
+                # Keep every valid goal result. Unsupported corner/card markets
+                # remain explicitly ineligible and are excluded by their trainers.
+                output.append(row)
+                if not ((corner_ok and row["corners_available"]) or (card_ok and row["cards_available"])):
                     skipped["no_market_stats"] += 1
                 # Every played match can update feature histories, even when its target totals are missing.
                 pending.append((row, m))
@@ -205,6 +208,8 @@ def main():
     print(json.dumps({
         "rows": len(output), "eligibleLeagues": sorted(eligible),
         "goalRows": len(output),
+        "cornerEligibleLeagues": sorted(code for code, flags in market_flags.items() if flags[0]),
+        "cardEligibleLeagues": sorted(code for code, flags in market_flags.items() if flags[1]),
         "cornerRows": sum(r["corners_available"] for r in output),
         "cardRows": sum(r["cards_available"] for r in output),
         "skipped": skipped, "output": str(OUT)
