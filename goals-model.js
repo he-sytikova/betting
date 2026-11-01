@@ -198,7 +198,10 @@ async function load() {
       .sort((a,b)=>Date.parse(a.time)-Date.parse(b.time));
     const fixtureMap=new Map();
     for(const fixture of rawFixtures){
-      const key=[Date.parse(fixture.time),normalize(fixture.league),normalize(fixture.home),normalize(fixture.away)].join('|');
+      const leagueKey=resolveLeague(fixture.league,modelConfig)||normalize(fixture.league);
+      const homeKey=TEAM_ALIASES[normalize(fixture.home)]||normalize(fixture.home);
+      const awayKey=TEAM_ALIASES[normalize(fixture.away)]||normalize(fixture.away);
+      const key=[Date.parse(fixture.time),leagueKey,homeKey,awayKey].join('|');
       if(!fixtureMap.has(key)) fixtureMap.set(key,fixture);
     }
     const fixtures=Array.from(fixtureMap.values());
