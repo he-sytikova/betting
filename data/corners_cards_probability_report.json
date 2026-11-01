@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-11-01T07:08:21.373356+00:00",
+  "generatedAt": "2026-11-01T08:05:36.360649+00:00",
   "status": "research_only_probability_validation",
-  "datasetRows": 42851,
+  "datasetRows": 78599,
   "method": "Expanding-window seasonal walk-forward; each fold fits the feature Poisson model and estimates dispersion using training rows only. The benchmark is the pre-match league rolling mean. Poisson and NB2 probabilities are compared on identical held-out matches. Paired bootstrap CIs and sign-flip permutation tests are reported; Holm correction is applied across lines separately for Brier and Log Loss.",
   "markets": {
     "corners": {
