@@ -15,17 +15,9 @@ function normalize(value) {
     .replace(/[^\p{L}\p{N}]+/gu, ' ').trim().replace(/\s+/g, ' ');
 }
 const TEAM_ALIASES = {
-  I1: {
-    'ac milan': 'milan',
-    'internazionale milano': 'inter',
-  },
-  SP1: {
-    'deportivo alaves': 'alaves',
-  },
-  N1: {
-    'cambuur leeuwarden': 'cambuur',
-    'az': 'az alkmaar',
-  },
+  I1: {'ac milan':'milan','internazionale milano':'inter'},
+  SP1: {'deportivo alaves':'alaves'},
+  N1: {'cambuur leeuwarden':'cambuur','az':'az alkmaar'},
 };
 function findTeam(leagueCode, leagueTeams, fixtureName) {
   const normalized = normalize(fixtureName);
@@ -70,11 +62,15 @@ function predictMean(model, featureValues) {
 }
 function formatTotals(mean, market) {
   const lines = productionModels.marketLines?.[market] || productionModels.lines;
+  const modelType = productionModels.models?.[market]?.type || 'unknown';
+  const modelLabel = modelType === 'negative_binomial' || modelType === 'negative-binomial' || modelType === 'nb2'
+    ? 'NB2'
+    : modelType === 'poisson' ? 'Poisson' : modelType;
   return lines.map(line => {
     const over = poissonOver(mean, line);
     if (over === null) return '';
-    return 'ТБ ' + line + ': ' + (over * 100).toFixed(1) + '% / ТМ: ' + ((1 - over) * 100).toFixed(1) + '%';
-  }).join(' · ');
+    return 'ТБ ' + line + ': ' + (over * 100).toFixed(1) + '% / ТМ: ' + ((1 - over) * 100).toFixed(1) + '% (' + modelLabel + ')';
+  }).filter(Boolean).join('\n');
 }
 function makeModelRows(fixtures) {
   if (!productionModels?.models || !productionModels?.teams || !productionModels?.leagueNames) return [];
@@ -83,26 +79,15 @@ function makeModelRows(fixtures) {
   for (const [code, name] of Object.entries(productionModels.leagueNames || {})) {
     leagueCodeByName.set(normalize(name), code);
   }
-  // Fixture feeds often prefix the same competition with its country.
   const leagueAliases = {
-    'germany bundesliga': 'D1',
-    'germany 2 bundesliga': 'D2',
-    'italy serie a': 'I1',
-    'italy serie b': 'I2',
-    'italy serie c girone a': 'I2',
-    'italy serie c girone b': 'I2',
-    'italy serie c girone c': 'I2',
-    'italy serie b': 'I2',
-    'spain la liga': 'SP1',
-    'spain segunda': 'SP2',
-    'france ligue 1': 'F1',
-    'france ligue 2': 'F2',
-    'netherlands eredivisie': 'N1',
-    'holland eredivisie': 'N1',
-    'england premier league': 'E0',
-    'england championship': 'E1',
-    'england league one': 'E2',
-    'england league two': 'E3',
+    'germany bundesliga':'D1','germany 2 bundesliga':'D2',
+    'italy serie a':'I1','italy serie b':'I2','italy serie c girone a':'I2',
+    'italy serie c girone b':'I2','italy serie c girone c':'I2',
+    'spain la liga':'SP1','spain segunda':'SP2',
+    'france ligue 1':'F1','france ligue 2':'F2',
+    'netherlands eredivisie':'N1','holland eredivisie':'N1',
+    'england premier league':'E0','england championship':'E1',
+    'england league one':'E2','england league two':'E3',
   };
   for (const [name, code] of Object.entries(leagueAliases)) {
     if (!leagueCodeByName.has(name)) leagueCodeByName.set(name, code);
@@ -120,47 +105,31 @@ function makeModelRows(fixtures) {
     const leagueTeams = productionModels.teams[leagueCode];
     const homeMatch = findTeam(leagueCode, leagueTeams, fixture.home);
     const awayMatch = findTeam(leagueCode, leagueTeams, fixture.away);
-    const home = homeMatch?.team;
-    const away = awayMatch?.team;
+    const home = homeMatch?.team, away = awayMatch?.team;
     const league = productionModels.leagueStats?.[leagueCode];
     if (!home || !away || !league) {
-      modelDiagnostics.unmatchedTeams.push({league:fixture.league, home:fixture.home, away:fixture.away, missing:[!home?'хозяева':'',!away?'гости':''].filter(Boolean).join(', ')});
+      modelDiagnostics.unmatchedTeams.push({league:fixture.league,home:fixture.home,away:fixture.away,missing:[!home?'хозяева':'',!away?'гости':''].filter(Boolean).join(', ')});
       continue;
     }
     modelDiagnostics.matchedTeams++;
-    // Deduplicate by the matched historical team IDs, not by provider display names.
-    const key = [Date.parse(fixture.time), leagueCode, homeMatch.key, awayMatch.key].join('|');
+    const key = [Date.parse(fixture.time),leagueCode,homeMatch.key,awayMatch.key].join('|');
     if (seen.has(key)) continue;
     seen.add(key);
     const features = {
-      home_team_for_avg5: home.stats.team_for_avg5,
-      home_team_against_avg5: home.stats.team_against_avg5,
-      home_team_for_avg10: home.stats.team_for_avg10,
-      home_team_against_avg10: home.stats.team_against_avg10,
-      away_team_for_avg5: away.stats.team_for_avg5,
-      away_team_against_avg5: away.stats.team_against_avg5,
-      away_team_for_avg10: away.stats.team_for_avg10,
-      away_team_against_avg10: away.stats.team_against_avg10,
-      home_card_team_for_avg5: home.stats.card_team_for_avg5,
-      home_card_team_against_avg5: home.stats.card_team_against_avg5,
-      home_card_team_for_avg10: home.stats.card_team_for_avg10,
-      home_card_team_against_avg10: home.stats.card_team_against_avg10,
-      away_card_team_for_avg5: away.stats.card_team_for_avg5,
-      away_card_team_against_avg5: away.stats.card_team_against_avg5,
-      away_card_team_for_avg10: away.stats.card_team_for_avg10,
-      away_card_team_against_avg10: away.stats.card_team_against_avg10,
-      league_corners_avg: league.league_corners_avg,
-      league_cards_avg: league.league_cards_avg,
-      home_advantage: 1,
+      home_team_for_avg5:home.stats.team_for_avg5,home_team_against_avg5:home.stats.team_against_avg5,
+      home_team_for_avg10:home.stats.team_for_avg10,home_team_against_avg10:home.stats.team_against_avg10,
+      away_team_for_avg5:away.stats.team_for_avg5,away_team_against_avg5:away.stats.team_against_avg5,
+      away_team_for_avg10:away.stats.team_for_avg10,away_team_against_avg10:away.stats.team_against_avg10,
+      home_card_team_for_avg5:home.stats.card_team_for_avg5,home_card_team_against_avg5:home.stats.card_team_against_avg5,
+      home_card_team_for_avg10:home.stats.card_team_for_avg10,home_card_team_against_avg10:home.stats.card_team_against_avg10,
+      away_card_team_for_avg5:away.stats.card_team_for_avg5,away_card_team_against_avg5:away.stats.card_team_against_avg5,
+      away_card_team_for_avg10:away.stats.card_team_for_avg10,away_card_team_against_avg10:away.stats.card_team_against_avg10,
+      league_corners_avg:league.league_corners_avg,league_cards_avg:league.league_cards_avg,home_advantage:1,
     };
     const cornerMean = predictMean(productionModels.models.corners, features);
     const cardMean = predictMean(productionModels.models.yellowCards, features);
-    output.push({
-      source: 'Модель', time: fixture.time, league: fixture.league,
-      home: fixture.home, away: fixture.away,
-      corners: formatTotals(cornerMean, 'corners'),
-      yellowCards: formatTotals(cardMean, 'yellowCards'),
-    });
+    output.push({source:'Модель',time:fixture.time,league:fixture.league,home:fixture.home,away:fixture.away,
+      corners:formatTotals(cornerMean,'corners'),yellowCards:formatTotals(cardMean,'yellowCards')});
   }
   modelDiagnostics.generated = output.length;
   return output;
@@ -170,6 +139,7 @@ function colorMarketCells(row) {
     cell.style.backgroundColor = '#fff';
     cell.style.color = '#000';
     if (cell.cellIndex < 5) continue;
+    cell.style.whiteSpace = 'pre-line';
     const nums = Array.from(cell.textContent.matchAll(/([0-9]+(?:[.,][0-9]+)?)\s*%/g), match =>
       Number.parseFloat(match[1].replace(',', '.'))
     ).filter(Number.isFinite);
@@ -177,88 +147,76 @@ function colorMarketCells(row) {
     const highest = Math.max(...nums);
     if (highest > 65) {
       const ratio = Math.max(0, Math.min(1, (highest - 65) / 35));
-      const pale = [220, 252, 231], dark = [20, 83, 45];
-      cell.style.backgroundColor = 'rgb(' + pale.map((start, i) => Math.round(start + (dark[i] - start) * ratio)).join(', ') + ')';
-      cell.title = 'Вероятность: ' + highest.toFixed(1) + '%';
+      const pale = [220,252,231], dark = [20,83,45];
+      cell.style.backgroundColor = 'rgb(' + pale.map((start,i)=>Math.round(start+(dark[i]-start)*ratio)).join(', ') + ')';
+      cell.title = 'Максимальная вероятность: ' + highest.toFixed(1) + '%';
     }
   }
 }
 function render() {
-  const type = $('market-type').value;
-  const source = $('market-source').value;
+  const type = $('market-type').value, source = $('market-source').value;
   const query = $('market-search').value.trim().toLocaleLowerCase('ru');
   const rows = allMarkets.filter(x => {
-    const hasCorners = val(x.corners) !== '—';
-    const hasCards = val(x.yellowCards) !== '—';
+    const hasCorners = val(x.corners) !== '—', hasCards = val(x.yellowCards) !== '—';
     if (type === 'corners' && !hasCorners) return false;
     if (type === 'cards' && !hasCards) return false;
     if (source !== 'all' && x.source !== source) return false;
-    const haystack = [x.league,x.home,x.away,x.source].join(' ').toLocaleLowerCase('ru');
-    return !query || haystack.includes(query);
-  }).sort((a,b) => (Date.parse(a.time)||0) - (Date.parse(b.time)||0));
-  const tbody = $('markets-body');
-  tbody.replaceChildren();
+    return !query || [x.league,x.home,x.away,x.source].join(' ').toLocaleLowerCase('ru').includes(query);
+  }).sort((a,b)=>(Date.parse(a.time)||0)-(Date.parse(b.time)||0));
+  const tbody = $('markets-body'); tbody.replaceChildren();
   for (const x of rows) {
     const tr = document.createElement('tr');
     for (const v of [fmtTime(x.time),val(x.league),val(x.home),val(x.away),val(x.source),val(x.corners),val(x.yellowCards)]) {
-      const td = document.createElement('td');
-      td.textContent = v;
-      tr.appendChild(td);
+      const td = document.createElement('td'); td.textContent = v; tr.appendChild(td);
     }
-    colorMarketCells(tr);
-    tbody.appendChild(tr);
+    colorMarketCells(tr); tbody.appendChild(tr);
   }
   $('markets-count').textContent = 'Матчей с прогнозами: ' + rows.length;
   $('markets-empty').classList.toggle('hidden', rows.length > 0);
 }
 async function load() {
   try {
-    const [response, modelResponse] = await Promise.all([
-      fetch('./data.json?t=' + Date.now(), {cache:'no-store'}),
-      fetch('./data/corners_cards_models.json?t=' + Date.now(), {cache:'no-store'}).catch(() => null),
+    const [response,modelResponse] = await Promise.all([
+      fetch('./data.json?t='+Date.now(),{cache:'no-store'}),
+      fetch('./data/corners_cards_models.json?t='+Date.now(),{cache:'no-store'}).catch(()=>null),
     ]);
-    if (!response.ok) throw new Error('Не удалось загрузить data.json (HTTP ' + response.status + ')');
+    if (!response.ok) throw new Error('Не удалось загрузить data.json (HTTP '+response.status+')');
     const data = await response.json();
     if (modelResponse?.ok) {
-      try { productionModels = await modelResponse.json(); }
-      catch (_) { productionModels = null; }
+      try { productionModels = await modelResponse.json(); } catch (_) { productionModels = null; }
     }
     const now = Date.now();
-    const fixtures = (Array.isArray(data.predictions) ? data.predictions : []).filter(item => {
-      const kickoff = Date.parse(item.time);
-      return Number.isFinite(kickoff) && kickoff > now;
+    const fixtures = (Array.isArray(data.predictions)?data.predictions:[]).filter(item=>{
+      const kickoff=Date.parse(item.time); return Number.isFinite(kickoff)&&kickoff>now;
     });
-    const externalRows = fixtures.filter(item => val(item.corners) !== '—' || val(item.yellowCards) !== '—');
-    const modelRows = makeModelRows(fixtures);
-    allMarkets = [...externalRows, ...modelRows];
+    const externalRows=fixtures.filter(item=>val(item.corners)!=='—'||val(item.yellowCards)!=='—');
+    const modelRows=makeModelRows(fixtures);
+    allMarkets=[...externalRows,...modelRows];
     setSourceStatus('status-bsd','BSD',data.sources?.bsd);
     setSourceStatus('status-sstats','SStats',data.sources?.sstats);
     setSourceStatus('status-euro365','Euro365',data.sources?.euro365);
     setSourceStatus('status-fbdata','FB_DATA',data.sources?.fbdata);
-    const generated = data.generatedAt ? new Date(data.generatedAt) : null;
-    $('markets-date').textContent = 'Матчи на ' + (data.date || 'сегодня') + (generated && !Number.isNaN(generated.getTime()) ? ' · обновлено ' + generated.toLocaleString('ru-RU') : '');
-    $('markets-count').textContent = productionModels
-      ? 'Внутренняя модель: ' + modelDiagnostics.generated + ' матчей из ' + modelDiagnostics.fixtures + ' предстоящих · лига поддерживается: ' + modelDiagnostics.supportedLeague + ' · команды сопоставлены: ' + modelDiagnostics.matchedTeams
+    const generated=data.generatedAt?new Date(data.generatedAt):null;
+    $('markets-date').textContent='Матчи на '+(data.date||'сегодня')+(generated&&!Number.isNaN(generated.getTime())?' · обновлено '+generated.toLocaleString('ru-RU'):'');
+    $('markets-count').textContent=productionModels
+      ? 'Внутренняя модель: '+modelDiagnostics.generated+' матчей из '+modelDiagnostics.fixtures+' предстоящих · лига поддерживается: '+modelDiagnostics.supportedLeague+' · команды сопоставлены: '+modelDiagnostics.matchedTeams
       : 'Модель не загружена — доступны внешние источники';
-    const diag = $('markets-diagnostics');
-    if (diag && productionModels) {
-      const leagues = Object.entries(modelDiagnostics.unsupportedLeagues).sort((a,b)=>b[1]-a[1]).slice(0,8);
-      const teams = modelDiagnostics.unmatchedTeams.slice(0,8);
-      diag.textContent = 'Не поддерживаются лиги: ' + (leagues.length ? leagues.map(([name,count])=>name+' ('+count+')').join('; ') : 'нет')
-        + (teams.length ? '. Не найдены команды: ' + teams.map(x=>x.league+': '+x.home+' — '+x.away).join('; ') : '');
+    const diag=$('markets-diagnostics');
+    if (diag&&productionModels) {
+      const leagues=Object.entries(modelDiagnostics.unsupportedLeagues).sort((a,b)=>b[1]-a[1]).slice(0,8);
+      const teams=modelDiagnostics.unmatchedTeams.slice(0,8);
+      diag.textContent='Не поддерживаются лиги: '+(leagues.length?leagues.map(([name,count])=>name+' ('+count+')').join('; '):'нет')
+        +(teams.length?'. Не найдены команды: '+teams.map(x=>x.league+': '+x.home+' — '+x.away).join('; '):'');
     }
     render();
-  } catch (e) {
-    $('markets-error').textContent = e.message || 'Ошибка загрузки данных.';
-    $('markets-error').classList.remove('hidden');
-    $('markets-body').replaceChildren();
-    $('markets-empty').classList.add('hidden');
+  } catch(e) {
+    $('markets-error').textContent=e.message||'Ошибка загрузки данных.';
+    $('markets-error').classList.remove('hidden'); $('markets-body').replaceChildren(); $('markets-empty').classList.add('hidden');
   }
 }
-document.addEventListener('DOMContentLoaded', () => {
-  ['market-type','market-source'].forEach(id => $(id).addEventListener('change',render));
+document.addEventListener('DOMContentLoaded',()=>{
+  ['market-type','market-source'].forEach(id=>$(id).addEventListener('change',render));
   $('market-search').addEventListener('input',render);
-  const refresh = $('refresh-btn');
-  if (refresh) refresh.addEventListener('click', () => load());
+  const refresh=$('refresh-btn'); if(refresh) refresh.addEventListener('click',()=>load());
   load();
 });
