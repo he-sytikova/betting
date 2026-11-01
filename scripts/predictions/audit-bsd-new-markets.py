@@ -19,7 +19,8 @@ TOKEN = os.environ.get("BSD_TOKEN", "").strip()
 OUT = Path("data/bsd_new_markets_audit.json")
 SAMPLE_PER_SEASON = 10
 MIN_REQUEST_INTERVAL = 0.8
-MAX_RETRIES = 6
+MAX_RETRIES = 10
+MAX_RETRY_DELAY = 300
 FIELDS = ["fouls", "total_shots", "shots_on_target", "red_cards"]
 
 # Exact league names are combined with an explicit country check. This prevents
@@ -133,7 +134,8 @@ def get(path):
                     except Exception:
                         delay = None
             if delay is None:
-                delay = min(60.0, 2 ** attempt) + random.uniform(0.1, 0.7)
+                delay = min(MAX_RETRY_DELAY, 15 * (2 ** attempt)) + random.uniform(0.5, 2.0)
+            delay = min(delay, MAX_RETRY_DELAY)
             time.sleep(delay)
     raise RuntimeError("Request retry loop exhausted")
 
@@ -191,7 +193,36 @@ def main():
     if not TOKEN:
         raise SystemExit("BSD_TOKEN secret is missing")
 
-    league_payload = get("/leagues/?limit=200&offset=0")
+    try:
+        league_payload = get("/leagues/?limit=200&offset=0")
+    except urllib.error.HTTPError as exc:
+        if exc.code != 429:
+            raise
+        report = {
+            "generatedAt": datetime.now(timezone.utc).isoformat(),
+            "source": "BSD API v2",
+            "markets": FIELDS,
+            "referees": {"included": False, "reason": "Excluded by project decision"},
+            "competitions": [],
+            "errors": [{
+                "stage": "league_catalog",
+                "error": "BSD API returned HTTP 429 after retry attempts. No match coverage was assessed.",
+            }],
+            "summary": {
+                "targetCompetitions": len(TARGETS),
+                "matchedCompetitions": 0,
+                "unmatchedCompetitions": len(TARGETS),
+                "sampledMatches": 0,
+                "errors": 1,
+                "status": "blocked_by_rate_limit",
+                "markets": FIELDS,
+            },
+        }
+        OUT.parent.mkdir(exist_ok=True)
+        OUT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+        print(json.dumps(report["summary"], ensure_ascii=False))
+        print("BSD API rate limit blocked audit; report written without match data.")
+        return
     league_list = rows(league_payload)
     while isinstance(league_payload, dict) and league_payload.get("next") and len(league_list) < 1000:
         next_url = league_payload["next"]
