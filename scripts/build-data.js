@@ -737,7 +737,23 @@ async function fetchSStats() {
             LeagueId: first(pick(game, 'LeagueId', 'leagueId'), pick(match, 'LeagueId', 'leagueId', 'TournamentId', 'tournamentId'))
           };
         });
-        liveListDiagnostic = `; /Ls/List enrichment: ${enrichedCount}/${todayGames.length} строк получили лигу из ${lsToday.length} матчей`;
+        const sampleGames = todayGames.slice(0, 2).map(game => ({
+          id: pick(game, 'Id', 'GameId', 'gameId', 'id'),
+          date: pick(game, 'Date', 'DateTime', 'StartTime', 'MatchDate'),
+          home: pick(game, 'HomeTeamName', 'HomeTeam', 'homeTeamName', 'home'),
+          away: pick(game, 'AwayTeamName', 'AwayTeam', 'awayTeamName', 'away'),
+          league: leagueNameFor(game, new Map()),
+          leagueId: pick(game, 'LeagueId', 'leagueId', 'LeagueID')
+        }));
+        const sampleLive = lsToday.slice(0, 2).map(game => ({
+          id: pick(game, 'Id', 'GameId', 'gameId', 'id'),
+          date: pick(game, 'Date', 'DateTime', 'StartTime', 'MatchDate'),
+          home: pick(game, 'HomeTeamName', 'HomeTeam', 'homeTeamName', 'home'),
+          away: pick(game, 'AwayTeamName', 'AwayTeam', 'awayTeamName', 'away'),
+          league: pick(game, 'LeagueName', 'leagueName', 'TournamentName', 'tournamentName'),
+          leagueId: pick(game, 'LeagueId', 'leagueId', 'TournamentId', 'tournamentId')
+        }));
+        liveListDiagnostic = `; /Ls/List enrichment: ${enrichedCount}/${todayGames.length} строк получили лигу из ${lsToday.length} матчей; games sample=${JSON.stringify(sampleGames)}; Ls sample=${JSON.stringify(sampleLive)}`;
       } else {
         liveListDiagnostic = `; /Ls/List enrichment: строк ${lsRows.length}, совпало по дате ${lsToday.length}; названия лиг не обогащены`;
       }
