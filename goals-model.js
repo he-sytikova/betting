@@ -30,7 +30,40 @@ const TEAM_ALIASES = {
   'frosinone calcio': 'frosinone',
   'ss lazio': 'lazio',
   '1 union berlin': 'union berlin',
-  '1 koln': 'koln'
+  '1 koln': 'koln',
+  'spvgg greuther furth': 'greuther furth',
+  'hannover 96': 'hannover',
+  '1 nurnberg': 'nurnberg',
+  'royal antwerp': 'antwerp',
+  'sint truidense vv': 'st truiden',
+  'sbv excelsior': 'excelsior',
+  'us avellino 1912': 'avellino',
+  'hellas verona': 'verona',
+  'citta di palermo': 'palermo',
+  'vicenza calcio': 'vicenza',
+  'racing de santander': 'santander',
+  'real racing': 'santander',
+  'athletic': 'ath bilbao',
+  'athletic club': 'ath bilbao',
+  'real sociedad': 'sociedad',
+  'nacional da madeira': 'nacional',
+  'eintracht frankfurt': 'ein frankfurt',
+  'hamburger sv': 'hamburg',
+  'ang ers sco': 'angers',
+  'angers sco': 'angers',
+  'olympique lyonnais': 'lyon',
+  'olympique de marseille': 'marseille',
+  'as monaco': 'monaco',
+  'as monaco fc': 'monaco',
+  'genoa cfc': 'genoa',
+  'ssc napoli': 'napoli',
+  'us lecce': 'lecce',
+  'juventus fc': 'juventus',
+  'cd eldense': 'eldense',
+  'ad ceuta': 'ceuta',
+  'cd castellon': 'castellon',
+  'cd tenerife': 'tenerife',
+  'burgos de futbol': 'burgos'
 };
 const LEAGUE_ALIASES = {
   'germany bundesliga':'D1','germany 2 bundesliga':'D2',
@@ -38,7 +71,10 @@ const LEAGUE_ALIASES = {
   'spain la liga':'SP1','spain segunda':'SP2',
   'france ligue 1':'F1','france ligue 2':'F2',
   'netherlands eredivisie':'N1','england premier league':'E0',
-  'england championship':'E1','england league one':'E2','england league two':'E3'
+  'england championship':'E1','england league one':'E2','england league two':'E3',
+  'belgium jupiler league':'B1','greece superleague':'G1',
+  'greece super league':'G1','stoiximan super league':'G1',
+  'liga portugal betclic':'P1'
 };
 function resolveLeague(name, config) {
   const n = normalize(name);
