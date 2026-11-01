@@ -77,7 +77,7 @@ function formatTotals(mean, market) {
     const over = poissonOver(mean, line);
     if (over === null) return '';
     return 'ТБ ' + line + ': ' + (over * 100).toFixed(1) + '% / ТМ: ' + ((1 - over) * 100).toFixed(1) + '% (' + modelLabel + ')';
-  }).filter(Boolean).join('\\n');
+  }).filter(Boolean).join('\n');
 }
 function makeModelRows(fixtures) {
   if (!productionModels?.models || !productionModels?.teams || !productionModels?.leagueNames) return [];
