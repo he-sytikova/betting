@@ -33,5 +33,28 @@ class GoalModelBaselineTests(unittest.TestCase):
         self.assertEqual(result["baselineMean"], 2.0)
 
 
+    def test_poisson_score_grid_probabilities_are_normalized(self):
+        result = MODULE.poisson_score_probabilities(1.7, 1.1)
+        self.assertAlmostEqual(result["home"] + result["draw"] + result["away"], 1.0, places=10)
+        for line, over in result["totalOver"].items():
+            self.assertGreaterEqual(over, 0.0)
+            self.assertLessEqual(over, 1.0)
+        self.assertAlmostEqual(result["asian"][0.0]["win"] +
+                               result["asian"][0.0]["push"] +
+                               result["asian"][0.0]["lose"], 1.0, places=10)
+
+    def test_probability_metrics_include_training_baseline_and_calibration(self):
+        result = MODULE.binary_probability_metrics(
+            actual=[0, 1, 1, 0],
+            probabilities=[0.1, 0.8, 0.7, 0.2],
+            baseline_actual=[0, 0, 1, 0, 1, 1],
+        )
+        self.assertEqual(result["rows"], 4)
+        self.assertIn("baselineBrier", result)
+        self.assertIn("baselineLogLoss", result)
+        self.assertIn("expectedCalibrationError10", result)
+        self.assertTrue(result["reliabilityBins"])
+
+
 if __name__ == "__main__":
     unittest.main()
