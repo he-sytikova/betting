@@ -36,10 +36,10 @@ jobs:
           node --check scripts/euro365.js
       - name: Build current forecasts
         env:
-          BSD_TOKEN: \${{ secrets.BSD_TOKEN }}
-          SSTATS_TOKEN: \${{ secrets.SSTATS_TOKEN }}
-          EURO365_API_KEY: \${{ secrets.EURO365_API_KEY }}
-          FD_DATA_TOKEN: \${{ secrets.FD_DATA_TOKEN }}
+          BSD_TOKEN: ${{ secrets.BSD_TOKEN }}
+          SSTATS_TOKEN: ${{ secrets.SSTATS_TOKEN }}
+          EURO365_API_KEY: ${{ secrets.EURO365_API_KEY }}
+          FD_DATA_TOKEN: ${{ secrets.FD_DATA_TOKEN }}
         run: node scripts/build-data.js
       - name: Commit development data snapshot
         run: |
