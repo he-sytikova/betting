@@ -17,7 +17,7 @@ from pathlib import Path
 BASE = "https://sports.bzzoiro.com/api/v2"
 TOKEN = os.environ.get("BSD_TOKEN", "").strip()
 OUT = Path("data/bsd_new_markets_audit.json")
-SAMPLE_PER_SEASON = 10
+SAMPLE_PER_SEASON = 30
 MIN_REQUEST_INTERVAL = 0.8
 MAX_RETRIES = 10
 MAX_RETRY_DELAY = 300
@@ -308,15 +308,28 @@ def main():
                                 (list(stats[0].keys()) if isinstance(stats, list) and stats and isinstance(stats[0], dict) else [])
                             )[:40]
                         season_item["matchesSampled"] += 1
+                        match_record = {
+                            "eventId": event_id,
+                            "date": event.get("event_date") or event.get("date") or event.get("start_time"),
+                            "homeTeam": event.get("home_team_name") or event.get("home_name") or event.get("home_team"),
+                            "awayTeam": event.get("away_team_name") or event.get("away_name") or event.get("away_team"),
+                            "markets": {},
+                        }
                         for field in FIELDS:
                             if field in available:
                                 season_item["availabilityKeys"][field] += 1
                             vals = extract_values(stats, field)
                             season_item["actualStatsValues"][field] += len(vals)
-                            if len(vals) >= 2:
+                            both_sides = len(vals) >= 2
+                            if both_sides:
                                 season_item["actualStatsBothSides"][field] += 1
                             else:
                                 season_item["actualStatsNullOrMissing"][field] += 1
+                            match_record["markets"][field] = {
+                                "values": vals,
+                                "bothSidesPresent": both_sides,
+                            }
+                        season_item.setdefault("matchSamples", []).append(match_record)
                     except Exception as exc:
                         season_item["errors"] += 1
                         report["errors"].append({
