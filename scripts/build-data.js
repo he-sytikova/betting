@@ -726,9 +726,9 @@ async function fetchSStats() {
       } else if (todayGames.length && lsToday.length) {
         const byId = new Map();
         const byFixture = new Map();
-        const teamKey = value => String(teamName(value)).normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLowerCase()
-          .replace(/\\b(fc|afc|cf|sc|sv|fk|sk|club|the)\\b/g, ' ')
-          .replace(/[^a-z0-9]+/g, ' ').trim().replace(/\\s+/g, ' ');
+        const teamKey = value => String(teamName(value)).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+          .replace(/\b(fc|afc|cf|sc|sv|fk|sk|club|the)\b/g, ' ')
+          .replace(/[^a-z0-9]+/g, ' ').trim().replace(/\s+/g, ' ');
         const fixtureKey = game => [
           dateKey(pick(game, 'Date', 'DateTime', 'StartTime', 'MatchDate')),
           teamKey(pick(game, 'HomeTeamName', 'HomeTeam', 'homeTeamName', 'home')),
