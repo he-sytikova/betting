@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "generatedAt": "2026-11-01",
   "status": "experimental_research_model",
-  "disclaimer": "Independent statistical estimates; no bookmaker probabilities or picks are imported.",
+  "disclaimer": "Independent statistical estimates; no bookmaker probabilities or picks are imported. Red-card forecasts and exact-score forecasts are intentionally excluded.",
   "models": {
     "homeGoals": {
       "type": "poisson",
@@ -11881,7 +11881,6 @@
     "matchTotals",
     "teamTotals",
     "bothTeamsToScore",
-    "correctScore",
     "asianHandicap"
   ],
   "trainingRows": 42851,
