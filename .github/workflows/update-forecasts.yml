@@ -77,3 +77,19 @@ jobs:
             git pull --rebase origin main
             git push
           fi
+
+      # Wake the dev repository after every successful snapshot build.
+      # GitHub silently skips a large share of scheduled runs in betting-dev,
+      # so the dev refresh is triggered by dispatch (queued instantly) instead
+      # of relying on its own schedule. The dev side waits inside the run for
+      # the 07:01:30 Moscow game-day boundary before flipping the snapshot.
+      - name: Wake the dev repository (betting-dev refresh)
+        env:
+          DEV_DISPATCH_TOKEN: ${{ secrets.DEV_DISPATCH_TOKEN }}
+        run: |
+          if [ -z "$DEV_DISPATCH_TOKEN" ]; then
+            echo "::warning::DEV_DISPATCH_TOKEN is not set; skipping dev wake-up"
+            exit 0
+          fi
+          curl --fail --silent --show-error -X POST             -H "Authorization: Bearer $DEV_DISPATCH_TOKEN"             -H "Accept: application/vnd.github+json"             "https://api.github.com/repos/he-sytikova/betting-dev/actions/workflows/refresh-dev-fixtures.yml/dispatches"             -d '{"ref":"main"}'             || { echo "::warning::dev wake-up dispatch failed"; exit 0; }
+          echo "Dispatched betting-dev refresh"
